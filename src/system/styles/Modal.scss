@@ -1,0 +1,106 @@
+@import "../../styles/sass/variables";
+
+.modal-content {
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.1);
+
+  .modal-header {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+
+    &.top {
+      height: 100% !important;
+    }
+
+    .title {
+      font-size: $base-size + 1.2rem;
+      font-weight: 700;
+      color: $color-blue-dark;
+      padding: 0;
+      gap: 0;
+    }
+
+    .icon-close {
+      padding: 0.8rem 0.4rem;
+      font-size: $base-size + 0.4rem;
+      opacity: 0.8;
+      transition: $transition;
+
+      &:hover {
+        opacity: 1;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .modal-body {
+    .form-user {
+      .error-input,
+      .form-label,
+      .form-control,
+      .form-select {
+        font-size: $base-size + 0.2rem;
+      }
+
+      .error-input {
+        font-weight: 600;
+        color: $color-red;
+      }
+
+      .form-label {
+        font-weight: 500;
+      }
+    }
+
+    .form-confirm {
+      .form-control {
+        font-size: $base-size + 0.2rem;
+        font-style: italic;
+      }
+
+      .exam-report,
+      .invoice {
+        &__title {
+          font-weight: 700;
+          font-size: $base-size + 0.6rem;
+        }
+
+        &__input {
+          font-size: $base-size + 0.2rem;
+          margin: 0 1rem;
+          font-weight: 600;
+          p {
+            margin-bottom: 0.6rem;
+          }
+
+          span {
+            font-weight: 400;
+            font-style: italic;
+          }
+        }
+      }
+
+      .total-fee {
+        h3 {
+          font-weight: 700;
+          font-size: $base-size + 0.6rem;
+        }
+
+        span {
+          font-weight: 400;
+        }
+      }
+    }
+  }
+
+  .modal-footer-actions,
+  .footer {
+    .btn {
+      padding: 0.4rem 1.6rem;
+      height: 100%;
+      font-size: $base-size + 0.2rem;
+      text-transform: uppercase;
+    }
+  }
+}

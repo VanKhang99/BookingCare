@@ -1,0 +1,11 @@
+@import "./sass/variables";
+
+.province-options-container {
+  margin-bottom: 2rem;
+  // width: 20%;
+  .province-options {
+    width: 18%;
+    font-family: $font-main !important;
+    font-weight: 500;
+  }
+}

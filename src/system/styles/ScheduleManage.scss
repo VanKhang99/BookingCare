@@ -1,0 +1,52 @@
+@import "../../styles/sass/base";
+
+.schedule {
+  &-content {
+    &__title {
+      font-size: $base-size + 1.4rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      text-align: center;
+      color: $color-blue-dark;
+    }
+
+    .title {
+      h4 {
+        font-size: $base-size + 0.6rem;
+        font-weight: 700;
+      }
+    }
+
+    .schedule-hours {
+      .hours-list {
+        border: 1px solid $grey-2;
+        padding: 2rem;
+        border-radius: 0.4rem;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 3rem;
+
+        .hours-item {
+          .button {
+            transition: all 0.3s;
+
+            &.selected {
+              background-color: $color-blue;
+              font-weight: 600;
+            }
+          }
+        }
+      }
+    }
+
+    .schedule-button {
+      button {
+        padding: 0.8rem 3.2rem;
+        font-size: $base-size;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+    }
+  }
+}

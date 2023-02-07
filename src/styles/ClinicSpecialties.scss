@@ -1,0 +1,40 @@
+@import "./sass/variables";
+
+.clinic-specialties-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  .clinic-specialties {
+    margin-top: $height-header;
+    flex: 1;
+
+    &__title {
+      font-size: $base-size + 0.6rem;
+      font-weight: 700;
+      color: $main-color-text;
+      text-transform: uppercase;
+      margin-top: 1.6rem;
+    }
+
+    .specialties {
+      display: flex;
+      flex-direction: column;
+
+      .specialty {
+        flex: 1;
+        color: $main-color-text;
+        font-size: $base-size + 0.2rem;
+        padding: 1.2rem 0;
+        border-bottom: 1px solid $grey-5;
+        transition: all 0.1s linear;
+
+        &:hover {
+          color: $color-blue-dark;
+          font-size: $base-size + 0.3rem;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}

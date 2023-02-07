@@ -1,0 +1,64 @@
+@import "./sass/variables";
+
+.intro-container {
+  background-image: url(https://img.freepik.com/premium-photo/long-hospital-corridor-with-empty-seats_117023-1679.jpg?w=2000);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  margin-top: $height-header;
+
+  .intro-overlay {
+    background-image: linear-gradient(
+      rgba(255, 255, 255, 0.8),
+      rgba(255, 255, 255, 0.9),
+      rgba(255, 255, 255, 1)
+    );
+    padding: 1rem 0;
+
+    .intro-content .intro-description {
+      max-height: 20rem;
+      overflow: hidden;
+      transition: max-height 0.3s linear;
+
+      &.show {
+        max-height: 100rem;
+      }
+
+      h2 {
+        font-size: $base-size + 0.6rem;
+        font-weight: 700;
+        padding: 1.5rem 0;
+      }
+
+      strong {
+        font-size: $base-size + 0.2rem;
+      }
+
+      p {
+        font-size: $base-size + 0.1rem;
+        margin-bottom: 0.4rem;
+      }
+
+      ul {
+        list-style: disc;
+
+        li {
+          margin-left: 2.6rem;
+          font-size: $base-size + 0.1rem;
+        }
+      }
+    }
+
+    .intro-content .intro-button {
+      button {
+        border: none;
+        background-color: transparent;
+        color: $color-blue-dark-2;
+        font-weight: 700;
+        font-size: $base-size + 0.2rem;
+        padding: 0.8rem 0 0.8rem;
+      }
+    }
+  }
+}

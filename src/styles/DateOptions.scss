@@ -1,0 +1,29 @@
+@import "./sass/variables";
+
+.date-options {
+  padding: 1.5rem 1.5rem 1.5rem 0;
+
+  &.small {
+    padding: 0 1.5rem 1.5rem 0;
+  }
+  select {
+    width: fit-content;
+    border: none;
+    border-bottom: 1px solid $color-blue-dark-2;
+    border-radius: 0.2rem;
+    padding: 0.4rem 0 0.4rem 0;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: $base-size + 0.1rem;
+    color: $color-blue-dark-2;
+    outline: none;
+    cursor: pointer;
+
+    option {
+      &:hover {
+        cursor: pointer;
+        background-color: red;
+      }
+    }
+  }
+}

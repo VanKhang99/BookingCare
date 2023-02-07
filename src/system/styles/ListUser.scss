@@ -1,0 +1,12 @@
+@import "../../styles/sass/base";
+
+.list-user-wrapper {
+  margin: 4.8rem 0;
+
+  .list-user {
+    &-title {
+      font-size: $base-size + 0.4rem;
+      font-weight: 700;
+    }
+  }
+}

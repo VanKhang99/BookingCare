@@ -1,0 +1,144 @@
+@import "./sass/variables";
+
+.banner {
+  background-image: url(https://bookingcare.vn/assets/anh/bookingcare-cover-4.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100%;
+
+  .banner-top {
+    min-height: 60vh;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0.1));
+    padding: 4.5rem 0;
+    margin-top: $height-header;
+    display: flex;
+    align-items: center;
+
+    .banner-top-content {
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .banner-top-title {
+      text-align: center;
+      margin-bottom: 1rem;
+
+      h1 {
+        margin: 0;
+        line-height: 4.8rem;
+        font-size: $base-size + 1.8rem;
+        color: #fff;
+        text-shadow: 1px 1px 1px #333;
+      }
+    }
+
+    .banner-top-search {
+      margin: 1rem 0;
+      min-height: 15vh;
+      padding: 0;
+
+      .banner-search-content {
+        background-color: $color-yellow;
+        // padding: 1.3rem 2.5rem 1.3rem 5rem;
+        border-radius: 100px;
+        display: flex;
+        align-items: center;
+      }
+
+      span {
+        position: relative;
+        width: 5rem;
+        height: 5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        svg {
+          font-size: $base-size + 0.4rem;
+        }
+      }
+
+      input {
+        border: none;
+        background-color: transparent;
+        width: 38rem;
+        font-size: $base-size + 0.2rem;
+        outline: none;
+        padding-top: 4px;
+
+        &::placeholder {
+          font-family: "Nunito";
+          font-weight: 400;
+        }
+      }
+    }
+
+    .banner-top-download {
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+      padding-top: 2.5rem;
+      display: flex;
+      gap: 2rem;
+
+      img {
+        height: 3.2rem;
+      }
+    }
+  }
+
+  .banner-service {
+    background-image: linear-gradient(
+      rgba(255, 255, 255, 0.1),
+      rgba(255, 255, 255, 0.9),
+      rgba(255, 255, 255, 1)
+    );
+    padding: 3rem 0 3rem;
+
+    .services-list {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      list-style-type: none;
+
+      .services-item {
+        padding: 0.5rem;
+      }
+
+      .services-link {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        text-decoration: none;
+        min-width: 15rem;
+        font-size: $base-size + 0.3rem;
+        padding: 0.5rem;
+        color: $main-color-text;
+        transition: $transition;
+
+        &:hover {
+          color: $color-hover;
+        }
+
+        .services-img {
+          width: 5rem;
+          height: 5rem;
+          margin: 2px 0;
+          border-radius: 50%;
+          background-color: #fff;
+          background-repeat: no-repeat;
+          // background-size: 3.2rem;
+          background-size: 3.2rem;
+          background-position: center;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+      }
+    }
+  }
+}

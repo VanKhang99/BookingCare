@@ -1,0 +1,128 @@
+@import "./sass/variables";
+
+.medical-address {
+  position: relative;
+  margin-bottom: 2.4rem;
+
+  &::before {
+    content: "";
+
+    position: absolute;
+    top: 0;
+    left: -0.8rem;
+    height: 100%;
+    width: 1px;
+    background-color: $grey-4;
+  }
+
+  .medical-address-content {
+    .clinic-info {
+      margin-top: 0.6rem;
+      margin-bottom: 0.6rem;
+      .clinic-name {
+        font-size: $base-size + 0.2rem;
+        font-weight: 700;
+      }
+
+      .clinic-address {
+        margin-bottom: 0;
+        font-size: $base-size;
+      }
+    }
+
+    .medical-price,
+    .medical-insurance {
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .title {
+        margin-bottom: 0;
+      }
+
+      .price {
+        color: $main-color-text;
+        font-weight: 400;
+      }
+
+      .medical-price-button,
+      .medical-insurance-button {
+        margin-right: 1rem;
+        font-weight: 700;
+        border: none;
+        background-color: transparent;
+        color: $color-blue-dark-2;
+      }
+    }
+  }
+
+  .more-info {
+    margin-top: 0rem;
+    border: 1px solid $color-blue-dark-2;
+    border-radius: 0.5rem;
+    max-height: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease-out;
+
+    &.more-info-price.open,
+    &.more-info-insurance.open {
+      max-height: 100rem;
+      margin-top: 0.6rem;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .heading {
+      display: flex;
+      justify-content: space-between;
+      font-size: $base-size + 0.1rem;
+
+      span {
+        font-size: $base-size + 0.2rem;
+        font-weight: 600;
+        color: $color-blue-dark-2;
+      }
+    }
+
+    .info-top {
+      border-bottom: 1px solid $color-blue-dark-2;
+
+      .info-top-note {
+        font-size: $base-size - 0.1rem;
+        font-weight: 300;
+      }
+    }
+
+    .info-bottom {
+      margin-top: 1rem;
+
+      .info-bottom-note {
+        font-size: $base-size - 0.1rem;
+        font-weight: 300;
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+//COMPONENT IN PAGE SPECIALTY
+
+.medical-address.small {
+  padding-top: 1rem;
+  border-top: 2px solid $grey-5;
+  margin-right: 1rem;
+
+  &::before {
+    display: none;
+  }
+
+  .medical-price,
+  .medical-insurance {
+    .medical-price-button,
+    .medical-insurance-button {
+      margin-right: 0;
+    }
+  }
+}

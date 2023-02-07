@@ -1,0 +1,77 @@
+@mixin image-preview-container {
+  .image-preview-container,
+  .image-remote-preview-container,
+  .logo-preview-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .image-preview,
+    .image-remote-preview,
+    .logo-preview {
+      border: 1px solid #ced4da;
+      margin-top: 1.4rem;
+      height: 10rem;
+      border-radius: 0.4rem;
+
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: center;
+
+      &.open {
+        cursor: pointer;
+      }
+    }
+
+    .input-image-customize,
+    .input-image-remote-customize,
+    .input-logo-customize {
+      display: flex;
+      gap: 0.8rem;
+
+      label,
+      .image-name {
+        border: 1px solid #ced4da;
+        width: fit-content;
+        padding: 0.6rem 1.2rem;
+        border-radius: 0.4rem;
+        font-size: $base-size + 0.2rem;
+      }
+
+      label {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+      }
+
+      .image-name {
+        flex: 1;
+      }
+    }
+  }
+}
+
+@mixin clinic-navigator-item-content {
+  padding: 1rem 0;
+  font-size: $base-size + 0.2rem;
+
+  p {
+    margin: 0.5rem 0;
+  }
+
+  em {
+    display: block;
+    text-align: center;
+  }
+
+  strong {
+    font-weight: 700;
+  }
+
+  img {
+    margin: 0 auto;
+    max-width: 62.2rem;
+    height: auto;
+  }
+}

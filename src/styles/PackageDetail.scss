@@ -1,0 +1,36 @@
+@import "./sass/variables";
+
+.package-detail-container {
+  .package-detail-body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .package-detail-content {
+    border-top: 1px solid $grey-8;
+    border-bottom: 1px solid $grey-8;
+    .package-include {
+      background-color: $grey-7;
+      padding: 1.5rem 0;
+      font-size: $base-size + 0.1rem;
+
+      h3 {
+        font-size: $base-size + 0.4rem;
+        margin-bottom: 1rem;
+      }
+
+      ul {
+        list-style-type: unset;
+
+        li {
+          margin-left: 2.6rem;
+        }
+      }
+    }
+
+    .package-list-exam {
+      border-top: 1px solid $grey-8;
+      padding: 1.5rem 0;
+    }
+  }
+}

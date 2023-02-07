@@ -1,0 +1,37 @@
+@import "./sass/variables";
+
+.specialty-container {
+  .specialty-content {
+    .specialty-doctors {
+      background-color: $grey-5;
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+
+      &__title {
+        font-weight: 700;
+        padding-bottom: 1rem;
+      }
+
+      .doctors {
+        display: flex;
+        flex-direction: column;
+        gap: 1.6rem;
+      }
+    }
+  }
+  .specialty-footer {
+    .more-explore {
+      padding: 1.5rem;
+      background-color: #006e6f;
+
+      p {
+        font-size: $base-size + 0.2rem;
+        color: #fff;
+        a {
+          color: $color-yellow-dark;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,166 @@
+@import "./sass/variables";
+
+.clinic-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  .clinic-header {
+    position: absolute;
+  }
+
+  .clinic-content {
+    flex: 1;
+    margin-top: $height-header;
+  }
+
+  .clinic-top {
+    &__image {
+      height: 23rem;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      border-bottom-left-radius: 0.5rem;
+      border-bottom-right-radius: 0.5rem;
+    }
+
+    .top-info {
+      padding: 2rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      &-left {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        img {
+          width: 12rem;
+          height: auto;
+          object-fit: cover;
+          border: 1px solid $grey-4;
+          border-radius: 0.4rem;
+        }
+
+        .more-info {
+          span {
+            display: block;
+          }
+          &__name {
+            font-weight: 600;
+            font-size: $base-size + 0.6rem;
+          }
+
+          &__address {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-top: 0.4rem;
+            svg {
+              width: 1.8rem;
+              height: 1.8rem;
+              opacity: 0.8;
+              margin-top: -2px;
+            }
+
+            span {
+              font-size: $base-size + 0.2rem;
+              font-weight: 300;
+            }
+          }
+        }
+      }
+
+      &-right {
+        button,
+        a {
+          padding: 1rem 3.4rem;
+          font-weight: 700;
+          color: #fff;
+          background-color: $color-yellow-dark;
+          border-radius: 0.5rem;
+          text-transform: uppercase;
+          transition: opacity 0.1s linear;
+
+          &:hover {
+            opacity: 0.9;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+
+  .clinic-navigator {
+    border-top: 1px solid $grey-5;
+    box-shadow: $shadow-1;
+
+    &.fixed {
+      position: fixed;
+      top: $height-header;
+      left: 0;
+      width: 100%;
+      z-index: 2;
+      background-color: #fff;
+    }
+
+    .navigator-list {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0;
+
+      &__item {
+        padding: 1rem 1.2rem;
+        font-weight: 600;
+        cursor: pointer;
+
+        &--scroll {
+          color: $main-color-text;
+          transition: color 0.1s linear;
+
+          &:hover {
+            color: $color-blue-dark-2;
+          }
+        }
+      }
+
+      &__item--specialty {
+        font-weight: 600;
+        text-transform: uppercase;
+
+        a {
+          font-weight: 700;
+          color: $color-yellow-dark;
+          transition: opacity 0.1s linear;
+
+          &:hover {
+            opacity: 0.8;
+          }
+        }
+      }
+    }
+  }
+
+  .clinic-body {
+    ul {
+      list-style-type: disc;
+      padding-left: 2.4rem;
+    }
+  }
+
+  .button-choose-specialty {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 2rem 10rem;
+    background-color: #fff;
+    box-shadow: 2px -1px 5px #bbb;
+
+    button {
+      width: 100%;
+    }
+  }
+}

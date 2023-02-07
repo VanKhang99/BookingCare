@@ -1,0 +1,33 @@
+@import "./sass/variables";
+
+.verify-booking-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  .verify-booking-content {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+
+    h1 {
+      color: $color-blue-dark-2;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    button {
+      font-size: $base-size + 0.2rem;
+      font-weight: 600;
+      background-color: $color-yellow-dark;
+      transition: $transition;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+}

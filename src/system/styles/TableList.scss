@@ -1,0 +1,43 @@
+@import "../../styles/sass//variables";
+
+.table-container {
+  padding: 0 3rem;
+
+  &.table-container-redux {
+    padding: 0;
+  }
+
+  .table {
+    overflow: hidden;
+    border-top-left-radius: 0.4rem;
+    border-top-right-radius: 0.4rem;
+
+    th,
+    td {
+      font-size: $base-size + 0.2rem;
+    }
+  }
+
+  .table-button {
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    svg {
+      font-size: $base-size + 0.8rem;
+      opacity: 0.6;
+      transition: all 0.2s;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    &.table-button-edit svg {
+      color: orange;
+    }
+
+    &.table-button-delete svg {
+      color: red;
+    }
+  }
+}

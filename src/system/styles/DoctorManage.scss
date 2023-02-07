@@ -1,0 +1,39 @@
+@import "../../styles/sass/base";
+
+.doctor-manage-wrapper {
+  margin-bottom: 4rem;
+
+  .doctor-manage {
+    .doctor-manage-title {
+      font-size: $base-size + 1.4rem;
+      font-weight: 800;
+      color: $color-blue-dark;
+    }
+
+    .title {
+      h4 {
+        font-size: $base-size + 0.3rem;
+        font-weight: 600;
+      }
+    }
+
+    .content-top {
+      display: flex;
+      margin-top: 3rem;
+
+      .doctor-info-input {
+        padding: 0.7rem 1rem;
+        font-size: $base-size;
+      }
+    }
+
+    .doctor-manage-button {
+      button {
+        padding: 0.8rem 3.2rem;
+        font-size: $base-size;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+    }
+  }
+}

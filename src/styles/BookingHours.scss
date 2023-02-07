@@ -1,0 +1,56 @@
+@import "./sass/variables";
+
+.booking-schedule {
+  .booking-schedule-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    margin-bottom: 1rem;
+
+    .booking-schedule-button {
+      width: 18rem;
+      padding: 1rem;
+      font-weight: 700;
+      background-color: $color-yellow-dark;
+      transition: $transition;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+
+    span {
+      font-size: $base-size + 0.3rem;
+      padding: 1rem 2rem 1rem 0;
+      color: $color-red;
+      font-weight: 700;
+    }
+  }
+
+  .booking-schedule-fee {
+    display: flex;
+    align-items: center;
+    line-height: 2.4rem;
+    font-weight: 300;
+    margin-bottom: 2.4rem;
+    span {
+      margin-top: 0.3rem;
+    }
+
+    svg {
+      width: 3rem;
+      height: 1.8rem;
+    }
+  }
+
+  &.small {
+    .booking-schedule-button {
+      width: 16.2rem;
+      font-size: $base-size;
+    }
+
+    .booking-schedule-fee {
+      margin-bottom: 1.2rem;
+    }
+  }
+}

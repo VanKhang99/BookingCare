@@ -1,0 +1,87 @@
+@import "../../styles/sass/base";
+
+.system-header-container {
+  padding: 1.6rem 3.2rem;
+  background-color: $color-blue-dark;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+
+  .system-header-content {
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .system-header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-weight: 600;
+      font-size: $base-size + 0.2rem;
+
+      .system-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .ant-space-item {
+          font-size: $base-size + 0.2rem;
+          line-height: 2.4rem;
+        }
+      }
+    }
+
+    .system-header-right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.2rem;
+
+      .welcome {
+        color: #fff;
+        font-size: $base-size + 0.2rem;
+        font-weight: 600;
+      }
+
+      button.logout {
+        font-weight: 700;
+        font-size: $base-size + 0.1rem;
+        color: $main-color-text;
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+
+        span {
+          color: $color-hover;
+          display: flex;
+          align-items: center;
+          svg {
+            width: 2.4rem;
+            height: 2.4rem;
+            color: #fff;
+          }
+        }
+      }
+
+      a.support {
+        text-decoration: none;
+
+        span {
+          display: flex;
+          align-items: center;
+          opacity: 0.8;
+          transition: $transition;
+
+          &:hover {
+            opacity: 1;
+          }
+
+          svg {
+            font-size: $base-size + 0.8rem;
+            color: $color-hover;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}

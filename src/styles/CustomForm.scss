@@ -1,0 +1,52 @@
+.ant-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.ant-input-prefix {
+  margin-right: 1.1rem;
+}
+
+.ant-form .ant-form-item-explain {
+  margin-top: 0.4rem;
+  min-height: 24px;
+}
+
+.ant-form-item {
+  display: grid;
+  margin-bottom: 2rem;
+}
+
+.ant-form-item-margin-offset {
+  width: 0;
+  height: 0;
+}
+
+.ant-form-item-explain-error {
+  color: rgba(0, 0, 0, 0.45) !important;
+  font-family: "Nunito", sans-serif;
+}
+
+.ant-form-item-has-success .ant-input-prefix svg {
+  fill: #37b268;
+}
+
+.ant-input-affix-wrapper.ant-input-affix-wrapper-status-success {
+  outline: 0;
+  border: 1px solid #37b268;
+}
+
+.ant-input-affix-wrapper:hover.ant-input-affix-wrapper-status-success {
+  border: 1px solid #37b268;
+}
+
+.ant-input-affix-wrapper:focus.ant-input-affix-wrapper-status-success {
+  box-shadow: 0 0 0 2px rgb(0 147 233 / 20%);
+}
+
+.ant-form input:-webkit-autofill,
+.ant-form input:-webkit-autofill:hover,
+.ant-form input:-webkit-autofill:focus,
+.ant-form input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+}

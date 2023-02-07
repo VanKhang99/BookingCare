@@ -1,0 +1,52 @@
+@import "./sass/variables";
+
+.outstanding-doctor-container {
+  .outstanding-doctor-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .more-info-container {
+    background-color: $grey-7;
+    border-top: 1px solid $grey-8;
+    border-bottom: 1px solid $grey-8;
+    .more-info {
+      padding: 1.5rem 0;
+      font-size: $base-size + 0.1rem;
+
+      h3 {
+        font-size: $base-size + 0.4rem;
+        margin-bottom: 1rem;
+      }
+
+      ul {
+        list-style-type: unset;
+
+        li {
+          margin-left: 2.6rem;
+        }
+      }
+    }
+  }
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  color: $color-blue-dark-2;
+  font-size: $base-size + 0.1rem;
+
+  svg {
+    width: 1.6rem;
+    height: 1.6rem;
+    margin-top: 1px;
+  }
+
+  span {
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-top: 0.2rem;
+  }
+}

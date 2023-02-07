@@ -1,0 +1,36 @@
+@import "./sass/variables";
+@import "./sass/mixin";
+
+.clinic-booking {
+  margin: 1rem 0 1rem;
+
+  .clinic-booking-content {
+    padding: 1rem 0;
+    font-size: $base-size + 0.2rem;
+
+    .doctors,
+    .packages {
+      &__title {
+        font-size: $base-size;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+    }
+
+    .doctors__title {
+      margin: 1.2rem 0 0.8rem;
+    }
+
+    .packages__title {
+      margin: 3.2rem 0 0.8rem;
+    }
+
+    .doctors-list,
+    .packages-list {
+      padding-left: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1.6rem;
+    }
+  }
+}

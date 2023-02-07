@@ -1,0 +1,35 @@
+@import "../../styles/sass/base";
+
+.patient-booking {
+  &__title {
+    font-size: $base-size + 1.4rem;
+    text-transform: uppercase;
+    font-weight: 800;
+    text-align: center;
+    color: $color-blue-dark;
+  }
+
+  .patient-booking-content {
+    .label {
+      font-size: $base-size + 0.6rem;
+      font-weight: 600;
+      color: $color-blue-dark-2;
+    }
+
+    .table-container {
+      tbody {
+        th,
+        td {
+          vertical-align: middle;
+        }
+      }
+      .table-button {
+        padding: 0;
+        border: none;
+        background-color: $color-yellow-dark;
+        border-radius: 0.4rem;
+        padding: 0.6rem 1.2rem;
+      }
+    }
+  }
+}

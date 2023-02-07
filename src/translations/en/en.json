@@ -1,0 +1,301 @@
+{
+  "header": {
+    "nav-link-title": "Specialty, Health facilities, Doctor, Medical package",
+    "nav-link-subtitle": "Find a doctor by specialty, Choose hospital clinic, Choose good doctor, General health check",
+    "support": "Support"
+  },
+
+  "banner": {
+    "medical-background": "MEDICAL PLATFORM",
+    "health-care": "COMPREHENSIVE HEALTH CARE",
+    "reason-check": "Find a reason for medical examination",
+    "services-name": "Specialty examination, Remote examination, General examination, Medical test, Mental health, Dental examination, Surgery package, Medical products, Business health"
+  },
+
+  "footer": {
+    "company-name": "BookingCare Technology Joint Stock Company",
+    "business-registration-number": "Business registration number: 0106790291. Hanoi Department of Planning and Investment issued on March 16, 2015",
+    "list": "Contact for cooperation, Business digital transformation package, Recruitment, FAQ, Terms of use, Privacy Policy, Support process to resolve complaints, Operation regulations",
+    "headquarter-hanoi": "Headquarters in Hanoi",
+    "office-hcm": "Office in Ho Chi Minh City",
+    "customer-support": "Customer support",
+    "download": "Get the BookingCare app for your phone or tablet"
+  },
+
+  "detail-doctor": {
+    "exam-schedule": "Schedule",
+    "exam-schedule-video": "Video consultation schedule",
+    "no-schedule": "Currently, the selected date does not have a medical examination schedule. Please choose another date or come back later, thank you very much!",
+    "fee": "Choose a time and book (Scheduling fee 0 VND)",
+    "address-exam": "Address of clinic",
+    "price": "Price",
+    "price-note": "Get priority treatment before booking through BookingCare. The cost of medical examination for foreigners is",
+    "payment-method": "Payments",
+    "insurance": "Type of insurance applicable",
+    "state-insurance": "State health insurance",
+    "direct-insurance": "Direct guarantee insurance",
+    "not-apply": "Do not apply"
+  },
+
+  "modal-booking": {
+    "header": "INFORMATION FOR BOOKING MEDICAL EXAMINATIONS",
+    "header-note": "(PLEASE COMPLETE FULL INFORMATION TO SAVE TIME FOR EXAMINATION PROCEDURES)",
+    "time-frame": "Exam time frame",
+    "date": "Date",
+    "price": "Price",
+    "firstname": "First Name",
+    "lastname": "Last Name",
+    "phone": "Phone",
+    "gender": "Gender",
+    "birthday": "Date of birth",
+    "address": "Address",
+    "reason": "Reason for examination",
+    "note": "NOTE",
+    "note-first": "The information you provide will be used as medical examination records, when filling in your information, please:",
+    "note-first-sub-1": "Specify your first and last name, capitalize the first letters, for example: <strong>Tran Van Phu</strong>",
+    "note-first-sub-3": "Fill it out completely and correctly and please double check the information before pressing \"Confirm booking\"",
+    "note-second": "Please follow the epidemic prevention regulations (wearing a mask, disinfecting, declaring the epidemiology) when visiting the clinic.",
+    "note-third": "By confirming your booking, you have fully agreed to our <a href=\"#\">Terms of Service</a>.",
+    "button-close": "Close",
+    "button-confirm": "Confirm"
+  },
+
+  "menu-system": {
+    "user": "Users",
+    "doctor-management": "Doctor management",
+    "schedule-management": "Medical schedule management",
+    "patient-booking-manage": "Manage users to book medical appointments",
+
+    "clinic": "Clinic",
+    "clinic-management": "Clinic management",
+    "clinic-add-specialty": "Add specialties for the clinic",
+
+    "specialty": "Specialty",
+    "specialty-management": "Specialty management",
+
+    "handbook": "Handbook",
+    "handbook-management": "Handbook management",
+
+    "package": "Package",
+    "package-management": "Package management",
+    "package-schedule": "Package schedule management",
+
+    "welcome": "Welcome back 🎉 "
+  },
+
+  "system-welcome": "WELCOME TO THE MANAGEMENT CENTER",
+
+  "doctor-manage": {
+    "title": "ADDITIONAL DOCTOR INFORMATION",
+    "choose-doctor": "Doctor",
+    "placeholder-doctor": "Choose a doctor",
+    "choose-price": "Price",
+    "placeholder-price": "Choose a price",
+    "outstanding-doctor": "Popular last week",
+    "choose-method-payment": "Payment method",
+    "placeholder-payment": "Choose a payment method",
+    "choose-province": "Province (City)",
+    "placeholder-province": "Choose a province",
+    "choose-specialty": "Specialty",
+    "placeholder-specialty": "Choose a specialty",
+    "choose-clinic": "Hospital - Clinic",
+    "placeholder-clinic": "Choose a clinic (hospital)",
+    "clinic-name": "Clinic name",
+    "clinic-address": "Clinic address",
+    "note": "Note",
+    "summary": "Summary information",
+    "more-info": "More information about the doctor",
+    "button-save": "Save information",
+    "button-update": "Save changes"
+  },
+
+  "schedule-manage": {
+    "title": "MANAGING THE DOCTOR'S MEDICAL EXAMINATION PLAN",
+    "choose-doctor": "Choose a doctor",
+    "choose-package": "Choose a package",
+    "choose-date": "Choose date",
+    "time-frame": "Medical examination time frames",
+    "button-schedule": "Save schedule"
+  },
+
+  "clinic-manage": {
+    "title": "HOSPITAL - CLINIC INFORMATION MANAGEMENT",
+    "choose-hospital": "Hospital - clinic",
+    "placeholder-hospital": "Choose a hospital-clinic",
+    "address": "Address",
+    "popular": "Popular last week",
+    "specialtyPage": "Need specialty page",
+    "image": "Image",
+    "markdown-benefit": "Benefit book via bookingcare",
+    "markdown-booking": "Booking",
+    "markdown-intro": "Introduction",
+    "markdown-strengths": "Strengths",
+    "markdown-equipment": "Equipment",
+    "markdown-location": "Location",
+    "markdown-process": "Process",
+    "markdown-price": "Price",
+    "button-upload": "Upload",
+    "button-save": "Save information",
+    "button-update": "Save changes"
+  },
+
+  "specialty-manage": {
+    "title": "Management of medical examination specialist information",
+    "choose-specialty": "Choose a specialty",
+    "placeholder": "Choose a specialty",
+    "image-specialty": "Specialty Image",
+    "popular": "Popular last week",
+    "introduction-specialty": "Introduction to the specialty",
+    "button-upload": "Upload",
+    "button-save": "Save information",
+    "button-update": "Save changes"
+  },
+
+  "add-specialty-clinic": {
+    "main-title": "ADD SPECIALTIES FOR HOSPITALS AND CLINICS",
+    "add-specialty": "Add specialty for clinic",
+    "placeholder-specialty": "Choose a specialty",
+    "clinic": "Hospital - Clinic",
+    "placeholder-clinic": "Choose a hospital (clinic)",
+    "address": "Address",
+    "image": "Image specialty",
+    "markdown-booking": "Booking",
+    "markdown-introduction": "Introduction",
+    "markdown-examAndTreatment": "Examination and treatment",
+    "markdown-strengths": "Strengths",
+    "button-upload": "Upload",
+    "button-save": "Save information",
+    "button-update": "Save changes"
+  },
+
+  "clinic-specialties": {
+    "title": "LIST OF SPECIALTIES"
+  },
+
+  "patients-booking-manage": {
+    "main-title": "USER MANAGEMENT SCHEDULE MEDICAL EXAMINATION",
+    "choose-date": "Choose date",
+    "list-patients": "List of patients who booked an appointment for medical examination",
+    "table-time": "Time frame",
+    "table-name": "Name",
+    "table-address": "Address",
+    "table-gender": "Gender",
+    "table-reason": "Reason",
+    "button-confirm": "Confirm",
+
+    "modal-title": "CONFIRMED EXAMINATION",
+    "title-report": "Report",
+    "title-invoice": "Invoice",
+    "patient-name": "Patient name",
+    "date-exam": "Date examination",
+    "doctor-name": "Doctor name",
+    "exam-result": "Examination results",
+    "service-used": "Service used",
+    "invoice-number": "Invoice number",
+    "total-fee": "Total fee",
+    "button-send": "Send"
+  },
+
+  "button": {
+    "booking-examination": "Booking"
+  },
+
+  "user-redux": {
+    "create": "CREATE NEW USER",
+    "update": "EDIT USER INFORMATION",
+    "password": "Password",
+    "first-name": "First Name",
+    "last-name": "Last Name",
+    "address": "Address",
+    "phone": "Phone",
+    "gender": "Gender",
+    "position": "Position",
+    "role": "Role",
+    "image": "Image",
+    "upload": "Upload",
+    "button-create": "Create",
+    "button-update": "Update",
+
+    "list-users": "LIST USERS",
+    "actions": "Actions"
+  },
+
+  "system": {
+    "user-manage": {
+      "fail-to-load-fouser": "Fail to load system users list",
+      "user-id": "User ID",
+      "usertype": "User type",
+      "username": "Username",
+      "fullname": "Fullname",
+      "mobile": "Phone",
+      "email": "Email",
+      "status": "Status",
+      "add-user": "Add user",
+      "edit-user": "Edit user information",
+      "password": "Password",
+      "retype-password": "Retype password",
+      "add-user-success": "Add user successfully",
+      "edit-user-success": "Change user information successfully",
+      "add-user-fail": "Fail to add user",
+      "edit-user-fail": "Fail to change user information",
+      "del-user-success": "Delete user successfully",
+      "del-user-fail": "Fail to delete user",
+      "invalid-input": {
+        "username": "Please fill in username",
+        "fullname": "Please fill in fullname",
+        "password": "Please fill in password"
+      },
+      "sure-delete-user": "Are you sure to delete this user?"
+    },
+    "product-manage": {
+      "fail-to-load-foprtype": "Fail to load packages list",
+      "prid": "Package ID",
+      "prname": "Package name",
+      "prtype": "Package type",
+      "status": "Status",
+      "description": "Description",
+      "effective-date": "Effective date",
+      "expiration-date": "Expiration date",
+      "add-product": "Add package",
+      "add-product-success": "Add package successfully",
+      "add-product-fail": "Fail to add package",
+      "edit-product": "Edit package information",
+      "package-decentralize": "Package decentralize",
+      "edit-product-success": "Edit package information successfully",
+      "edit-product-fail": "Fail to edit package information",
+      "delete-product-success": "Delete package successfully",
+      "delete-product-fail": "Fail to delete package",
+      "invalid-input": {
+        "prid": "Please fill in package ID",
+        "prname": "Please fill in package name"
+      },
+      "fail-to-load-decentralize-info": "Fail to load decentralize info",
+      "save-decentralize-success": "Save decentralization successfully",
+      "save-decentralize-fail": "Fail to save decentralization",
+      "sure-delete-package": "Are you sure to delete this package?"
+    },
+    "register-package-group-or-acc": {
+      "assign-service-package-to-customer": "Assign service package to customer",
+      "package-name": "Package name",
+      "assign-type": "Assign type",
+      "cust-acc-group": "Customer/account group",
+      "effective-date": "Effective date",
+      "expiration-date": "Expiration date",
+      "assign": "Assign",
+      "manage-assign-groups": "Manage assign groups",
+      "group-cust-acc-name": "Group/customer account name",
+      "del-assign": "Del assign",
+      "fail-to-load-manage-assign-groups-list": "Fail to load manage assign groups list",
+      "invalid-selected": {
+        "currentfoProduct": "Invalid package",
+        "currentAssignType": "Invalid assign type",
+        "currentFoUser": "Invalid customer/account group"
+      },
+      "assign-service-package-to-customer-success": "Assign service package to customer successfully",
+      "assign-service-package-to-customer-fail": "Fail to assign service package to customer",
+      "remove-assign-success": "Unassign service package to customer successfully",
+      "remove-assign-fail": "Fail to unassign service package to customer",
+      "sure-delete-assign": "Are you sure to unassign service package to customer?"
+    }
+  }
+}

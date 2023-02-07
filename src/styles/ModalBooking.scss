@@ -1,0 +1,157 @@
+@import "./sass/variables";
+
+.modal-content {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.1);
+
+  .modal-header {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    align-items: center;
+
+    &.top {
+      height: 100% !important;
+    }
+
+    .title {
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 0;
+      padding: 0.8rem 0.4rem;
+      h2 {
+        font-size: $base-size + 0.8rem;
+        font-weight: 800;
+        margin-bottom: 0;
+        color: $color-blue-dark;
+      }
+
+      span {
+        font-size: $base-size - 0.3rem;
+        color: $main-color-text;
+        font-weight: 400;
+      }
+    }
+
+    .icon-close {
+      align-self: flex-start;
+      padding: 0.8rem 0.4rem;
+      font-size: $base-size + 0.4rem;
+      opacity: 0.8;
+      transition: $transition;
+
+      &:hover {
+        opacity: 1;
+        cursor: pointer;
+      }
+
+      svg {
+        width: 2.2rem;
+        height: 2.2rem;
+      }
+    }
+  }
+
+  .modal-body {
+    .booking-info {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      padding: 0.4rem 0 2rem;
+
+      .booking-left {
+        &-image {
+          width: 12rem;
+          height: 12rem;
+          border-radius: 50%;
+          background-repeat: no-repeat;
+          background-size: cover;
+          background-position: center;
+
+          &.package {
+            background-size: contain;
+            border: 1px solid $grey-5;
+          }
+        }
+      }
+
+      .booking-right {
+        &-name {
+          font-weight: 700;
+          font-size: $base-size + 0.4rem;
+          color: $color-blue-dark;
+        }
+
+        &-book {
+          display: flex;
+          flex-direction: column;
+          gap: 0.2rem;
+          .hour,
+          .date,
+          .price {
+            strong {
+              font-size: $base-size + 0.1rem;
+              font-weight: 700;
+              color: $color-blue-dark;
+            }
+          }
+        }
+      }
+    }
+
+    .form-user {
+      .error-input,
+      .form-label,
+      .form-control,
+      .form-select {
+        font-size: $base-size + 0.2rem;
+      }
+
+      .error-input {
+        font-weight: 600;
+        color: $color-red;
+        margin: 0rem 0 1rem;
+      }
+
+      .form-label {
+        font-weight: 500;
+      }
+    }
+
+    .note-container {
+      margin: 0 0 0.6rem;
+      padding: 1.2rem 1rem;
+      border-radius: 0.4rem;
+      background-color: $color-blue-light;
+
+      .note-title {
+        font-weight: 700;
+      }
+
+      .note-content {
+        li {
+          font-size: $base-size + 0.2rem;
+        }
+
+        ul {
+          list-style-type: initial;
+          padding: 1rem 2rem;
+        }
+      }
+    }
+  }
+
+  .modal-footer-actions {
+    .btn {
+      padding: 0.4rem 1.6rem;
+      height: 100%;
+      font-size: $base-size + 0.2rem;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 0.8rem;
+    }
+  }
+}

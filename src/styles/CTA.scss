@@ -1,0 +1,65 @@
+@import "./sass/variables";
+
+.cta {
+  padding: 4rem 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+
+  .cta-img {
+    flex: 1;
+    width: 100%;
+    background-image: url(https://bookingcare.vn/assets/anh/bookingcare-app-2020.png);
+    background-repeat: no-repeat;
+    background-size: 20rem auto;
+    background-position-x: right;
+  }
+
+  .cta-right {
+    padding: 4rem 0;
+    flex: 1;
+
+    .title {
+      font-size: $base-size + 1rem;
+      margin-bottom: 1.5rem;
+      line-height: 3.6rem;
+    }
+
+    .features {
+      .feature {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 0.5rem;
+        font-size: $base-size + 0.2rem;
+        font-weight: 300;
+
+        svg {
+          font-size: $base-size + 1rem;
+          color: $color-hover;
+        }
+      }
+    }
+
+    .download {
+      display: flex;
+      margin-top: 1.5rem;
+      margin-bottom: 0.8rem;
+
+      a {
+        img {
+          width: 13.5rem;
+          height: 4rem;
+        }
+      }
+    }
+
+    .open-link {
+      display: block;
+      margin-top: 1.6rem;
+      color: $color-blue;
+      font-style: italic;
+      font-weight: 400;
+    }
+  }
+}

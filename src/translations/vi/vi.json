@@ -1,0 +1,300 @@
+{
+  "header": {
+    "nav-link-title": "Chuyên khoa, Cơ sở y tế, Bác sĩ, Gói khám",
+    "nav-link-subtitle": "Tìm bác sĩ theo chuyên khoa, Chọn bệnh viện phòng khám, Chọn bác sĩ giỏi, Khám sức khỏe tổng quát",
+    "support": "Hỗ trợ"
+  },
+
+  "banner": {
+    "medical-background": "NỀN TẢNG Y TẾ",
+    "health-care": "CHĂM SÓC SỨC KHỎE TOÀN DIỆN",
+    "reason-check": "Tìm lý do khám",
+    "services-name": "Khám chuyên khoa, Khám từ xa, Khám tổng quát, Xét nghiệm y học, Sức khỏe tinh thần, Khám  nha khoa, Gói  phẫu thuật, Sản phẩm  y tế, Sức khỏe  doanh nghiệp"
+  },
+
+  "footer": {
+    "company-name": "Công ty Cổ phần Công nghệ BookingCare",
+    "business-registration-number": "ĐKKD số: 0106790291. Sở KHĐT Hà Nội cấp ngày 16/03/2015",
+    "list": "Liên hệ hợp tác, Gói chuyển đổi số doanh nghiệp, Tuyển dụng, Câu hỏi thường gặp, Điều khoản sử dụng, Chính sách Bảo mật, Quy trình hỗ trợ giải quyết khiếu nại, Quy chế hoạt động",
+    "headquarter-hanoi": "Trụ sở tại Hà Nội",
+    "office-hcm": "Văn phòng tại TP Hồ Chí Minh",
+    "customer-support": "Hỗ trợ khách hàng",
+    "download": "Tải ứng dụng BookingCare cho điện thoại hoặc máy tính bảng"
+  },
+
+  "detail-doctor": {
+    "exam-schedule": "Lịch khám",
+    "exam-schedule-video": "Lịch tư vấn qua video",
+    "no-schedule": "Hiện ngày được chọn chưa có lịch khám bệnh. Xin hãy chọn ngày khác hoặc quay lại sau, chân thành cảm ơn!",
+    "fee": "Chọn khung giờ và đặt (Phí đặt lịch 0<sup>đ</sup>)",
+    "address-exam": "Địa chỉ khám bệnh",
+    "price": "Giá khám",
+    "price-note": "Được ưu tiên khám trước khi đặt khám qua BookingCare. Giá khám cho người nước ngoài là",
+    "payment-method": "Hình thức thanh toán",
+    "insurance": "Loại bảo hiểm áp dụng",
+    "state-insurance": "Bảo hiểm y tế nhà nước",
+    "direct-insurance": "Bảo hiểm bảo lãnh trực tiếp",
+    "not-apply": "Không áp dụng"
+  },
+
+  "modal-booking": {
+    "header": "THÔNG TIN ĐẶT LỊCH KHÁM BỆNH",
+    "header-note": "(QUÝ KHÁCH VUI LÒNG ĐIỀN ĐẦY ĐỦ THÔNG TIN ĐỂ TIẾT KIỆM THỜI GIAN LÀM THỦ TỤC KHÁM)",
+    "time-frame": "Khung giờ ",
+    "date": "Ngày",
+    "price": "Giá khám",
+    "firstname": "Tên",
+    "lastname": "Họ",
+    "phone": "Số điện thoại",
+    "gender": "Giới tính",
+    "birthday": "Ngày sinh",
+    "address": "Địa chỉ",
+    "reason": "Lý do khám",
+    "note": "LƯU Ý",
+    "note-first": "Thông tin anh/chị cung cấp sẽ được sử dụng làm hồ sơ khám bệnh, khi điền thông tin anh/chị vui lòng:",
+    "note-first-sub-1": "Ghi rõ họ và tên, viết hoa những chữ cái đầu tiên, ví dụ: <strong>Trần Văn Phú</strong>",
+    "note-first-sub-3": "Điền đầy đủ, đúng và vui lòng kiểm tra lại thông tin trước khi ấn \"Xác nhận\"",
+    "note-second": "Anh/chị vui lòng tuân thủ quy định phòng chống dịch (đeo khẩu trang, khử khuẩn, khai báo dịch tễ) khi đến khám.",
+    "note-third": "Bằng việc xác nhận đặt khám, anh/chị đã hoàn toàn đồng ý với <a href=\"#\">Điều khoản sử dụng</a> dịch vụ của chúng tôi.",
+    "button-close": "Đóng",
+    "button-confirm": "Xác nhận đặt khám"
+  },
+
+  "system-welcome": "CHÀO MỪNG ĐẾN VỚI TRUNG TÂM QUẢN LÝ",
+  "menu-system": {
+    "user": "Người dùng",
+    "doctor-management": "Quản lý bác sĩ",
+    "schedule-management": "Quản lý kế hoạch khám bệnh",
+    "patient-booking-manage": "Quản lý người dùng đặt lịch khám bệnh",
+
+    "clinic": "Phòng khám",
+    "clinic-management": "Quản lý phòng khám",
+    "clinic-add-specialty": "Thêm chuyên khoa cho phòng khám",
+
+    "specialty": "Chuyên khoa",
+    "specialty-management": "Quản lý chuyên khoa",
+
+    "handbook": "Cẩm nang",
+    "handbook-management": "Quản lý cẩm nang",
+
+    "package": "Gói khám",
+    "package-management": "Quản lý gói khám",
+    "package-schedule": "Khung giờ khám bệnh",
+
+    "welcome": "Xin chào 🎉 "
+  },
+
+  "doctor-manage": {
+    "title": "THÊM THÔNG TIN BÁC SĨ",
+    "choose-doctor": "Bác sĩ",
+    "placeholder-doctor": "Chọn bác sĩ",
+    "choose-price": "Giá khám bệnh",
+    "placeholder-price": "Chọn giá khám bệnh",
+    "outstanding-doctor": "Phổ biến tuần vừa qua",
+    "choose-method-payment": "Phương thức thanh toán",
+    "placeholder-payment": "Chọn phương thức thanh toán",
+    "choose-province": "Tỉnh (Thành phố)",
+    "placeholder-province": "Chọn tỉnh thành",
+    "choose-specialty": "Chuyên khoa",
+    "placeholder-specialty": "Chọn chuyên khoa",
+    "choose-clinic": "Bệnh viện - Phòng khám",
+    "placeholder-clinic": "Chọn bệnh viện hoặc phòng khám",
+    "clinic-name": "Tên phòng khám",
+    "clinic-address": "Địa chỉ phòng khám",
+    "note": "Ghi chú",
+    "summary": "Thông tin tóm tắt",
+    "more-info": "Thông tin thêm về bác sĩ",
+    "button-save": "Lưu thông tin",
+    "button-update": "Lưu thay đổi"
+  },
+
+  "clinic-manage": {
+    "title": "QUẢN LÝ THÔNG TIN BỆNH VIỆN - PHÒNG KHÁM",
+    "choose-hospital": "Bệnh viện - Phòng khám",
+    "placeholder-hospital": "Chọn bệnh viện - phòng khám",
+    "address": "Địa chỉ",
+    "popular": "Phổ biến tuần vừa qua",
+    "specialtyPage": "Cần trang chuyên khoa",
+    "image": "Ảnh bệnh viện - phòng khám",
+    "markdown-benefit": "Lợi ích khi đặt qua bookingcare",
+    "markdown-booking": "Đặt lịch khám",
+    "markdown-intro": "Giới thiệu",
+    "markdown-strengths": "Thế mạnh chuyên môn",
+    "markdown-equipment": "Trang thiết bị",
+    "markdown-location": "Vị trí",
+    "markdown-process": "Quá trình khám",
+    "markdown-price": "Gía khám bệnh",
+    "button-upload": "Tải ảnh",
+    "button-save": "Lưu thông tin",
+    "button-update": "Lưu thay đổi"
+  },
+
+  "schedule-manage": {
+    "title": "QUẢN LÝ KẾ HOẠCH KHÁM BỆNH CỦA BÁC SĨ",
+    "choose-doctor": "Chọn bác sĩ",
+    "choose-package": "Chọn gói khám bệnh",
+    "choose-date": "Chọn ngày",
+    "time-frame": "Các khung giờ khám bệnh",
+    "button-schedule": "Lưu lịch khám"
+  },
+
+  "specialty-manage": {
+    "title": "Quản lý thông tin chuyên khoa khám bệnh",
+    "choose-specialty": "Chọn chuyên khoa",
+    "placeholder": "...",
+    "image-specialty": "Ảnh chuyên khoa",
+    "popular": "Phổ biến tuần vừa qua",
+    "introduction-specialty": "Giới thiệu về chuyên khoa",
+    "button-upload": "Tải ảnh",
+    "button-save": "Lưu thông tin",
+    "button-update": "Lưu thay đổi"
+  },
+
+  "add-specialty-clinic": {
+    "main-title": "THÊM CHUYÊN KHOA CHO BỆNH VIỆN - PHÒNG KHÁM",
+    "add-specialty": "Thêm chuyên khoa",
+    "placeholder-specialty": "Chọn chuyên khoa",
+    "clinic": "Bệnh viện - Phòng khám",
+    "placeholder-clinic": "Chọn bệnh viện - phòng khám",
+    "address": "Địa chỉ chuyên khoa",
+    "image": "Ảnh chuyên khoa",
+    "markdown-booking": "Đặt lịch khám",
+    "markdown-introduction": "Giới thiệu",
+    "markdown-examAndTreatment": "Khám và điều trị",
+    "markdown-strengths": "Thế mạnh cạnh tranh",
+    "button-upload": "Tải ảnh",
+    "button-save": "Lưu thông tin",
+    "button-update": "Lưu thay đổi"
+  },
+
+  "clinic-specialties": {
+    "title": "DANH SÁCH CÁC CHUYÊN KHOA"
+  },
+
+  "patients-booking-manage": {
+    "main-title": "QUẢN LÝ NGƯỜI DÙNG ĐẶT LỊCH KHÁM BỆNH",
+    "choose-date": "Chọn ngày",
+    "list-patients": "Danh sách bệnh nhân đặt lịch khám bệnh",
+    "table-time": "Thời gian",
+    "table-name": "Tên",
+    "table-address": "Địa chỉ",
+    "table-gender": "Giới tính",
+    "table-reason": "Lý do khám bệnh",
+    "button-confirm": "Xác nhận",
+
+    "modal-title": "XÁC NHẬN BỆNH NHÂN ĐÃ KHÁM",
+    "title-report": "Báo cáo sau khám",
+    "title-invoice": "Hóa đơn thanh toán",
+    "patient-name": "Tên bệnh nhân",
+    "date-exam": "Ngày khám bệnh",
+    "doctor-name": "Tên bác sĩ",
+    "exam-result": "Kết luận sau khám",
+    "service-used": "Dịch vụ đã sử dụng",
+    "invoice-number": "Hóa đơn số",
+    "total-fee": "Tổng phí phải trả",
+    "button-send": "Gửi"
+  },
+
+  "button": {
+    "booking-examination": "Đặt lịch khám"
+  },
+
+  "user-redux": {
+    "create": "THÊM NGƯỜI DÙNG MỚI",
+    "update": "SỬA THÔNG TIN NGƯỜI DÙNG",
+    "password": "Mật khẩu",
+    "first-name": "Tên",
+    "last-name": "Họ",
+    "address": "Địa chỉ",
+    "phone": "Số điện thoại",
+    "gender": "Giới tính",
+    "position": "Chức danh",
+    "role": "Vai trò",
+    "image": "Ảnh đại diện",
+    "upload": "Tải ảnh",
+    "button-create": "Lưu",
+    "button-update": "Lưu thay đổi",
+
+    "list-users": "DANH SÁCH NGƯỜI DÙNG",
+    "actions": "Chức năng"
+  },
+
+  "system": {
+    "user-manage": {
+      "fail-to-load-fouser": "Không thể tải về danh sách người dùng",
+      "user-id": "Mã người sử dụng",
+      "usertype": "Loại người dùng",
+      "username": "Tên người dùng",
+      "fullname": "Tên đầy đủ",
+      "mobile": "Số điện thoại",
+      "email": "Email",
+      "status": "Trạng thái",
+      "add-user": "Thêm người dùng",
+      "edit-user": "Sửa thông tin người dùng",
+      "password": "Mật khẩu",
+      "retype-password": "Nhập lại mật khẩu",
+      "add-user-success": "Thêm người dùng thành công",
+      "edit-user-success": "Thay đổi thông tin người dùng thành công",
+      "add-user-fail": "Thêm người dùng thất bại",
+      "edit-user-fail": "Thay đổi thông tin người dùng thất bại",
+      "del-user-success": "Xóa người dùng thành công",
+      "del-user-fail": "Xóa người dùng thất bại",
+      "invalid-input": {
+        "username": "Quý khách vui lòng nhập tên người dùng",
+        "fullname": "Quý khách vui lòng nhập tên đầy đủ",
+        "password": "Quý khách vui lòng nhập mật khẩu"
+      },
+      "sure-delete-user": "Bạn có chắc chắn muốn xóa người dùng này?"
+    },
+    "product-manage": {
+      "fail-to-load-foprtype": "Không thể tải về danh sách gói",
+      "prid": "Mã gói",
+      "prname": "Tên gói",
+      "prtype": "Loại gói",
+      "status": "Trạng thái",
+      "description": "Diễn giải",
+      "effective-date": "Ngày hiệu lực",
+      "expiration-date": "Ngày hết hiệu lực",
+      "add-product": "Thêm gói",
+      "add-product-success": "Thêm gói thành công",
+      "add-product-fail": "Thêm gói thất bại",
+      "edit-product": "Sửa thông tin gói",
+      "package-decentralize": "Phân quyền chức năng",
+      "edit-product-success": "Thay đổi thông tin gói thành công",
+      "edit-product-fail": "Thay đổi thông tin gói thất bại",
+      "delete-product-success": "Xóa gói thành công",
+      "delete-product-fail": "Xóa gói thất bại",
+      "invalid-input": {
+        "prid": "Quý khách vui lòng nhập mã gói",
+        "prname": "Quý khách vui lòng nhập tên gói"
+      },
+      "fail-to-load-decentralize-info": "Không thể tải về thông tin phân quyền chức năng",
+      "save-decentralize-success": "Lưu phân quyền chức năng thành công",
+      "save-decentralize-fail": "Lưu phân quyền chức năng thất bại",
+      "sure-delete-package": "Bạn có chắc chắn muốn xóa gói này?"
+    },
+    "register-package-group-or-acc": {
+      "assign-service-package-to-customer": "Gán gói dịch vụ cho khách hàng",
+      "package-name": "Tên gói",
+      "assign-type": "Loại gán",
+      "cust-acc-group": "Nhóm KH/Tài khoản",
+      "effective-date": "Ngày hiệu lực",
+      "expiration-date": "Ngày hết hiệu lực",
+      "assign": "Gán",
+      "manage-assign-groups": "Quản lý gán nhóm",
+      "group-cust-acc-name": "Tên nhóm/tài khoản KH",
+      "del-assign": "Xóa gán",
+      "fail-to-load-manage-assign-groups-list": "Không thể tải về thông tin quản lý gán nhóm",
+      "invalid-selected": {
+        "currentfoProduct": "Gói đang chọn không hợp lệ",
+        "currentAssignType": "Loại gán không hợp lệ",
+        "currentFoUser": "Nhóm KH/Tài khoản không hợp lệ"
+      },
+      "assign-service-package-to-customer-success": "Gán gói dịch vụ cho khách hàng thành công",
+      "assign-service-package-to-customer-fail": "Gán gói dịch vụ cho khách hàng thất bại",
+      "remove-assign-success": "Bỏ gán gói dịch vụ cho khách hàng thành công",
+      "remove-assign-fail": "Bỏ gán gói dịch vụ cho khách hàng thất bại",
+      "sure-delete-assign": "Bạn có chắc chắn muốn bỏ gán gói dịch vụ cho khách hàng?"
+    }
+  }
+}

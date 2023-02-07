@@ -1,0 +1,56 @@
+@import "../../styles/sass/base";
+@import "../../styles/sass/mixin";
+
+.clinic-manage-wrapper {
+  margin-bottom: 4rem;
+
+  .clinic-manage {
+    &__title {
+      font-size: $base-size + 1.4rem;
+      font-weight: 800;
+      color: $color-blue-dark;
+    }
+
+    .clinic-inputs,
+    .clinic-markdowns {
+      &__title {
+        font-weight: 700;
+        margin: 2rem 0;
+      }
+
+      h4 {
+        font-size: $base-size + 0.3rem;
+        color: $color-blue-dark-2;
+        margin-bottom: 0.6rem;
+      }
+    }
+
+    .clinic-markdowns__title {
+      margin-top: 5rem;
+    }
+
+    .clinic-inputs {
+      input {
+        font-size: $base-size;
+        padding: 0.8rem 1rem;
+      }
+
+      @include image-preview-container;
+      .image-label,
+      .logo-label {
+        font-size: $base-size + 0.3rem;
+        color: $color-blue-dark-2;
+        margin-bottom: 0.6rem;
+      }
+    }
+
+    .clinic-button {
+      button {
+        padding: 0.8rem 3.2rem;
+        font-size: $base-size;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+    }
+  }
+}

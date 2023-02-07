@@ -1,0 +1,118 @@
+@import "./sass/variables";
+
+.header-container {
+  padding: 1.6rem 0;
+  background-color: #fff;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+
+  &.fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+  }
+
+  .header-content {
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .header-left {
+      display: flex;
+      align-items: center;
+
+      .header-menu {
+        padding: 1rem 0.8rem 1rem 0;
+        svg {
+          display: block;
+          font-size: $base-size + 1.2rem;
+          color: $grey-1;
+          cursor: pointer;
+        }
+      }
+
+      .header-logo {
+        background-image: url(../assets/images/bookingcare-2020.svg);
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
+        width: 16rem;
+        height: 4rem;
+        cursor: pointer;
+      }
+    }
+
+    .header-middle {
+      .nav-list {
+        display: flex;
+        list-style-type: none;
+        padding-left: 0;
+        margin: 0;
+        gap: 3rem;
+      }
+
+      .nav-link {
+        display: flex;
+
+        font-size: $base-size - 0.2rem;
+        flex-direction: column;
+        color: $main-color-text;
+
+        b {
+          font-weight: 700;
+          text-align: center;
+          font-size: $base-size + 0.1rem;
+          transition: $transition;
+        }
+
+        &:hover b {
+          color: $color-hover;
+        }
+      }
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+
+      a.login {
+        font-weight: 800;
+        font-size: $base-size + 0.1rem;
+        color: $main-color-text;
+        border: none;
+        background-color: transparent;
+        text-decoration: none;
+        cursor: pointer;
+
+        span {
+          color: $color-hover;
+          font-family: $font-main;
+        }
+      }
+
+      a.support {
+        text-decoration: none;
+
+        span {
+          display: flex;
+          align-items: center;
+          opacity: 0.8;
+          transition: $transition;
+
+          &:hover {
+            opacity: 1;
+          }
+
+          svg {
+            font-size: $base-size + 0.8rem;
+            color: $color-hover;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+@import "./sass/variables";
+
+.role-booking {
+  .role-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.8rem;
+    h2 {
+      padding: 2rem 0 1rem;
+      font-weight: 700;
+    }
+    svg {
+      width: 1.6rem;
+      height: 1.6rem;
+      margin-top: 0.6rem;
+      cursor: pointer;
+    }
+  }
+
+  .role-content {
+    max-height: 0;
+    visibility: hidden;
+    transition: $transition;
+    overflow: hidden;
+    margin-bottom: 1.2rem;
+    &.show {
+      visibility: visible;
+      max-height: 100rem;
+    }
+
+    .role-first,
+    .role-second {
+      h4 {
+        font-size: $base-size + 0.2rem;
+        font-weight: 700;
+      }
+      ul {
+        list-style: disc;
+        li {
+          margin-left: 2.4rem;
+          font-weight: 400;
+          font-size: $base-size + 0.1rem;
+        }
+      }
+    }
+
+    .role-sub-second {
+      span {
+        font-weight: 600;
+        font-size: $base-size + 0.1rem;
+      }
+    }
+  }
+}

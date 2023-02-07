@@ -1,0 +1,58 @@
+@import "./sass/variables";
+
+.doctor,
+.package {
+  background-color: #fff;
+  box-shadow: 0 1px 6px rgba(32, 33, 36, 0.3);
+  border-radius: 0.5rem;
+  padding: 2rem 1rem 0 2rem;
+  padding-bottom: -1rem;
+
+  display: flex;
+  gap: 1rem;
+
+  .doctor-left,
+  .package-left {
+    flex-basis: 52%;
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 2px;
+      height: 60%;
+      background-color: $grey-5;
+    }
+
+    .doctor-location,
+    .package-location {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 3.4rem;
+
+      svg {
+        width: 1.6rem;
+        height: 1.6rem;
+        margin-bottom: 1px;
+      }
+
+      span {
+        font-size: $base-size;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .doctor-right,
+  .package-right {
+    flex-basis: 48%;
+    padding-left: 0.5rem;
+  }
+}

@@ -1,0 +1,27 @@
+@import "./sass/variables";
+
+.BC-intro {
+  margin: 2rem 0;
+  padding: 1.6rem 1.6rem 1.6rem 2.2rem;
+  color: $color-green-2;
+  border: 1px solid $color-green-light-2;
+  background-color: $color-green-light;
+  border-radius: 0.5rem;
+
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+
+  svg {
+    align-self: flex-start;
+    margin-top: 0.5rem;
+    width: 2.2rem;
+    height: 2.2rem;
+    color: $color-orange;
+  }
+
+  span {
+    font-size: $base-size + 0.2rem;
+    font-weight: 300;
+  }
+}

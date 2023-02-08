@@ -14,9 +14,7 @@ import "../styles/CustomForm.scss";
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
-  const { email, password, isLoggedIn, userInfo } = useSelector(
-    (store) => store.user
-  );
+  const { email, password, isLoggedIn, userInfo } = useSelector((store) => store.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -44,8 +42,13 @@ const Login = () => {
   useEffect(() => {
     if (localStorage.getItem("token")) {
       setTimeout(() => {
-        navigate("/system");
-        dispatch(handleChangePathSystem("/system"));
+        if (userInfo.roleId === "R1") {
+          navigate("/admin-system");
+          dispatch(handleChangePathSystem("/admin-system"));
+        } else {
+          navigate("/doctor-system");
+          dispatch(handleChangePathSystem("/doctor-system"));
+        }
       }, TIMEOUT_NAVIGATE_SYSTEM);
     }
   }, [isLoggedIn, navigate]);
@@ -117,9 +120,7 @@ const Login = () => {
                     }
                     return isValidEmail(value)
                       ? Promise.resolve()
-                      : Promise.reject(
-                          "Email không hợp lệ. Vui lòng kiểm tra lại"
-                        );
+                      : Promise.reject("Email không hợp lệ. Vui lòng kiểm tra lại");
                   },
                 },
               ]}
@@ -191,9 +192,7 @@ const Login = () => {
               <Link to="/login/forgot-password">Quên mật khẩu</Link>
             </div>
 
-            <button className="form-button button button-main">
-              Đăng nhập
-            </button>
+            <button className="form-button button button-main">Đăng nhập</button>
           </Form>
 
           <div className="no-account">

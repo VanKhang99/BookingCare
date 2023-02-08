@@ -12,8 +12,23 @@
 
     .title {
       h4 {
-        font-size: $base-size + 0.6rem;
+        font-size: $base-size + 0.4rem;
         font-weight: 700;
+      }
+    }
+
+    .schedule-select {
+      .doctor-name {
+        h4 {
+          font-size: $base-size + 0.4rem;
+          font-weight: 700;
+          color: $color-blue-dark-2;
+
+          span {
+            font-weight: 400;
+            color: $main-color-text;
+          }
+        }
       }
     }
 

@@ -1,7 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../axios";
 
-const initialState = {};
+const initialState = {
+  isLoadingConfirmExamComplete: false,
+};
 
 export const createBooking = createAsyncThunk("booking/createBooking", async (data, thunkAPI) => {
   try {
@@ -42,7 +44,6 @@ export const getAllPatientsForDoctor = createAsyncThunk(
 export const confirmExaminationComplete = createAsyncThunk(
   "booking/confirmExaminationComplete",
   async (data, thunkAPI) => {
-    console.log(data);
     try {
       const res = await axios.patch(
         `/api/bookings/confirm-exam-complete/${data.token}&${data.patientId}`,
@@ -59,7 +60,18 @@ export const bookingSlice = createSlice({
   name: "booking",
   initialState,
   reducers: {},
-  extraReducers: (builder) => {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(confirmExaminationComplete.pending, (state) => {
+        state.isLoadingConfirmExamComplete = true;
+      })
+      .addCase(confirmExaminationComplete.fulfilled, (state) => {
+        state.isLoadingConfirmExamComplete = false;
+      })
+      .addCase(confirmExaminationComplete.rejected, (state) => {
+        state.isLoadingConfirmExamComplete = false;
+      });
+  },
 });
 
 export const {} = bookingSlice.actions;

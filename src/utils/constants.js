@@ -1,5 +1,6 @@
 export const path = {
   HOME: "/",
+  ADMIN: "admin",
   REMOTE: "remote",
   SPECIALTY: "specialty",
   CLINIC: "clinics",

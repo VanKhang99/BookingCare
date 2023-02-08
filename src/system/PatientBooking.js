@@ -5,6 +5,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import { v4 as uuidv4 } from "uuid";
+import { RotatingLines } from "react-loader-spinner";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,6 +34,7 @@ const initialState = {
   token: "",
   timeFrame: "",
   patientId: null,
+  // remote: 0,
 };
 
 const PatientBooking = () => {
@@ -40,8 +42,8 @@ const PatientBooking = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
+  const { isLoadingConfirmExamComplete } = useSelector((store) => store.booking);
   const { id: doctorId } = JSON.parse(localStorage.getItem("userInfo"));
-  // const patients = useFetchDataBaseId(doctorId, "patient", getAllPatientsForDoctor);
 
   const disabledDate = useCallback((current) => {
     // Can not select days before today
@@ -90,11 +92,14 @@ const PatientBooking = () => {
       examinationResults: "",
       invoiceNumber: uuidv4(),
       serviceUsed: "",
-      totalFee: +patientConfirmed.bookingPrice.valueVi + 150000,
+      totalFee: patientConfirmed.remoteDoctor.remote
+        ? +patientConfirmed.bookingPrice.valueVi
+        : +patientConfirmed.bookingPrice.valueVi + 150000,
       token: patientConfirmed.token,
       timeFrame:
         language === "vi" ? patientConfirmed.timeFrameData.valueVi : patientConfirmed.timeFrameData.valueEn,
       patientId,
+      // remote: patientConfirmed.remoteDoctor.remote,
     };
 
     return setState({ ...state, isModalOpen: !state.isModalOpen, patientConfirmed, ...dataSendToServer });
@@ -121,10 +126,17 @@ const PatientBooking = () => {
         token: state.token,
         timeFrame: state.timeFrame,
         patientId: state.patientId,
+        // remote: state.remote,
       };
 
       const result = await dispatch(confirmExaminationComplete(dataSendToServer));
-      console.log(result);
+
+      if (result?.payload?.status === "success") {
+        setState({ ...state, isModalOpen: !state.isModalOpen });
+        return toast.success(
+          language === "vi" ? "Gửi kết quả và hóa đơn thành công" : "Send result and invoice successfully!"
+        );
+      }
 
       console.log(dataSendToServer);
     } catch (error) {
@@ -140,184 +152,199 @@ const PatientBooking = () => {
   }, [state.dateBooked]);
 
   return (
-    <div className="patient-booking container">
-      <div className="patient-booking__title mt-4">{t("patients-booking-manage.main-title")}</div>
+    <>
+      <div className="patient-booking container">
+        <div className="patient-booking__title mt-4">{t("patients-booking-manage.main-title")}</div>
 
-      <div className="patient-booking-content">
-        <div className="patient-booking-date col-4 mt-5">
-          <h3 className="label">{t("patients-booking-manage.choose-date")}</h3>
-          <div className="mt-3">
-            <Space direction="vertical" size={12} style={{ width: "100%" }}>
-              <DatePicker
-                size={state.sizeDatePicker}
-                format={language === "vi" ? "DD/MM/YYYY" : "MM/DD/YYYY"}
-                disabledDate={disabledDate}
-                onChange={handleSelectedDate}
-                style={{
-                  width: "100%",
-                  padding: "7px 11px",
-                  borderRadius: "4px",
-                }}
-              />
-            </Space>
+        <div className="patient-booking-content">
+          <div className="patient-booking-date col-4 mt-5">
+            <h3 className="label">{t("patients-booking-manage.choose-date")}</h3>
+            <div className="mt-3">
+              <Space direction="vertical" size={12} style={{ width: "100%" }}>
+                <DatePicker
+                  size={state.sizeDatePicker}
+                  format={language === "vi" ? "DD/MM/YYYY" : "MM/DD/YYYY"}
+                  disabledDate={disabledDate}
+                  onChange={handleSelectedDate}
+                  style={{
+                    width: "100%",
+                    padding: "7px 11px",
+                    borderRadius: "4px",
+                  }}
+                />
+              </Space>
+            </div>
+          </div>
+
+          <div className="patient-booking-list mt-5">
+            <h3 className="label">{t("patients-booking-manage.list-patients")}</h3>
+
+            <div className="table-container mt-4 px-0">
+              {state.patients?.length > 0 && (
+                <table className="table table-hover">
+                  <thead className="table-primary">
+                    <tr>
+                      <th scope="col">No.</th>
+                      <th scope="col">{t("patients-booking-manage.table-time")}</th>
+                      <th scope="col">{t("patients-booking-manage.table-name")}n</th>
+                      <th scope="col">{t("patients-booking-manage.table-time")}</th>
+                      <th scope="col">{t("patients-booking-manage.table-gender")}</th>
+                      <th scope="col">{t("patients-booking-manage.table-reason")}</th>
+                      <th scope="col">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {state.patients.map((patient, index) => {
+                      const { timeFrameData, patientData, reason } = patient;
+                      return (
+                        <tr key={patient.id}>
+                          <th scope="row">{index + 1}</th>
+                          <td>{language === "vi" ? timeFrameData.valueVi : timeFrameData.valueEn}</td>
+                          <td>
+                            {language === "vi"
+                              ? `${patientData.lastName} ${patientData.firstName}`
+                              : `${patientData.firstName} ${patientData.lastName}`}
+                          </td>
+                          <td>{patientData.address}</td>
+                          <td>
+                            {language === "vi"
+                              ? patientData.genderData.valueVi
+                              : patientData.genderData.valueEn}
+                          </td>
+                          <td>{reason}</td>
+                          <td>
+                            <button
+                              type="button"
+                              className="table-button table-button-confirm me-4"
+                              onClick={() => handleModal(patient.patientId)}
+                            >
+                              {t("patients-booking-manage.button-confirm")}
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="patient-booking-list mt-5">
-          <h3 className="label">{t("patients-booking-manage.list-patients")}</h3>
+        {!_.isEmpty(state.patientConfirmed) && (
+          <Modal
+            show={state.isModalOpen}
+            onHide={() => handleModal()}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+          >
+            <Modal.Header className="top">
+              <div className="title">{t("patients-booking-manage.modal-title")}</div>
+              <span className="icon-close" onClick={() => handleModal()}>
+                <IoClose />
+              </span>
+            </Modal.Header>
+            <Modal.Body>
+              <Form className="form-confirm">
+                <div className="exam-report">
+                  <h3 className="exam-report__title">{t("patients-booking-manage.title-report")}</h3>
 
-          <div className="table-container mt-4 px-0">
-            {state.patients?.length > 0 && (
-              <table className="table table-hover">
-                <thead className="table-primary">
-                  <tr>
-                    <th scope="col">No.</th>
-                    <th scope="col">{t("patients-booking-manage.table-time")}</th>
-                    <th scope="col">{t("patients-booking-manage.table-name")}n</th>
-                    <th scope="col">{t("patients-booking-manage.table-time")}</th>
-                    <th scope="col">{t("patients-booking-manage.table-gender")}</th>
-                    <th scope="col">{t("patients-booking-manage.table-reason")}</th>
-                    <th scope="col">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {state.patients.map((patient, index) => {
-                    const { timeFrameData, patientData, reason } = patient;
-                    return (
-                      <tr key={patient.id}>
-                        <th scope="row">{index + 1}</th>
-                        <td>{language === "vi" ? timeFrameData.valueVi : timeFrameData.valueEn}</td>
-                        <td>
-                          {language === "vi"
-                            ? `${patientData.lastName} ${patientData.firstName}`
-                            : `${patientData.firstName} ${patientData.lastName}`}
-                        </td>
-                        <td>{patientData.address}</td>
-                        <td>
-                          {language === "vi"
-                            ? patientData.genderData.valueVi
-                            : patientData.genderData.valueEn}
-                        </td>
-                        <td>{reason}</td>
-                        <td>
-                          <button
-                            type="button"
-                            className="table-button table-button-confirm me-4"
-                            onClick={() => handleModal(patient.patientId)}
-                          >
-                            {t("patients-booking-manage.button-confirm")}
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            )}
-          </div>
-        </div>
+                  <div className="exam-report__input">
+                    <p>
+                      {t("patients-booking-manage.patient-name")}: <span>{state.patientName}</span>
+                    </p>
+                  </div>
+
+                  <div className="exam-report__input">
+                    <p>
+                      {t("patients-booking-manage.date-exam")}:{" "}
+                      <span>{state.patientConfirmed.dateBooked}</span>
+                    </p>
+                  </div>
+
+                  <div className="exam-report__input">
+                    <p>
+                      {t("patients-booking-manage.doctor-name")}: <span>{state.doctorName}</span>
+                    </p>
+                  </div>
+
+                  <Form.Group className="mb-4 exam-report__input" controlId="formExaminationResults">
+                    <Form.Label>{t("patients-booking-manage.exam-result")}</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={state.examinationResults}
+                      as="textarea"
+                      rows="3"
+                      onChange={(e, id) => handleInputChange(e, "examinationResults")}
+                    />
+                  </Form.Group>
+                </div>
+
+                <div className="invoice">
+                  <h3 className="invoice__title">{t("patients-booking-manage.title-invoice")}</h3>
+
+                  <div className="invoice__input">
+                    <p>
+                      Email: <span>{state.email}</span>
+                    </p>
+                  </div>
+
+                  <div className="invoice__input">
+                    <p>
+                      {t("patients-booking-manage.invoice-number")}: <span>{state.invoiceNumber}</span>
+                    </p>
+                  </div>
+
+                  <div className="invoice__input">
+                    <p>
+                      {t("patients-booking-manage.patient-name")}: <span>{state.patientName}</span>
+                    </p>
+                  </div>
+
+                  <Form.Group className="invoice__input mb-4" controlId="formServiceUsed">
+                    <Form.Label>{t("patients-booking-manage.service-used")}</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={state.serviceUsed}
+                      as="textarea"
+                      rows="3"
+                      onChange={(e, id) => handleInputChange(e, "serviceUsed")}
+                    />
+                  </Form.Group>
+                </div>
+
+                <div className="total-fee mb-3">
+                  <h3>
+                    {t("patients-booking-manage.total-fee")}:{" "}
+                    <span>{`${formatterPrice("vi").format(state.totalFee)}`}</span>
+                  </h3>
+                </div>
+              </Form>
+            </Modal.Body>
+            <Modal.Footer className="footer">
+              <div className="footer-actions">
+                <Button variant="primary" onClick={handleConfirmExamComplete}>
+                  Send
+                </Button>
+              </div>
+            </Modal.Footer>
+          </Modal>
+        )}
       </div>
 
-      {!_.isEmpty(state.patientConfirmed) && (
-        <Modal
-          show={state.isModalOpen}
-          onHide={() => handleModal()}
-          size="lg"
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header className="top">
-            <div className="title">{t("patients-booking-manage.modal-title")}</div>
-            <span className="icon-close" onClick={() => handleModal()}>
-              <IoClose />
-            </span>
-          </Modal.Header>
-          <Modal.Body>
-            <Form className="form-confirm">
-              <div className="exam-report">
-                <h3 className="exam-report__title">{t("patients-booking-manage.title-report")}</h3>
-
-                <div className="exam-report__input">
-                  <p>
-                    {t("patients-booking-manage.patient-name")}: <span>{state.patientName}</span>
-                  </p>
-                </div>
-
-                <div className="exam-report__input">
-                  <p>
-                    {t("patients-booking-manage.date-exam")}: <span>{state.patientConfirmed.dateBooked}</span>
-                  </p>
-                </div>
-
-                <div className="exam-report__input">
-                  <p>
-                    {t("patients-booking-manage.doctor-name")}: <span>{state.doctorName}</span>
-                  </p>
-                </div>
-
-                <Form.Group className="mb-4 exam-report__input" controlId="formExaminationResults">
-                  <Form.Label>{t("patients-booking-manage.exam-result")}</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={state.examinationResults}
-                    as="textarea"
-                    rows="3"
-                    onChange={(e, id) => handleInputChange(e, "examinationResults")}
-                  />
-                </Form.Group>
-              </div>
-
-              <div className="invoice">
-                <h3 className="invoice__title">{t("patients-booking-manage.title-invoice")}</h3>
-
-                <div className="invoice__input">
-                  <p>
-                    Email: <span>{state.email}</span>
-                  </p>
-                </div>
-
-                <div className="invoice__input">
-                  <p>
-                    {t("patients-booking-manage.invoice-number")}: <span>{state.invoiceNumber}</span>
-                  </p>
-                </div>
-
-                <div className="invoice__input">
-                  <p>
-                    {t("patients-booking-manage.patient-name")}: <span>{state.patientName}</span>
-                  </p>
-                </div>
-
-                <Form.Group className="invoice__input mb-4" controlId="formServiceUsed">
-                  <Form.Label>{t("patients-booking-manage.service-used")}</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={state.serviceUsed}
-                    as="textarea"
-                    rows="3"
-                    onChange={(e, id) => handleInputChange(e, "serviceUsed")}
-                  />
-                </Form.Group>
-              </div>
-
-              <div className="total-fee mb-3">
-                <h3>
-                  {t("patients-booking-manage.total-fee")}:{" "}
-                  <span>{`${formatterPrice("vi").format(state.totalFee)}`}</span>
-                </h3>
-              </div>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer className="footer">
-            <div className="footer-actions">
-              <Button variant="primary" onClick={handleConfirmExamComplete}>
-                Send
-              </Button>
-            </div>
-          </Modal.Footer>
-        </Modal>
+      {isLoadingConfirmExamComplete && (
+        <div className="spinner">
+          <RotatingLines
+            strokeColor="#1a5296"
+            strokeWidth="5"
+            animationDuration="0.75"
+            width="90"
+            visible={true}
+          />
+        </div>
       )}
-    </div>
+    </>
   );
 };
 

@@ -16,16 +16,24 @@ const Introduce = ({ id, small, buttonSeeMore, packageData, packageClinicSpecial
     if (doctor.positionId === "P0") {
       return `${
         language === "vi"
-          ? `${doctor.roleData.valueVi} - ${doctor.lastName} ${doctor.firstName}`
-          : `${doctor.roleData.valueEn} - ${doctor.firstName} ${doctor.lastName}`
+          ? `${doctor.roleData.valueVi} - ${doctor.lastName} ${doctor.firstName} ${
+              remote ? "(Bác sĩ từ xa)" : ""
+            }`
+          : `${doctor.roleData.valueEn} - ${doctor.firstName} ${doctor.lastName} ${
+              remote ? "(Telemedicine)" : ""
+            }`
       }`;
     }
 
     return `${
       language === "vi"
-        ? `${doctor.positionData.valueVi} - ${doctor.roleData.valueVi} - ${doctor.lastName} ${doctor.firstName}`
+        ? `${doctor.positionData.valueVi} - ${doctor.roleData.valueVi} - ${doctor.lastName} ${
+            doctor.firstName
+          } ${remote ? "(Bác sĩ từ xa)" : ""} `
         : `
-    ${doctor.positionData.valueEn} - ${doctor.roleData.valueEn} - ${doctor.firstName} ${doctor.lastName}
+    ${doctor.positionData.valueEn} - ${doctor.roleData.valueEn} - ${doctor.firstName} ${doctor.lastName} ${
+            remote ? "(Telemedicine)" : ""
+          }
     `
     }`;
   };

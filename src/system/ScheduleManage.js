@@ -21,7 +21,7 @@ const initialState = {
   hoursList: [],
 };
 
-const ScheduleManage = ({ doctors, packages, scheduleOf }) => {
+const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorManage }) => {
   const [state, setState] = useState({ ...initialState });
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -77,12 +77,9 @@ const ScheduleManage = ({ doctors, packages, scheduleOf }) => {
 
   const handleSelectedHour = (hour) => {
     const hourCopy = { ...hour };
-    if (hourCopy.isSelected) {
-      hourCopy.isSelected = false;
-    } else {
-      hourCopy.isSelected = true;
-    }
-    const newHoursList = state.hoursList.map((time) => {
+    hourCopy.isSelected = !hourCopy.isSelected;
+
+    const newHoursList = [...state.hoursList].map((time) => {
       if (time.id === hourCopy.id) {
         time = { ...hourCopy };
       }
@@ -98,10 +95,12 @@ const ScheduleManage = ({ doctors, packages, scheduleOf }) => {
 
   const handleSaveSchedule = async () => {
     let result = [];
-    if (_.isEmpty(state.selectedPackage) && scheduleOf === "package") {
-      return toast.error("Package not yet chosen!");
-    } else if (_.isEmpty(state.selectedDoctor) && scheduleOf === "doctor") {
-      return toast.error("Doctor not yet chosen!");
+    if (!isDoctorManage) {
+      if (_.isEmpty(state.selectedPackage) && scheduleOf === "package") {
+        return toast.error("Package not yet chosen!");
+      } else if (_.isEmpty(state.selectedDoctor) && scheduleOf === "doctor") {
+        return toast.error("Doctor not yet chosen!");
+      }
     }
 
     if (!state.date) {
@@ -109,23 +108,29 @@ const ScheduleManage = ({ doctors, packages, scheduleOf }) => {
     }
 
     let timeSelected = state.hoursList.filter((hour) => hour.isSelected === true);
-
-    if (timeSelected?.length > 0) {
-      timeSelected = timeSelected.forEach((time) => {
-        const objectTime = {};
-        if (doctors) {
-          objectTime.doctorId = state.selectedDoctor.value;
-        } else {
-          objectTime.packageId = state.selectedPackage.value;
-        }
-        objectTime.date = moment(state.date, "DD/MM/YYYY").valueOf();
-        objectTime.timeType = time.keyMap;
-        objectTime.maxNumber = 10;
-        result.push(objectTime);
-      });
-      console.log(result);
+    if (!timeSelected.length) {
+      return toast.error("Time frame for medical examination hasn't been selected!");
     }
-    if (result && result.length > 0) {
+
+    timeSelected = timeSelected.forEach((time) => {
+      const objectTime = {};
+      if (isDoctorManage) {
+        objectTime.doctorId = JSON.parse(localStorage.getItem("userInfo")).id;
+      } else {
+        doctors
+          ? (objectTime.doctorId = state.selectedDoctor.value)
+          : (objectTime.packageId = state.selectedPackage.value);
+      }
+
+      objectTime.date = moment(state.date, "DD/MM/YYYY").valueOf();
+      objectTime.timeType = time.keyMap;
+      objectTime.maxNumber = 10;
+      result.push(objectTime);
+    });
+
+    console.log(result);
+
+    if (result?.length > 0) {
       const res = await dispatch(
         createSchedules({ dataSchedule: result, keyMap: `${doctors ? "doctorId" : "packageId"}` })
       );
@@ -158,11 +163,30 @@ const ScheduleManage = ({ doctors, packages, scheduleOf }) => {
 
         <div className="schedule-select mt-5">
           <div className="schedule-select-doctor col-6 mt-5">
-            <div className="title">
-              <h4>{doctors ? t("schedule-manage.choose-doctor") : t("schedule-manage.choose-package")}</h4>
-            </div>
+            {!isDoctorManage && (
+              <div className="title">
+                <h4>{doctors ? t("schedule-manage.choose-doctor") : t("schedule-manage.choose-package")}</h4>
+              </div>
+            )}
 
-            {doctors?.length > 0 && (
+            {isDoctorManage && (
+              <div className="doctor-name">
+                <h4>
+                  {language === "vi" ? "Bác sĩ" : "Doctor"}:{" "}
+                  <span>
+                    {language === "vi"
+                      ? `${JSON.parse(localStorage.getItem("userInfo")).lastName} ${
+                          JSON.parse(localStorage.getItem("userInfo")).firstName
+                        }`
+                      : `${JSON.parse(localStorage.getItem("userInfo")).firstName} ${
+                          JSON.parse(localStorage.getItem("userInfo")).lastName
+                        }`}
+                  </span>
+                </h4>
+              </div>
+            )}
+
+            {doctors?.length > 0 && !isDoctorManage && (
               <div className="mt-3">
                 <Select
                   value={state.selectedDoctor}

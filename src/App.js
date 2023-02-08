@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-// import { useSelector } from "react-redux";
 import {
   Home,
   Specialty,
@@ -30,7 +29,6 @@ import {
   UserRedux,
   DoctorManage,
   DoctorSchedule,
-  ScheduleManage,
   PatientBooking,
   ClinicManage,
   ClinicAddSpecialty,
@@ -90,7 +88,7 @@ function App() {
           />
 
           <Route
-            path={path.SYSTEM}
+            path={`${path.ADMIN}-${path.SYSTEM}`}
             element={
               <ProtectedRoute>
                 <SharedLayout />
@@ -109,6 +107,19 @@ function App() {
             <Route path="package-manage" element={<PackageManage />} />
             <Route path="package-schedule" element={<PackageSchedule />} />
             <Route path="crud-allcode-model" element={<CRUDAllcodeModel />} />
+          </Route>
+
+          <Route
+            path={`${path.DOCTOR}-${path.SYSTEM}`}
+            element={
+              <ProtectedRoute>
+                <SharedLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<System />} />
+            <Route path="patient-booking-manage" element={<PatientBooking />} />
+            <Route path="schedule-manage" element={<DoctorSchedule isDoctorManage={true} />} />
           </Route>
 
           {/* BANNER */}

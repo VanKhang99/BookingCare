@@ -11,22 +11,19 @@ const initialState = {
   userInfo: null,
 };
 
-export const login = createAsyncThunk(
-  "user/login",
-  async ({ email, password }, thunkAPI) => {
-    try {
-      const res = await axios.post("/api/users/login", { email, password });
-      const token = res.token;
-      localStorage.setItem("token", token);
-      setAuthToken(token);
+export const login = createAsyncThunk("user/login", async ({ email, password }, thunkAPI) => {
+  try {
+    const res = await axios.post("/api/users/login", { email, password });
+    const token = res.token;
+    localStorage.setItem("token", token);
+    setAuthToken(token);
 
-      thunkAPI.dispatch(handleChangePathSystem("/system"));
-      return res;
-    } catch (error) {
-      throw error.response.data;
-    }
+    thunkAPI.dispatch(handleChangePathSystem("/system"));
+    return res;
+  } catch (error) {
+    throw error.response.data;
   }
-);
+});
 
 export const logout = createAsyncThunk("user/logout", async (_, thunkAPI) => {
   try {
@@ -36,9 +33,7 @@ export const logout = createAsyncThunk("user/logout", async (_, thunkAPI) => {
 
     return res;
   } catch (error) {
-    return thunkAPI.rejectWithValue(
-      "Something went very wrong. Please check your API!"
-    );
+    return thunkAPI.rejectWithValue("Something went very wrong. Please check your API!");
   }
 });
 

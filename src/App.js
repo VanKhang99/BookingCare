@@ -25,9 +25,9 @@ import {
   SharedLayout,
 } from "./pages";
 import {
+  // UserManage,
   UserManage,
-  UserRedux,
-  DoctorManage,
+  AddInfoDoctor,
   DoctorSchedule,
   PatientBooking,
   ClinicManage,
@@ -96,9 +96,9 @@ function App() {
             }
           >
             <Route index element={<System />} />
-            <Route path="user-manage" element={<UserManage />} />
-            <Route path="user-manage-redux" element={<UserRedux />} />
-            <Route path="doctor-manage" element={<DoctorManage />} />
+            {/* <Route path="user-manage" element={<UserManage />} /> */}
+            <Route path="doctor-manage" element={<UserManage />} />
+            <Route path="add-info-doctor" element={<AddInfoDoctor />} />
             <Route path="schedule-manage" element={<DoctorSchedule />} />
             <Route path="patient-booking-manage" element={<PatientBooking />} />
             <Route path="clinic-manage" element={<ClinicManage />} />

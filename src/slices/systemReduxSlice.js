@@ -1,15 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../axios";
 
-const initialState = {
-  isLoadingUsers: false,
-  users: [],
-};
+const initialState = {};
 
-export const getAllUsers = createAsyncThunk("systemRedux/getAllUsers", async (_, thunkAPI) => {
+export const getAllUsers = createAsyncThunk("systemRedux/getAllUsers", async (data, thunkAPI) => {
   try {
-    const res = await axios.get("/api/users");
-    return res;
+    const res = await axios.get(`/api/users?page=${data.page}&limit=${data.limit}&role=${data.role}`);
+    return res.data;
   } catch (error) {
     return thunkAPI.rejectWithValue("Something went very wrong. Please check your API!");
   }
@@ -51,24 +48,20 @@ export const deleteUser = createAsyncThunk("systemRedux/deleteUser", async (id, 
   }
 });
 
+export const getAllUsersByRole = createAsyncThunk("systemRedux/getAllUsersByRole", async (role, thunkAPI) => {
+  try {
+    const res = await axios.get(`/api/users/filter/${role}`);
+    return res.data;
+  } catch (error) {
+    return error.response.data;
+  }
+});
+
 export const systemReduxSlice = createSlice({
   name: "systemRedux",
   initialState,
   reducers: {},
-  extraReducers: (builder) => {
-    builder
-      // GET ALL USERS
-      .addCase(getAllUsers.pending, (state) => {
-        state.isLoadingUsers = true;
-      })
-      .addCase(getAllUsers.fulfilled, (state, { payload }) => {
-        state.isLoadingUsers = false;
-        state.users = payload.data.users;
-      })
-      .addCase(getAllUsers.rejected, (state) => {
-        state.isLoadingUsers = false;
-      });
-  },
+  extraReducers: (builder) => {},
 });
 
 // export const {} = systemReduxSlice.actions;

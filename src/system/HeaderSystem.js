@@ -1,11 +1,10 @@
-import React from "react";
+import React, { memo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Select } from "antd";
 import { languages } from "../utils/constants";
 import { TbLogout } from "react-icons/tb";
-import { menuSystemHeader } from "../utils/dataRender";
 import { Button, Dropdown, Space } from "antd";
 import { handleCurrentKey } from "../slices/systemSlice";
 import { logout } from "../slices/userSlice";
@@ -160,4 +159,4 @@ const Header = ({ menuSystemList }) => {
   );
 };
 
-export default Header;
+export default memo(Header);

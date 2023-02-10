@@ -13,7 +13,7 @@ import { getAllCode } from "../slices/allcodeSlice";
 import { getAllDoctors, postInfoDoctor, getDetailDoctor } from "../slices/doctorSlice";
 import { checkData } from "../utils/helpers";
 import "react-markdown-editor-lite/lib/index.css";
-import "./styles/DoctorManage.scss";
+import "./styles/AddInfoDoctor.scss";
 
 const mdParser = new MarkdownIt(/* Markdown-it options */);
 
@@ -40,7 +40,7 @@ const initialState = {
   oldIdDoctor: "",
 };
 
-const DoctorManage = () => {
+const AddInfoDoctor = () => {
   const [state, setState] = useState({ ...initialState });
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -425,4 +425,4 @@ const DoctorManage = () => {
   );
 };
 
-export default DoctorManage;
+export default AddInfoDoctor;

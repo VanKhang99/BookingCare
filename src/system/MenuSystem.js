@@ -13,24 +13,24 @@ const MenuSystem = ({ roleId }) => {
 
   const adminMenuList = {
     user: [
+      // {
+      //   label: <Link to="user-manage">CRUD</Link>,
+      //   key: "1",
+      //   icon: <AiOutlineUser />,
+      // },
       {
-        label: <Link to="user-manage">CRUD</Link>,
+        label: <Link to="doctor-manage">{t("menu-system.user-management")}</Link>,
         key: "1",
         icon: <AiOutlineUser />,
       },
       {
-        label: <Link to="user-manage-redux">CRUD Redux</Link>,
+        label: <Link to="add-info-doctor">{t("menu-system.add-info-doctor")}</Link>,
         key: "2",
         icon: <AiOutlineUser />,
       },
       {
-        label: <Link to="doctor-manage">{t("menu-system.doctor-management")}</Link>,
-        key: "3",
-        icon: <AiOutlineUser />,
-      },
-      {
         label: <Link to="schedule-manage">{t("menu-system.schedule-management")}</Link>,
-        key: "4",
+        key: "3",
         icon: <AiOutlineUser />,
       },
     ],

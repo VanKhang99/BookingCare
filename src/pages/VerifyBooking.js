@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Header, Footer } from "../components";
-// import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { verifyBooking } from "../slices/bookingSlice";
 import "../styles/VerifyBooking.scss";
+import { languages } from "../utils/constants";
 
 const initialState = {
   isVerified: false,
@@ -14,8 +15,9 @@ const initialState = {
 const VerifyBooking = () => {
   const [state, setState] = useState({ ...initialState });
   const dispatch = useDispatch();
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
   const { token, doctorId, packageId } = useParams();
+  const { language } = useSelector((store) => store.app);
 
   const handleVerifyBooking = async () => {
     if (token) {
@@ -26,12 +28,12 @@ const VerifyBooking = () => {
         return setState({
           ...state,
           isVerified: true,
-          message: "Lịch khám bệnh đã được xác nhận hoặc không tồn tại!!!",
+          message: `${t("verify-booking.confirm-booking-existed")}`,
         });
       }
 
       if (res?.payload?.status === "success") {
-        return setState({ ...state, isVerified: true, message: "Xác nhận đặt lịch khám bệnh thành công" });
+        return setState({ ...state, isVerified: true, message: `${t("verify-booking.confirm-success")}` });
       }
     }
   };
@@ -44,9 +46,9 @@ const VerifyBooking = () => {
         <div className="verify-booking-content">
           {!state.isVerified ? (
             <>
-              <h1>Xác nhận đặt lịch khám bệnh</h1>
+              <h1>{t("verify-booking.confirm-title")}</h1>
               <button className="button button-confirm" onClick={() => handleVerifyBooking()}>
-                Click here
+                {t("button.confirm-booking")}
               </button>
             </>
           ) : (

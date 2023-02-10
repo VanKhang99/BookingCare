@@ -1,7 +1,9 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Header, Banner, Slider, Media, CTA, Footer } from "../components";
 
 const Home = () => {
+  const { t } = useTranslation();
   return (
     <div className="app">
       <Header />
@@ -10,37 +12,37 @@ const Home = () => {
           <div className="content">
             <Banner />
             <Slider
-              mainTitle="Bác sĩ từ xa qua Video"
-              buttonText="XEM THÊM"
+              mainTitle={t("slider.doctor-remote-title")}
+              buttonText={t("button.see-more").toUpperCase()}
               doctorRemote="doctor-remote"
             />
             <Slider
-              mainTitle="Chuyên khoa phổ biến"
-              buttonText="XEM THÊM"
+              mainTitle={t("slider.popular-specialty-title")}
+              buttonText={t("button.see-more").toUpperCase()}
               popularSpecialty="popular-specialty"
             />
             <Slider
-              mainTitle="Cơ sở y tế nổi bật"
-              buttonText="TÌM KIẾM"
+              mainTitle={t("slider.outstanding-medical-facilities-title")}
+              buttonText={t("button.searching").toUpperCase()}
               outstandingFacilities="outstanding-facilities"
             />
             <Slider
-              mainTitle="Bác sĩ nổi bật tuần qua"
-              buttonText="TÌM KIẾM"
+              mainTitle={t("slider.outstanding-doctors-title")}
+              buttonText={t("button.searching").toUpperCase()}
               outstandingDoctors="outstanding-doctors"
             />
             <Slider
-              mainTitle="Cẩm nang"
-              buttonText="Tất cả bài viết"
+              mainTitle={t("slider.handbook-title")}
+              buttonText={t("button.all-post").toUpperCase()}
               handbook="handbook"
             />
             <Media />
             <CTA />
             <Slider
-              mainTitle="Dành cho bác sĩ và cơ sở y tế"
-              buttonText="Bài viết"
-              buttonText2="Hợp tác"
-              buttonText3="Liên hệ"
+              mainTitle={t("slider.for-doctor-facilities-title")}
+              buttonText={t("button.post").toUpperCase()}
+              buttonText2={t("button.cooperate").toUpperCase()}
+              buttonText3={t("button.contact").toUpperCase()}
               doctorAndFacilities="doctor-facility"
             />
           </div>

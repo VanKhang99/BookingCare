@@ -3,8 +3,8 @@
 .list-user-wrapper {
   margin: 4.8rem 0;
 
-  .list-user {
-    &-title {
+  .list-user-header {
+    &__title {
       font-size: $base-size + 0.4rem;
       font-weight: 700;
     }

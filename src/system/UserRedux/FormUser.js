@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { Buffer } from "buffer";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllUsers, createUser, updateDataUser } from "../../slices/systemReduxSlice";
 import { getAllCode } from "../../slices/allcodeSlice";
 import { FaUpload } from "react-icons/fa";
-import { isValidEmail, isValidPhone, toBase64 } from "../../utils/helpers";
+import { isValidEmail, isValidPhone, toBase64, checkData } from "../../utils/helpers";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
 import "../styles/FormUser.scss";
@@ -29,15 +28,13 @@ const initialState = {
     show: false,
     message: "",
   },
-  imageName: "",
   previewImgUrl: "",
   isOpenImagePreview: false,
   action: "",
 };
 
-const FormUser = ({ dataUserEdit }) => {
+const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
   const [state, setState] = useState({ ...initialState });
-
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
@@ -58,7 +55,6 @@ const FormUser = ({ dataUserEdit }) => {
       return setState({
         ...state,
         image: fileCovert,
-        imageName: file.name,
         previewImgUrl: objectURL,
       });
     }
@@ -70,24 +66,14 @@ const FormUser = ({ dataUserEdit }) => {
     setState({ ...state, isOpenImagePreview: true });
   };
 
-  const checkValidateInput = () => {
-    let isValid = true;
-    let arrInput = !state.action
-      ? ["email", "password", "firstName", "lastName", "address", "phoneNumber"]
-      : ["firstName", "lastName", "address", "phoneNumber"];
-    for (let i = 0; i < arrInput.length; i++) {
-      if (!state[arrInput[i]]) {
-        isValid = false;
-        break;
-      }
-    }
-    return isValid;
-  };
-
   const handleCreateOrUpdateUser = async () => {
     setState({ ...state, errorInput: { show: false, message: "" } });
 
-    const resultCheckInput = checkValidateInput();
+    const propsCheckKey = !state.action
+      ? ["email", "password", "firstName", "lastName", "address", "phoneNumber"]
+      : ["firstName", "lastName", "address", "phoneNumber"];
+
+    const resultCheckInput = checkData(state, propsCheckKey);
     if (!resultCheckInput) {
       setState({
         ...state,
@@ -137,7 +123,6 @@ const FormUser = ({ dataUserEdit }) => {
               gender: state.gender,
               positionId: state.positionId,
               roleId: state.roleId,
-              imageName: state.imageName,
             },
           })
         );
@@ -160,7 +145,7 @@ const FormUser = ({ dataUserEdit }) => {
         toast.success("Create user successfully!");
       }
 
-      await dispatch(getAllUsers());
+      await handleGetAllUsers(roleToFilter, total + 1);
       setState({
         ...initialState,
         gender: genderArr[0].keyMap,
@@ -176,6 +161,7 @@ const FormUser = ({ dataUserEdit }) => {
     dispatch(getAllCode("GENDER"));
     dispatch(getAllCode("POSITION"));
     dispatch(getAllCode("ROLE"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -203,13 +189,11 @@ const FormUser = ({ dataUserEdit }) => {
     return () => {
       URL.revokeObjectURL(state.previewImgUrl);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.image]);
 
   useEffect(() => {
     if (dataUserEdit) {
-      const buff = new Buffer(dataUserEdit.image ? dataUserEdit.image : "", "base64");
-      const imageBase64 = buff.toString("binary");
-
       setState({
         ...state,
         email: dataUserEdit.email,
@@ -218,14 +202,14 @@ const FormUser = ({ dataUserEdit }) => {
         address: dataUserEdit.address,
         gender: dataUserEdit.gender,
         phoneNumber: dataUserEdit.phoneNumber,
-        image: dataUserEdit.image,
-        positionId: dataUserEdit.positionId,
-        roleId: dataUserEdit.roleId,
+        image: dataUserEdit.image ?? "",
+        positionId: dataUserEdit.positionId ?? "",
+        roleId: dataUserEdit.roleId ?? "",
         action: "editing",
-        previewImgUrl: imageBase64,
-        imageName: dataUserEdit.imageName,
+        previewImgUrl: dataUserEdit.image ?? "",
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataUserEdit]);
 
   return (
@@ -358,8 +342,6 @@ const FormUser = ({ dataUserEdit }) => {
                 <label htmlFor="image">
                   <FaUpload /> {t("user-redux.upload")}
                 </label>
-
-                <div className="image-name">{state.imageName ? state.imageName : ""}</div>
               </div>
 
               <div

@@ -12,6 +12,15 @@
     "services-name": "Specialty examination, Remote examination, General examination, Medical test, Mental health, Dental examination, Surgery package, Medical products, Business health"
   },
 
+  "slider": {
+    "doctor-remote-title": "Telemedicine via Video",
+    "popular-specialty-title": "Popular specialties",
+    "outstanding-medical-facilities-title": "Outstanding medical facilities",
+    "outstanding-doctors-title": "Outstanding doctor last week",
+    "handbook-title": "Handbook",
+    "for-doctor-facilities-title": "For doctors and medical facilities"
+  },
+
   "footer": {
     "company-name": "BookingCare Technology Joint Stock Company",
     "business-registration-number": "Business registration number: 0106790291. Hanoi Department of Planning and Investment issued on March 16, 2015",
@@ -60,10 +69,17 @@
     "button-confirm": "Confirm"
   },
 
+  "verify-booking": {
+    "confirm-booking-existed": "Medical appointment confirmed or non-existent!!!",
+    "confirm-success": "Confirmation of successful appointment booking",
+    "confirm-title": "Confirm appointment booking"
+  },
+
   "menu-system": {
     "user": "Users",
-    "doctor-management": "Doctor management",
-    "schedule-management": "Medical schedule management",
+    "user-management": "User management",
+    "add-info-doctor": "Add doctor information",
+    "schedule-management": "Manage medical examination hours",
     "patient-booking-manage": "Manage users to book medical appointments",
 
     "clinic": "Clinic",
@@ -110,7 +126,7 @@
   },
 
   "schedule-manage": {
-    "title": "MANAGING THE DOCTOR'S MEDICAL EXAMINATION PLAN",
+    "title": "MANAGE THE DOCTOR'S EXAMINATION TIME FRAME",
     "choose-doctor": "Choose a doctor",
     "choose-package": "Choose a package",
     "choose-date": "Choose date",
@@ -197,7 +213,14 @@
   },
 
   "button": {
-    "booking-examination": "Booking"
+    "booking-examination": "Booking",
+    "confirm-booking": "Click here",
+    "see-more": "See more",
+    "searching": "Search",
+    "all-post": "All posts",
+    "post": "Post",
+    "cooperate": "Cooperate",
+    "contact": "Contact"
   },
 
   "user-redux": {

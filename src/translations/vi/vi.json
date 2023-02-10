@@ -12,6 +12,15 @@
     "services-name": "Khám chuyên khoa, Khám từ xa, Khám tổng quát, Xét nghiệm y học, Sức khỏe tinh thần, Khám  nha khoa, Gói  phẫu thuật, Sản phẩm  y tế, Sức khỏe  doanh nghiệp"
   },
 
+  "slider": {
+    "doctor-remote-title": "Bác sĩ từ xa qua Video",
+    "popular-specialty-title": "Chuyên khoa phổ biến",
+    "outstanding-medical-facilities-title": "Cơ sở y tế nổi bật",
+    "outstanding-doctors-title": "Bác sĩ nổi bật tuần qua",
+    "handbook-title": "Cẩm nang",
+    "for-doctor-facilities-title": "Dành cho bác sĩ và cơ sở y tế"
+  },
+
   "footer": {
     "company-name": "Công ty Cổ phần Công nghệ BookingCare",
     "business-registration-number": "ĐKKD số: 0106790291. Sở KHĐT Hà Nội cấp ngày 16/03/2015",
@@ -60,11 +69,18 @@
     "button-confirm": "Xác nhận đặt khám"
   },
 
+  "verify-booking": {
+    "confirm-booking-existed": "Lịch khám bệnh đã được xác nhận hoặc không tồn tại!!!",
+    "confirm-success": "Xác nhận đặt lịch khám bệnh thành công",
+    "confirm-title": "Xác nhận đặt lịch khám bệnh"
+  },
+
   "system-welcome": "CHÀO MỪNG ĐẾN VỚI TRUNG TÂM QUẢN LÝ",
   "menu-system": {
     "user": "Người dùng",
-    "doctor-management": "Quản lý bác sĩ",
-    "schedule-management": "Quản lý kế hoạch khám bệnh",
+    "user-management": "Quản lý người dùng",
+    "add-info-doctor": "Thêm thông tin bác sĩ",
+    "schedule-management": "Quản lý khung giờ khám bệnh",
     "patient-booking-manage": "Quản lý người dùng đặt lịch khám bệnh",
 
     "clinic": "Phòng khám",
@@ -130,7 +146,7 @@
   },
 
   "schedule-manage": {
-    "title": "QUẢN LÝ KẾ HOẠCH KHÁM BỆNH CỦA BÁC SĨ",
+    "title": "QUẢN LÝ KHUNG GIỜ KHÁM BỆNH CỦA BÁC SĨ",
     "choose-doctor": "Chọn bác sĩ",
     "choose-package": "Chọn gói khám bệnh",
     "choose-date": "Chọn ngày",
@@ -196,7 +212,14 @@
   },
 
   "button": {
-    "booking-examination": "Đặt lịch khám"
+    "booking-examination": "Đặt lịch khám",
+    "confirm-booking": "Ấn vào đây",
+    "see-more": "Xem thêm",
+    "searching": "Tìm kiếm",
+    "all-post": "Tất cả bài viết",
+    "post": "Bài viết",
+    "cooperate": "Hợp tác",
+    "contact": "Liên hệ"
   },
 
   "user-redux": {

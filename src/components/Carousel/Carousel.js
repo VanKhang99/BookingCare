@@ -25,10 +25,6 @@ const Slider = ({
 }) => {
   const slidesToShow = 4;
 
-  const onChange = (currentSlide) => {
-    // console.log(currentSlide);
-  };
-
   const settings = {
     dots: false,
     infinite: true,
@@ -54,54 +50,38 @@ const Slider = ({
     >
       <div className="carousel-content u-wrapper">
         <div className="carousel-top">
-          <h2 className="title">{mainTitle}</h2>
+          <h2 className="carousel-top__title">{mainTitle}</h2>
           {!doctorAndFacilities && (
-            <a href="/">
+            <a href="#">
               <button className="button button-main">{buttonText}</button>
             </a>
           )}
 
           {doctorAndFacilities && (
-            <div className="carousel-buttons">
-              <a href="/">
+            <div className="carousel-top__buttons">
+              <a href="#">
                 <button className="button button-main">{buttonText}</button>
               </a>
-              <a href="/">
+              <a href="#">
                 <button className="button button-main">{buttonText2}</button>
               </a>
-              <a href="/">
+              <a href="#">
                 <button className="button button-main">{buttonText3}</button>
               </a>
             </div>
           )}
         </div>
 
-        {doctorRemote && (
-          <CarouselRemoteDoctor
-            doctorRemote={doctorRemote}
-            onChange={onChange}
-            settings={settings}
-          />
-        )}
+        {doctorRemote && <CarouselRemoteDoctor doctorRemote={doctorRemote} settings={settings} />}
 
-        {popularSpecialty && (
-          <CarouselPopularSpecialty onChange={onChange} settings={settings} />
-        )}
+        {popularSpecialty && <CarouselPopularSpecialty settings={settings} />}
 
-        {outstandingFacilities && (
-          <CarouselOutstandingFacilities
-            onChange={onChange}
-            settings={settings}
-          />
-        )}
+        {outstandingFacilities && <CarouselOutstandingFacilities settings={settings} />}
 
-        {outstandingDoctors && (
-          <CarouselOutstandingDoctors onChange={onChange} settings={settings} />
-        )}
+        {outstandingDoctors && <CarouselOutstandingDoctors settings={settings} />}
 
         {handbook && (
           <CarouselHandbook
-            onChange={onChange}
             settings={{
               ...settings,
               slidesToShow: 2,
@@ -112,7 +92,6 @@ const Slider = ({
 
         {doctorAndFacilities && (
           <CarouselDoctorAndFacilities
-            onChange={onChange}
             settings={{
               ...settings,
               slidesToShow: 2,

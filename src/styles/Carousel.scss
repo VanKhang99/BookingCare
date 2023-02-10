@@ -17,13 +17,13 @@
     padding: 1.5rem 0 0.5rem;
     margin-bottom: 2rem;
 
-    .title {
+    &__title {
       font-size: $base-size + 1rem;
       font-weight: 700;
       color: $main-color-text;
     }
 
-    .carousel-buttons {
+    &__buttons {
       display: flex;
       gap: 0.5rem;
     }

@@ -1,6 +1,6 @@
 import React from "react";
 import { BsCheck } from "react-icons/bs";
-import "../../styles/CTA.scss";
+import "../styles/CTA.scss";
 
 const CTA = () => {
   return (
@@ -24,16 +24,10 @@ const CTA = () => {
             </ul>
             <div className="download">
               <a href="https://play.google.com/store/apps/details?id=vn.bookingcare.bookingcare">
-                <img
-                  src="https://bookingcare.vn/assets/icon/google-play-badge.svg"
-                  alt="Google Play"
-                />
+                <img src="https://bookingcare.vn/assets/icon/google-play-badge.svg" alt="Google Play" />
               </a>
               <a href="https://apps.apple.com/vn/app/bookingcare/id1347700144">
-                <img
-                  src="https://bookingcare.vn/assets/icon/app-store-badge-black.svg"
-                  alt="Google Play"
-                />
+                <img src="https://bookingcare.vn/assets/icon/app-store-badge-black.svg" alt="Google Play" />
               </a>
             </div>
 

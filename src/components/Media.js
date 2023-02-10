@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/Media.scss";
+import "../styles/Media.scss";
 
 const Media = () => {
   return (
@@ -34,8 +34,7 @@ const Media = () => {
                   <div
                     className="img"
                     style={{
-                      backgroundImage:
-                        "url(https://bookingcare.vn/assets/truyenthong/suckhoedoisong.png)",
+                      backgroundImage: "url(https://bookingcare.vn/assets/truyenthong/suckhoedoisong.png)",
                     }}
                     title="Báo sức khỏe đời sống nói về BookingCare"
                   ></div>
@@ -52,8 +51,7 @@ const Media = () => {
                   <div
                     className="img"
                     style={{
-                      backgroundImage:
-                        "url(https://bookingcare.vn/assets/truyenthong/vtv1.png)",
+                      backgroundImage: "url(https://bookingcare.vn/assets/truyenthong/vtv1.png)",
                     }}
                     title="VTV1 - Cà phê khởi nghiệp 14-11-2018"
                   ></div>
@@ -70,8 +68,7 @@ const Media = () => {
                   <div
                     className="img"
                     style={{
-                      backgroundImage:
-                        "url(https://bookingcare.vn/assets/truyenthong/ictnews.png)",
+                      backgroundImage: "url(https://bookingcare.vn/assets/truyenthong/ictnews.png)",
                     }}
                     title="Báo điện tử ictnews giới thiệu BookingCare"
                   ></div>
@@ -88,8 +85,7 @@ const Media = () => {
                   <div
                     className="img img-vtc-news"
                     style={{
-                      backgroundImage:
-                        "url(https://bookingcare.vn/assets/truyenthong/vtcnews.png)",
+                      backgroundImage: "url(https://bookingcare.vn/assets/truyenthong/vtcnews.png)",
                     }}
                     title="VTC News nói về BookingCare"
                   ></div>
@@ -106,8 +102,7 @@ const Media = () => {
                   <div
                     className="img"
                     style={{
-                      backgroundImage:
-                        "url(https://bookingcare.vn/assets/truyenthong/vnexpress.png)",
+                      backgroundImage: "url(https://bookingcare.vn/assets/truyenthong/vnexpress.png)",
                     }}
                     title="VnExpress nói về BookingCare"
                   ></div>
@@ -124,8 +119,7 @@ const Media = () => {
                   <div
                     className="img img-vtc"
                     style={{
-                      backgroundImage:
-                        "url(https://bookingcare.vn/assets/truyenthong/vtcgo.png)",
+                      backgroundImage: "url(https://bookingcare.vn/assets/truyenthong/vtcgo.png)",
                     }}
                     title="VTC Go nói về BookingCare"
                   ></div>
@@ -160,8 +154,7 @@ const Media = () => {
                   <div
                     className="img"
                     style={{
-                      backgroundImage:
-                        "url(https://bookingcare.vn/assets/truyenthong/infonet.png)",
+                      backgroundImage: "url(https://bookingcare.vn/assets/truyenthong/infonet.png)",
                     }}
                     title="Báo điện tử infonet nói về BookingCare"
                   ></div>
@@ -178,8 +171,7 @@ const Media = () => {
                   <div
                     className="img"
                     style={{
-                      backgroundImage:
-                        "url(https://bookingcare.vn/assets/truyenthong/vtv1.png)",
+                      backgroundImage: "url(https://bookingcare.vn/assets/truyenthong/vtv1.png)",
                     }}
                     title="VTV1 - Cà phê khởi nghiệp 16-08-2018"
                   ></div>

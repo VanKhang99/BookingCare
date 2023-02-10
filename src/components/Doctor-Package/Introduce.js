@@ -11,6 +11,7 @@ import "../../styles/Introduce.scss";
 const Introduce = ({ id, small, buttonSeeMore, packageData, packageClinicSpecialty, remote }) => {
   const { language } = useSelector((store) => store.app);
   const doctor = useFetchDataBaseId(id, "doctor", getDetailDoctor);
+  console.log(doctor);
 
   const handleDisplayNameRolePosition = (doctor) => {
     if (doctor.positionId === "P0") {
@@ -20,6 +21,16 @@ const Introduce = ({ id, small, buttonSeeMore, packageData, packageClinicSpecial
               remote ? "(Bác sĩ từ xa)" : ""
             }`
           : `${doctor.roleData.valueEn} - ${doctor.firstName} ${doctor.lastName} ${
+              remote ? "(Telemedicine)" : ""
+            }`
+      }`;
+    } else if (doctor.roleId === "R8") {
+      return `${
+        language === "vi"
+          ? `${doctor.positionData.valueVi} - ${doctor.lastName} ${doctor.firstName} ${
+              remote ? "(Bác sĩ từ xa)" : ""
+            }`
+          : `${doctor.positionData.valueEn} - ${doctor.firstName} ${doctor.lastName} ${
               remote ? "(Telemedicine)" : ""
             }`
       }`;

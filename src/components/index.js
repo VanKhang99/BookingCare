@@ -1,9 +1,10 @@
-import Header from "./Header/Header";
-import Banner from "./Banner/Banner";
+import Header from "./Header";
+import Language from "./Language";
+import Banner from "./Banner";
 import Slider from "./Carousel/Carousel";
-import Media from "./Media/Media";
-import CTA from "./CTA/CTA";
-import Footer from "./Footer/Footer";
+import Media from "./Media";
+import CTA from "./CTA";
+import Footer from "./Footer";
 import DateOptions from "./Doctor-Package/DateOptions";
 import BookingHours from "./Doctor-Package/BookingHours";
 import MedicalAddress from "./Doctor-Package/MedicalAddress";
@@ -18,9 +19,11 @@ import BookingCareIntro from "./BookingCareIntro";
 import BookingCareBenefit from "./BookingCareBenefit";
 import ClinicBooking from "./ClinicBooking";
 import ClinicTopic from "./ClinicTopic";
+import Pagination from "./Pagination";
 
 export {
   Header,
+  Language,
   Banner,
   Slider,
   Media,
@@ -40,4 +43,5 @@ export {
   BookingCareBenefit,
   ClinicBooking,
   ClinicTopic,
+  Pagination,
 };

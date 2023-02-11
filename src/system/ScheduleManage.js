@@ -113,6 +113,7 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorManage }) => {
     }
 
     timeSelected = timeSelected.forEach((time) => {
+      console.log(time);
       const objectTime = {};
       if (isDoctorManage) {
         objectTime.doctorId = JSON.parse(localStorage.getItem("userInfo")).id;
@@ -124,7 +125,14 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorManage }) => {
 
       objectTime.date = moment(state.date, "DD/MM/YYYY").valueOf();
       objectTime.timeType = time.keyMap;
-      objectTime.maxNumber = 10;
+      objectTime.maxNumber = 3;
+
+      const frameTimestamp = new Date();
+      const hourStartToExam = time.valueVi.split(" - ")[0];
+      frameTimestamp.setHours(hourStartToExam.split(":")[0]);
+      frameTimestamp.setMinutes(hourStartToExam.split(":")[1]);
+      objectTime.frameTimestamp = frameTimestamp.getTime();
+
       result.push(objectTime);
     });
 

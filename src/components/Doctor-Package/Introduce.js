@@ -11,7 +11,6 @@ import "../../styles/Introduce.scss";
 const Introduce = ({ id, small, buttonSeeMore, packageData, packageClinicSpecialty, remote }) => {
   const { language } = useSelector((store) => store.app);
   const doctor = useFetchDataBaseId(id, "doctor", getDetailDoctor);
-  console.log(doctor);
 
   const handleDisplayNameRolePosition = (doctor) => {
     if (doctor.positionId === "P0") {

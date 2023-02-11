@@ -13,7 +13,6 @@ const Doctor = ({ doctorId, doctorData, onToggleModal, needAddress, assurance, r
   const [state, setState] = useState({ ...initialState });
   const dispatch = useDispatch();
   const { language } = useSelector((store) => store.app);
-  console.log(remote);
 
   const handleGetSchedules = async (id, timeStamp) => {
     try {

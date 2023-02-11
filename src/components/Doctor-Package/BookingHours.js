@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import HtmlReactParser from "html-react-parser";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";

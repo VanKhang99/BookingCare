@@ -45,7 +45,17 @@ const initialState = {
   },
 };
 
-const ModalBooking = ({ show, onHide, doctorId, packageId, doctor, packageData, hourClicked, remote }) => {
+const ModalBooking = ({
+  show,
+  onHide,
+  doctorId,
+  packageId,
+  doctor,
+  packageData,
+  hourClicked,
+  remote,
+  action,
+}) => {
   const [state, setState] = useState({ ...initialState });
   const { t } = useTranslation();
   const { id } = useParams();
@@ -146,9 +156,6 @@ const ModalBooking = ({ show, onHide, doctorId, packageId, doctor, packageData, 
           ? `${birthday[2]}-${birthday[1]}-${birthday[0]}`
           : `${birthday[2]}-${birthday[0]}-${birthday[1]}`;
 
-      console.log(dateBooked, birthday);
-      // const timestamp = covertDateToTimestamp(state.birthday);
-      // const dateBooked = hourClicked && formatDate(new Date(+hourClicked.date), language);
       const timeFrame =
         language === "vi" ? hourClicked?.timeTypeData?.valueVi : hourClicked?.timeTypeData?.valueEn;
 
@@ -170,15 +177,16 @@ const ModalBooking = ({ show, onHide, doctorId, packageId, doctor, packageData, 
       delete dataSendServer["errorInput"];
 
       const result = await dispatch(createBooking(dataSendServer));
+      console.log(result);
 
-      if (result?.payload?.booking) {
-        if (!result.payload.booking[1]) {
-          return toast.error("Your email are already set. Please do not reset or spam. Thanks!");
-        }
-        onHide();
-        setState({ ...initialState, gender: genderArr[0].keyMap });
-        return toast.success("Successfully booked a medical appointment");
+      if (result.payload.status === "error") {
+        onHide(hourClicked, "full-booking");
+        return toast.error(result.payload.message);
       }
+
+      onHide();
+      setState({ ...initialState, gender: genderArr[0].keyMap });
+      return toast.success("Successfully booked a medical appointment");
     } catch (error) {
       console.log(error);
     }

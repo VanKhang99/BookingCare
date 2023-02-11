@@ -121,7 +121,7 @@ const MedicalAddress = ({ id, small, packageData, needAddress, assurance, remote
             </div>
           </div>
 
-          {assurance && (
+          {assurance && !remote && (
             <div className="medical-insurance-wrapper">
               <div className="medical-insurance">
                 <div className="title">

@@ -7,7 +7,7 @@ import CTA from "./CTA";
 import Footer from "./Footer";
 import DateOptions from "./Doctor-Package/DateOptions";
 import BookingHours from "./Doctor-Package/BookingHours";
-import MedicalAddress from "./Doctor-Package/MedicalAddress";
+import ClinicInfo from "./Doctor-Package/ClinicInfo";
 import ModalBooking from "./ModalBooking";
 import Introduce from "./Doctor-Package/Introduce";
 import IntroSpecialty from "./IntroSpecialty";
@@ -31,7 +31,7 @@ export {
   Footer,
   DateOptions,
   BookingHours,
-  MedicalAddress,
+  ClinicInfo,
   ModalBooking,
   Introduce,
   IntroSpecialty,

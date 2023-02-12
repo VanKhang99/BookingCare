@@ -3,18 +3,18 @@
 .media {
   padding: 3.5rem 0 3rem;
 
-  .media-top h2 {
+  .media-head h2 {
     font-size: $base-size + 1rem;
     line-height: 3.6rem;
     margin-bottom: 2rem;
   }
 
-  .media-body {
+  .media-content {
     display: flex;
     align-items: center;
     gap: 2rem;
 
-    .video {
+    &__video {
       flex: 1;
 
       iframe {
@@ -22,29 +22,31 @@
       }
     }
 
-    .articles {
+    .media-articles {
       flex: 1;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       column-gap: 1rem;
       row-gap: 1.8rem;
 
-      .article-link {
-        .img {
-          width: 12.8rem;
-          height: 5rem;
-          background-repeat: no-repeat;
-          background-size: contain;
-          background-position: center;
-          border-radius: 0.4rem;
-          margin: 0 auto;
+      .media-article {
+        &__link {
+          &-img {
+            width: 12.8rem;
+            height: 5rem;
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: center;
+            border-radius: 0.4rem;
+            margin: 0 auto;
 
-          &.img-vtc-news {
-            background-color: #a3171e;
-          }
+            &.img-vtc-news {
+              background-color: #a3171e;
+            }
 
-          &.img-vtc {
-            background-color: #16325c;
+            &.img-vtc {
+              background-color: #16325c;
+            }
           }
         }
       }

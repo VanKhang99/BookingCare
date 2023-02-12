@@ -6,11 +6,11 @@
     flex-direction: column;
   }
 
-  .more-info-container {
+  .outstanding-doctor {
     background-color: $grey-7;
     border-top: 1px solid $grey-8;
     border-bottom: 1px solid $grey-8;
-    .more-info {
+    &__background {
       padding: 1.5rem 0;
       font-size: $base-size + 0.1rem;
 
@@ -30,7 +30,10 @@
   }
 }
 
-.title {
+.clinic-info-address__title,
+.clinic-info-price__title,
+.clinic-info-insurance__title,
+.booking-hours-title {
   display: flex;
   align-items: center;
   gap: 0.5rem;

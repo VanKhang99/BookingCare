@@ -7,22 +7,22 @@ const CTA = () => {
     <section className="cta-container u-background-grey u-border-bottom">
       <div className="cta-content u-wrapper">
         <div className="cta">
-          <div className="cta-img"></div>
+          <div className="cta__img"></div>
 
-          <div className="cta-right">
-            <h2 className="title">Tải ứng dụng BookingCare</h2>
-            <ul className="features">
-              <li className="feature">
+          <div className="cta-download">
+            <h2 className="cta-download__title">Tải ứng dụng BookingCare</h2>
+            <ul className="cta-features">
+              <li className="cta-feature">
                 <BsCheck /> Đặt khám nhanh hơn
               </li>
-              <li className="feature">
+              <li className="cta-feature">
                 <BsCheck /> Nhận thông báo từ hệ thống
               </li>
-              <li className="feature">
+              <li className="cta-feature">
                 <BsCheck /> Nhận hướng dẫn đi khám chi tiết
               </li>
             </ul>
-            <div className="download">
+            <div className="cta-download__imgs">
               <a href="https://play.google.com/store/apps/details?id=vn.bookingcare.bookingcare">
                 <img src="https://bookingcare.vn/assets/icon/google-play-badge.svg" alt="Google Play" />
               </a>
@@ -31,7 +31,7 @@ const CTA = () => {
               </a>
             </div>
 
-            <a href="https://bookingcare.vn/app" className="open-link">
+            <a href="https://bookingcare.vn/app" className="cta-download__open-link">
               Hoặc mở liên kết: <b>https://bookingcare.vn/app</b>
             </a>
           </div>

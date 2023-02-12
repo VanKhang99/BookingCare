@@ -36,10 +36,12 @@ const CarouselPopularSpecialty = ({ onChange, settings }) => {
           return (
             <Link to={`/${path.SPECIALTY}/${specialtyId}`} key={specialtyId} className="slide">
               <div className="slide-content">
-                <div className="slide-img">
+                <div className="slide-content__img">
                   <img src={image} alt={language === "vi" ? nameData.valueVi : nameData.valueEn} />
                 </div>
-                <span className="slide-title">{language === "vi" ? nameData.valueVi : nameData.valueEn}</span>
+                <span className="slide-content--name-specialty">
+                  {language === "vi" ? nameData.valueVi : nameData.valueEn}
+                </span>
               </div>
             </Link>
           );

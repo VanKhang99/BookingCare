@@ -11,7 +11,7 @@ import {
   Footer,
   DateOptions,
   BookingHours,
-  MedicalAddress,
+  ClinicInfo,
   ModalBooking,
   Introduce,
 } from "../components";
@@ -73,7 +73,7 @@ const PackageDetail = () => {
 
           <div className="hours-address-price row">
             <BookingHours schedules={state.schedules ? state.schedules : []} onToggleModal={handleModal} />
-            <MedicalAddress id={packageId} needAddress={true} packageData={packageData ? packageData : {}} />
+            <ClinicInfo id={packageId} needAddress={true} packageData={packageData ? packageData : {}} />
           </div>
         </div>
 

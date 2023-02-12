@@ -2,6 +2,7 @@ import React, { memo } from "react";
 import _ from "lodash";
 import HtmlReactParser from "html-react-parser";
 
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useFetchDataBaseId } from "../../utils/CustomHook";
@@ -10,6 +11,7 @@ import "../../styles/Introduce.scss";
 
 const Introduce = ({ id, small, buttonSeeMore, packageData, packageClinicSpecialty, remote }) => {
   const { language } = useSelector((store) => store.app);
+  const { t } = useTranslation();
   const doctor = useFetchDataBaseId(id, "doctor", getDetailDoctor);
 
   const handleDisplayNameRolePosition = (doctor) => {
@@ -51,10 +53,10 @@ const Introduce = ({ id, small, buttonSeeMore, packageData, packageClinicSpecial
   if (!_.isEmpty(packageData)) {
     return (
       <>
-        <div className={`introduction ${small ? "small" : "u-wrapper"}`}>
-          <div className="info-left">
+        <div className={small ? "introduction introduction--small" : "introduction u-wrapper"}>
+          <div className="introduction-left">
             <div
-              className="info-left__image info-left__image--package"
+              className="introduction-left__image introduction-left__image--package"
               style={{
                 backgroundImage: `url(${packageData.clinicData?.logo ? packageData.clinicData?.logo : ""})`,
               }}
@@ -63,21 +65,21 @@ const Introduce = ({ id, small, buttonSeeMore, packageData, packageClinicSpecial
               <>
                 {packageClinicSpecialty ? (
                   <Link to={`/package-specialty/${id}`} className="info-left__button">
-                    Xem thêm
+                    {t("button.see-more")}
                   </Link>
                 ) : (
                   <Link to={`/package-clinic/${id}`} className="info-left__button">
-                    Xem thêm
+                    {t("button.see-more")}
                   </Link>
                 )}
               </>
             )}
           </div>
-          <div className="info-right">
-            <h2 className="info-right__name">
+          <div className="introduction-right">
+            <h2 className="introduction-right__name">
               {language === "vi" ? packageData.nameVi : packageData.nameEn}
             </h2>
-            <div className="info-right__summary">
+            <div className="introduction-right__summary">
               {packageData?.introductionHTML && HtmlReactParser(packageData?.introductionHTML)}
             </div>
           </div>
@@ -88,10 +90,10 @@ const Introduce = ({ id, small, buttonSeeMore, packageData, packageClinicSpecial
 
   return (
     <>
-      <div className={`introduction ${small ? "small" : "u-wrapper"}`}>
-        <div className="info-left">
+      <div className={small ? "introduction introduction--small" : "introduction u-wrapper"}>
+        <div className="introduction-left">
           <div
-            className="info-left__image"
+            className="introduction-left__image"
             style={{
               backgroundImage: `url(${doctor?.image ? doctor?.image : ""})`,
             }}
@@ -100,21 +102,21 @@ const Introduce = ({ id, small, buttonSeeMore, packageData, packageClinicSpecial
             <>
               {remote ? (
                 <Link to={`/remote/doctor/${id}`} className="info-left__button">
-                  Xem thêm
+                  {t("button.see-more")}
                 </Link>
               ) : (
                 <Link to={`/doctor/${id}`} className="info-left__button">
-                  Xem thêm
+                  {t("button.see-more")}
                 </Link>
               )}
             </>
           )}
         </div>
-        <div className="info-right">
-          <h2 className="info-right__name">
+        <div className="introduction-right">
+          <h2 className="introduction-right__name">
             {doctor?.positionData && doctor?.roleData && handleDisplayNameRolePosition(doctor)}
           </h2>
-          <div className="info-right__summary">
+          <div className="introduction-right__summary">
             {doctor?.anotherInfo?.introductionHTML && HtmlReactParser(doctor.anotherInfo.introductionHTML)}
           </div>
         </div>

@@ -40,17 +40,17 @@ const CarouselRemoteDoctor = ({ onChange, settings, doctorRemote }) => {
             >
               <div className="slide-content">
                 {doctorRemote && (
-                  <div className="slide-icon">
+                  <div className="slide-content__icon">
                     <BsFillCameraVideoFill />
                   </div>
                 )}
-                <div className={doctorRemote ? "slide-img slice-img--doctor-remote" : "slide-img"}>
+                <div className="slide-content__img">
                   <img
                     src={specialty.imageRemote}
                     alt={language === "vi" ? specialty.nameData.valueVi : specialty.nameData.valueEn}
                   />
                 </div>
-                <span className="slide-title">
+                <span className="slide-content--name-specialty">
                   {language === "vi"
                     ? `${specialty.nameData.valueVi} từ xa`
                     : `Remote ${specialty.nameData.valueEn}`}

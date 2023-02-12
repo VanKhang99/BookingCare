@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import HtmlReactParser from "html-react-parser";
 import _ from "lodash";
 import { useParams } from "react-router-dom";
@@ -11,7 +11,7 @@ import {
   Footer,
   DateOptions,
   BookingHours,
-  MedicalAddress,
+  ClinicInfo,
   ModalBooking,
   Introduce,
 } from "../components";
@@ -71,12 +71,12 @@ const DetailDoctor = ({ remote }) => {
 
             <div className="hours-address-price row">
               <BookingHours schedules={state.schedules ? state.schedules : []} onToggleModal={handleModal} />
-              <MedicalAddress id={id} needAddress={true} remote={remote} assurance={true} />
+              <ClinicInfo id={id} needAddress={true} remote={remote} assurance={true} />
             </div>
           </div>
 
-          <div className="more-info-container">
-            <div className="more-info  u-wrapper">
+          <div className="outstanding-doctor">
+            <div className="outstanding-doctor__background  u-wrapper">
               {doctor?.anotherInfo?.aboutHTML && HtmlReactParser(doctor.anotherInfo.aboutHTML)}
             </div>
           </div>

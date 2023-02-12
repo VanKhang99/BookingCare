@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import HtmlReactParser from "html-react-parser";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
@@ -20,17 +20,17 @@ const BookingHours = ({ schedules, doctorId, packageId, onToggleModal, small, re
   };
 
   return (
-    <div className={`${small ? "small" : "col-8"} booking-schedule`}>
-      <div className="col-12 title">
+    <div className={`${small ? "small" : "col-8"} booking-hours`}>
+      <div className="col-12 booking-hours-title">
         {remote ? <FaVideo /> : <FaCalendarAlt />}
         <span>{remote ? t("detail-doctor.exam-schedule-video") : t("detail-doctor.exam-schedule")}</span>
       </div>
-      <div className="booking-schedule-list">
+      <div className="booking-hours-list">
         {schedules?.length > 0 ? (
           schedules.map((schedule, index) => {
             return (
               <button
-                className="button booking-schedule-button"
+                className="button"
                 key={index}
                 onClick={() => handleClick(schedule, doctorId, packageId)}
               >
@@ -45,7 +45,7 @@ const BookingHours = ({ schedules, doctorId, packageId, onToggleModal, small, re
         )}
       </div>
 
-      <p className="booking-schedule-fee">
+      <p className="booking-hours__fee">
         <FaRegHandPointRight />
         <span>{HtmlReactParser(t("detail-doctor.fee"))}</span>
       </p>

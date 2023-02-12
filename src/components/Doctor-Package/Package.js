@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MdLocationOn } from "react-icons/md";
 import { getSchedules } from "../../slices/scheduleSlice";
-import { Introduce, DateOptions, BookingHours, MedicalAddress } from "../index";
+import { Introduce, DateOptions, BookingHours, ClinicInfo } from "../index";
 import "../../styles/DoctorOrPackage.scss";
 
 const initialState = {
@@ -59,7 +59,7 @@ const Package = ({ id, packageData, onToggleModal, packageClinicSpecialty }) => 
             onToggleModal={onToggleModal}
             small
           />
-          <MedicalAddress id={id} small packageData={packageData} />
+          <ClinicInfo id={id} small packageData={packageData} />
         </div>
       </li>
     </>

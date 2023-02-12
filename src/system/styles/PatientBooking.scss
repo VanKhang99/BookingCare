@@ -30,6 +30,14 @@
         border-radius: 0.4rem;
         padding: 0.6rem 1.2rem;
       }
+
+      .table-empty {
+        &__message {
+          font-size: $base-size + 0.2rem;
+          color: $color-red;
+          font-weight: 500;
+        }
+      }
     }
   }
 }

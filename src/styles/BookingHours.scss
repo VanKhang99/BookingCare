@@ -1,13 +1,13 @@
 @import "./sass/variables";
 
-.booking-schedule {
-  .booking-schedule-list {
+.booking-hours {
+  &-list {
     display: flex;
     flex-wrap: wrap;
     gap: 1.2rem;
     margin-bottom: 1rem;
 
-    .booking-schedule-button {
+    button {
       width: 18rem;
       padding: 1rem;
       font-weight: 700;
@@ -27,7 +27,7 @@
     }
   }
 
-  .booking-schedule-fee {
+  &__fee {
     display: flex;
     align-items: center;
     line-height: 2.4rem;

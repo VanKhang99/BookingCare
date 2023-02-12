@@ -55,6 +55,7 @@ const PatientBooking = () => {
   };
 
   const handleFetchPatients = async () => {
+    console.log(state);
     try {
       const splitDateBooked = state.dateBooked.split("/");
       const formatDateBooked =
@@ -64,8 +65,8 @@ const PatientBooking = () => {
 
       const res = await dispatch(getAllPatientsForDoctor({ doctorId, dateBooked: formatDateBooked }));
       if (res?.payload?.status === "error") {
-        setState({ ...state, patients: [] });
-        return toast.error(res.payload.message);
+        return setState({ ...state, patients: [], isModalOpen: false });
+        // return toast.error(res.payload.message);
       }
 
       return setState({ ...state, patients: res?.payload?.data });
@@ -78,7 +79,7 @@ const PatientBooking = () => {
     if (!patientId) return setState({ ...state, isModalOpen: !state.isModalOpen });
 
     const patientConfirmed = state.patients?.find((patient) => patient.patientId === patientId);
-    console.log(patientConfirmed);
+    // console.log(patientConfirmed);
     const dataSendToServer = {
       email: patientConfirmed.patientData.email,
       patientName:
@@ -132,13 +133,13 @@ const PatientBooking = () => {
       const result = await dispatch(confirmExaminationComplete(dataSendToServer));
 
       if (result?.payload?.status === "success") {
-        setState({ ...state, isModalOpen: !state.isModalOpen });
-        return toast.success(
+        console.log(state);
+        setState({ ...state, isModalOpen: false });
+        toast.success(
           language === "vi" ? "Gửi kết quả và hóa đơn thành công" : "Send result and invoice successfully!"
         );
+        return await handleFetchPatients();
       }
-
-      console.log(dataSendToServer);
     } catch (error) {
       console.error(error);
     }
@@ -149,7 +150,7 @@ const PatientBooking = () => {
       handleFetchPatients();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.dateBooked]);
+  }, [state.dateBooked, state.patients.length]);
 
   return (
     <>
@@ -180,7 +181,7 @@ const PatientBooking = () => {
             <h3 className="label">{t("patients-booking-manage.list-patients")}</h3>
 
             <div className="table-container mt-4 px-0">
-              {state.patients?.length > 0 && (
+              {state.patients?.length > 0 ? (
                 <table className="table table-hover">
                   <thead className="table-primary">
                     <tr>
@@ -226,6 +227,14 @@ const PatientBooking = () => {
                     })}
                   </tbody>
                 </table>
+              ) : (
+                <div className="table-empty">
+                  <p className="table-empty__message">
+                    {language === "vi"
+                      ? "Hiện chưa có bệnh nhân nào đặt lịch khám bệnh. Vui lòng chọn một ngày khác!"
+                      : "No patient has scheduled an appointment yet. Please choose another date!"}
+                  </p>
+                </div>
               )}
             </div>
           </div>

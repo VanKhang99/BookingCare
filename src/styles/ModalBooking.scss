@@ -11,44 +11,44 @@
     border-top-right-radius: 0.5rem;
     align-items: center;
 
-    &.top {
+    &.modal-top {
       height: 100% !important;
-    }
 
-    .title {
-      flex-direction: column;
-      align-items: flex-start;
-      margin-bottom: 0;
-      padding: 0.8rem 0.4rem;
-      h2 {
-        font-size: $base-size + 0.8rem;
-        font-weight: 800;
+      .modal-top__title {
+        flex-direction: column;
+        align-items: flex-start;
         margin-bottom: 0;
-        color: $color-blue-dark;
+        padding: 0.8rem 0.4rem;
+        h2 {
+          font-size: $base-size + 0.8rem;
+          font-weight: 800;
+          margin-bottom: 0;
+          color: $color-blue-dark;
+        }
+
+        span {
+          font-size: $base-size - 0.3rem;
+          color: $main-color-text;
+          font-weight: 400;
+        }
       }
 
-      span {
-        font-size: $base-size - 0.3rem;
-        color: $main-color-text;
-        font-weight: 400;
-      }
-    }
+      .modal-top__icon {
+        align-self: flex-start;
+        padding: 0.8rem 0.4rem;
+        font-size: $base-size + 0.4rem;
+        opacity: 0.8;
+        transition: $transition;
 
-    .icon-close {
-      align-self: flex-start;
-      padding: 0.8rem 0.4rem;
-      font-size: $base-size + 0.4rem;
-      opacity: 0.8;
-      transition: $transition;
+        &:hover {
+          opacity: 1;
+          cursor: pointer;
+        }
 
-      &:hover {
-        opacity: 1;
-        cursor: pointer;
-      }
-
-      svg {
-        width: 2.2rem;
-        height: 2.2rem;
+        svg {
+          width: 2.2rem;
+          height: 2.2rem;
+        }
       }
     }
   }
@@ -60,8 +60,8 @@
       align-items: center;
       padding: 0.4rem 0 2rem;
 
-      .booking-left {
-        &-image {
+      &-left {
+        &__image {
           width: 12rem;
           height: 12rem;
           border-radius: 50%;
@@ -76,25 +76,20 @@
         }
       }
 
-      .booking-right {
-        &-name {
+      &-right {
+        &__name {
           font-weight: 700;
           font-size: $base-size + 0.4rem;
           color: $color-blue-dark;
         }
 
-        &-book {
-          display: flex;
-          flex-direction: column;
-          gap: 0.2rem;
-          .hour,
-          .date,
-          .price {
-            strong {
-              font-size: $base-size + 0.1rem;
-              font-weight: 700;
-              color: $color-blue-dark;
-            }
+        &__hour,
+        &__date,
+        &__price {
+          strong {
+            font-size: $base-size + 0.1rem;
+            font-weight: 700;
+            color: $color-blue-dark;
           }
         }
       }
@@ -108,28 +103,28 @@
         font-size: $base-size + 0.2rem;
       }
 
+      .form-label {
+        font-weight: 600 !important;
+      }
+
       .error-input {
         font-weight: 600;
         color: $color-red;
         margin: 0rem 0 1rem;
       }
-
-      .form-label {
-        font-weight: 500;
-      }
     }
 
-    .note-container {
+    .modal-booking-note {
       margin: 0 0 0.6rem;
       padding: 1.2rem 1rem;
       border-radius: 0.4rem;
       background-color: $color-blue-light;
 
-      .note-title {
+      &__title {
         font-weight: 700;
       }
 
-      .note-content {
+      &-list {
         li {
           font-size: $base-size + 0.2rem;
         }
@@ -142,16 +137,16 @@
     }
   }
 
-  .modal-footer-actions {
+  .modal-footer-buttons {
+    .button-group {
+      display: flex;
+      gap: 0.8rem;
+    }
+
     .btn {
       padding: 0.4rem 1.6rem;
       height: 100%;
       font-size: $base-size + 0.2rem;
-    }
-
-    .button-group {
-      display: flex;
-      gap: 0.8rem;
     }
   }
 }

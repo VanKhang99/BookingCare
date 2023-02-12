@@ -7,7 +7,7 @@
   padding: 4.5rem 0 1.5rem;
   margin-top: $height-header;
 
-  .info-left {
+  .introduction-left {
     &__image {
       width: 12rem;
       height: 12rem;
@@ -23,7 +23,7 @@
     }
   }
 
-  .info-right {
+  .introduction-right {
     &__name {
       font-weight: 700;
       font-size: $base-size + 1.4rem;
@@ -37,11 +37,11 @@
   }
 }
 
-.introduction.small {
+.introduction.introduction--small {
   padding: 0;
   margin-top: 0.4rem;
 
-  .info-left {
+  .introduction-left {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -64,7 +64,7 @@
     }
   }
 
-  .info-right {
+  .introduction-right {
     flex: 1;
     padding-right: 0.8rem;
     &__name {

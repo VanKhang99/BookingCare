@@ -35,13 +35,13 @@ const CarouselOutstandingFacilities = ({ onChange, settings }) => {
           return (
             <Link to={`/${path.CLINIC}/${clinicId}`} key={clinicId} className="slide">
               <div className="slide-content">
-                <div className="slide-img">
+                <div className="slide-content__img">
                   <img
                     src={image}
                     alt={language === "vi" ? nameClinicData.valueVi : nameClinicData.valueEn}
                   />
                 </div>
-                <span className="slide-title">
+                <span className="slide-content--name-clinic">
                   {language === "vi" ? nameClinicData.valueVi : nameClinicData.valueEn}
                 </span>
               </div>

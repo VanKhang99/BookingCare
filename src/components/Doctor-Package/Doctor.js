@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MdLocationOn } from "react-icons/md";
 import { getSchedules } from "../../slices/scheduleSlice";
-import { Introduce, DateOptions, BookingHours, MedicalAddress } from "../index";
+import { Introduce, DateOptions, BookingHours, ClinicInfo } from "../index";
 import "../../styles/DoctorOrPackage.scss";
 
 const initialState = {
@@ -48,13 +48,7 @@ const Doctor = ({ doctorId, doctorData, onToggleModal, needAddress, assurance, r
             small
             remote={remote}
           />
-          <MedicalAddress
-            id={doctorId}
-            small
-            needAddress={needAddress}
-            assurance={assurance}
-            remote={remote}
-          />
+          <ClinicInfo id={doctorId} small needAddress={needAddress} assurance={assurance} remote={remote} />
         </div>
       </li>
     </>

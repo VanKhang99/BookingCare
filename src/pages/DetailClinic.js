@@ -70,7 +70,7 @@ const DetailClinic = () => {
   }, [dataClinic, language]);
 
   return (
-    <div className="clinic-container">
+    <div className="clinic">
       <div className="clinic-header">
         <Header fixed />
       </div>

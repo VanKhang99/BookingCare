@@ -39,49 +39,43 @@
       .slide {
         position: relative;
 
-        .slide-icon {
-          position: absolute;
-          top: 0.8rem;
-          left: 0.8rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        .slide-content {
+          &__icon {
+            position: absolute;
+            top: 0.8rem;
+            left: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-          width: 2.2rem;
-          height: 2.2rem;
-          border-radius: 50%;
-          background-color: $color-green;
+            width: 2.2rem;
+            height: 2.2rem;
+            border-radius: 50%;
+            background-color: $color-green;
 
-          svg {
-            font-size: $base-size - 0.2rem;
-            color: #fff;
+            svg {
+              font-size: $base-size - 0.2rem;
+              color: #fff;
+            }
           }
-        }
 
-        .slide-img {
-          img {
+          &__img img {
             width: 100%;
-            height: auto;
+            height: 18rem;
             object-fit: cover;
             border-radius: 0.4rem;
           }
 
-          &.slice-img--doctor-remote {
-            img {
-              height: 16rem;
-              // object-fit: contain;
-            }
+          &--name-clinic,
+          &--name-specialty {
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem 0;
+            font-family: $font-main;
+            font-size: $base-size + 0.1rem;
+            text-align: center;
+            color: $main-color-text;
           }
-        }
-
-        .slide-title {
-          text-decoration: none;
-          display: block;
-          padding: 0.5rem 0;
-          font-family: $font-main;
-          font-size: $base-size + 0.1rem;
-          text-align: center;
-          color: $main-color-text;
         }
       }
     }
@@ -107,8 +101,8 @@
       }
 
       svg {
-        width: 3rem;
-        height: 3rem;
+        width: 3.2rem;
+        height: 3.2rem;
         fill: black;
       }
     }
@@ -123,41 +117,41 @@
           border-radius: 0.4rem;
           color: $main-color-text;
 
-          .slide-img {
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-position: center;
-            width: 12rem;
-            height: 12rem;
-            border-radius: 50%;
-            margin: 1rem auto;
-          }
-
-          span {
-            display: block;
-            text-align: center;
-            font-size: $base-size;
+          .slide-content__img {
+            img {
+              width: 12rem;
+              height: 12rem;
+              border-radius: 50%;
+              margin: 1rem auto;
+              object-fit: cover;
+            }
           }
 
           .slide-info {
             display: flex;
             flex-direction: column;
             gap: 0.6rem;
-          }
 
-          .slide-degree,
-          .slide-doctor-name,
-          .slide-specialty {
-            display: flex;
-            align-items: center;
-            align-items: center;
-            gap: 0.6rem;
-            margin-left: 3.2rem;
+            span {
+              display: block;
+              text-align: center;
+              font-size: $base-size;
+            }
 
-            svg {
-              width: 1.8rem;
-              height: 1.8rem;
-              opacity: 0.9;
+            &__degree,
+            &__doctor-name,
+            &__specialty {
+              display: flex;
+              align-items: center;
+              align-items: center;
+              gap: 0.6rem;
+              margin-left: 3.2rem;
+
+              svg {
+                width: 1.8rem;
+                height: 1.8rem;
+                opacity: 0.9;
+              }
             }
           }
         }
@@ -171,10 +165,9 @@
       .slick-track {
         .slide-content {
           display: flex;
-          // align-items: center;
           gap: 1rem;
 
-          .slide-img {
+          &__img {
             width: 50%;
             img {
               width: 100%;
@@ -185,7 +178,7 @@
             }
           }
 
-          .slide-title {
+          &__title {
             width: 50%;
             color: $main-color-text;
             font-size: $base-size + 0.2rem;

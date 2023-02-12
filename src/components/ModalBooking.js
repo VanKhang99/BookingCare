@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import _ from "lodash";
-import dayjs from "dayjs";
 import HtmlReactParser from "html-react-parser";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -16,14 +15,7 @@ import { IoClose } from "react-icons/io5";
 import { DatePicker, Space } from "antd";
 import { useFetchDataBaseId } from "../utils/CustomHook";
 import { getInfoAddressPriceClinic } from "../slices/doctorSlice";
-import {
-  isValidEmail,
-  isValidPhone,
-  formatDate,
-  formatterPrice,
-  covertDateToTimestamp,
-  checkData,
-} from "../utils/helpers";
+import { isValidEmail, isValidPhone, formatDate, formatterPrice, checkData } from "../utils/helpers";
 import "../styles/ModalBooking.scss";
 
 const initialState = {
@@ -45,17 +37,7 @@ const initialState = {
   },
 };
 
-const ModalBooking = ({
-  show,
-  onHide,
-  doctorId,
-  packageId,
-  doctor,
-  packageData,
-  hourClicked,
-  remote,
-  action,
-}) => {
+const ModalBooking = ({ show, onHide, doctorId, packageId, doctor, packageData, hourClicked, remote }) => {
   const [state, setState] = useState({ ...initialState });
   const { t } = useTranslation();
   const { id } = useParams();
@@ -186,7 +168,11 @@ const ModalBooking = ({
 
       onHide();
       setState({ ...initialState, gender: genderArr[0].keyMap });
-      return toast.success("Successfully booked a medical appointment");
+      return toast.success(
+        language === "vi"
+          ? "Đặt lịch khám bệnh thành công. Vui lòng xác nhận thông tin qua email!"
+          : "Successfully booked a medical appointment. Please confirm the information via email!"
+      );
     } catch (error) {
       console.log(error);
     }
@@ -273,47 +259,45 @@ const ModalBooking = ({
       centered
       animation={true}
     >
-      <Modal.Header className="top">
-        <div className="title">
+      <Modal.Header className="modal-top">
+        <div className="modal-top__title">
           <h2>{t("modal-booking.header")}</h2>
           <span>{t("modal-booking.header-note")}</span>
         </div>
-        <span className="icon-close" onClick={() => handleHideModal()}>
+        <span className="modal-top__icon" onClick={() => handleHideModal()}>
           <IoClose />
         </span>
       </Modal.Header>
       <Modal.Body>
         <div className="booking-info-container">
           <div className="booking-info">
-            <div className="booking-left">
+            <div className="booking-info-left">
               <div
-                className={`booking-left-image ${packageData?.image ? "package" : "doctor"}`}
+                className={`booking-info-left__image ${packageData?.image ? "package" : "doctor"}`}
                 style={{
                   backgroundImage: `url(${handleDisplayInterface()?.image})`,
                 }}
               ></div>
             </div>
-            <div className="booking-right">
-              <h2 className="booking-right-name">{handleDisplayInterface().name}</h2>
+            <div className="booking-info-right">
+              <h2 className="booking-info-right__name">{handleDisplayInterface().name}</h2>
 
-              <div className="booking-right-book">
-                <div className="hour">
-                  <strong>{t("modal-booking.time-frame")}: </strong>
-                  <span>{handleDisplayInterface().timeFrame}</span>
-                </div>
-
-                <div className="date">
-                  <strong>{t("modal-booking.date")}: </strong>
-                  <span>{handleDisplayInterface().date}</span>
-                </div>
-
-                <div className="price">
-                  <strong>{t("modal-booking.price")}: </strong>
-                  <span>{handleDisplayInterface().price}</span>
-                </div>
-
-                <span className="date"></span>
+              <div className="booking-info-right__hour">
+                <strong>{t("modal-booking.time-frame")}: </strong>
+                <span>{handleDisplayInterface().timeFrame}</span>
               </div>
+
+              <div className="booking-info-right__date">
+                <strong>{t("modal-booking.date")}: </strong>
+                <span>{handleDisplayInterface().date}</span>
+              </div>
+
+              <div className="booking-info-right__price">
+                <strong>{t("modal-booking.price")}: </strong>
+                <span>{handleDisplayInterface().price}</span>
+              </div>
+
+              <span className="date"></span>
             </div>
           </div>
         </div>
@@ -415,24 +399,22 @@ const ModalBooking = ({
           </div>
         </Form>
 
-        <div className="note-container">
-          <h4 className="note-title">LƯU Ý</h4>
-          <div className="note-content">
-            <ol className="note-list">
-              <li className="note-item">
-                {t("modal-booking.note-first")}
-                <ul>
-                  <li>{HtmlReactParser(t("modal-booking.note-first-sub-1"))}</li>
-                  <li>{t("modal-booking.note-first-sub-3")}</li>
-                </ul>
-              </li>
-              <li>{t("modal-booking.note-second")}</li>
-              <li>{HtmlReactParser(t("modal-booking.note-third"))}</li>
-            </ol>
-          </div>
+        <div className="modal-booking-note">
+          <h4 className="modal-booking-note__title">LƯU Ý</h4>
+          <ol className="modal-booking-note-list">
+            <li className="note-item">
+              {t("modal-booking.note-first")}
+              <ul>
+                <li>{HtmlReactParser(t("modal-booking.note-first-sub-1"))}</li>
+                <li>{t("modal-booking.note-first-sub-3")}</li>
+              </ul>
+            </li>
+            <li>{t("modal-booking.note-second")}</li>
+            <li>{HtmlReactParser(t("modal-booking.note-third"))}</li>
+          </ol>
         </div>
       </Modal.Body>
-      <Modal.Footer className="modal-footer-actions">
+      <Modal.Footer className="modal-footer-buttons">
         <div className="button-group">
           <Button variant="secondary" onClick={() => handleHideModal()}>
             {t("modal-booking.button-close")}

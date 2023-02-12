@@ -11,7 +11,7 @@
     border-bottom: 1px solid #ccc;
 
     .footer-left {
-      .logo-img {
+      &__logo {
         display: inline-block;
         img {
           width: 20rem;
@@ -23,16 +23,16 @@
         margin: 1.2rem 0 1rem;
         margin-left: 0.6rem;
 
-        strong {
+        &__name {
           display: block;
           margin: 0.5rem 0;
           color: $color-yellow-dark-2;
           font-size: $base-size + 0.4rem;
         }
 
-        .address,
-        .business-license,
-        .copyright {
+        &__address,
+        &__business-license,
+        &__copyright {
           display: flex;
           align-items: center;
           gap: 0.8rem;
@@ -48,12 +48,12 @@
         }
       }
 
-      .images {
+      &-images {
         display: flex;
         gap: 0.8rem;
 
         img {
-          width: 7.8rem;
+          width: 8.8rem;
           height: 4rem;
           margin-top: 0.6rem;
         }
@@ -61,13 +61,13 @@
     }
 
     .footer-middle {
-      .list {
+      &-list {
         display: flex;
         flex-direction: column;
         gap: 1rem;
         padding-left: 0;
 
-        .link {
+        &__link {
           font-size: $base-size + 0.2rem;
           color: #fff;
           font-weight: 400;
@@ -77,13 +77,14 @@
     }
 
     .footer-right {
-      .branches {
+      &-branches {
         display: flex;
         flex-direction: column;
         gap: 2rem;
 
-        .branch,
-        .support {
+        &__headquarter,
+        &__office,
+        &__support-link {
           font-size: $base-size + 0.2rem;
           color: #fff;
 
@@ -105,7 +106,7 @@
     justify-content: space-between;
     padding: 1rem 0 3rem;
 
-    .left {
+    &__left {
       display: flex;
       align-items: center;
       gap: 0.4rem;
@@ -132,7 +133,7 @@
       align-items: center;
       gap: 1rem;
 
-      .item {
+      &-item {
         width: 3.6rem;
         height: 3.6rem;
         border-radius: 50%;
@@ -140,12 +141,12 @@
         display: flex;
         align-items: center;
         justify-content: center;
-      }
 
-      a img {
-        width: 2rem;
-        height: 2rem;
-        object-fit: contain;
+        a img {
+          width: 2rem;
+          height: 2rem;
+          object-fit: contain;
+        }
       }
     }
   }

@@ -2,8 +2,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import axios from "../axios";
 
-const initialState = {};
-
 export const getAllSpecialties = createAsyncThunk("specialty/getAllSpecialties", async (_, thunkAPI) => {
   try {
     const res = await axios.get("/api/specialties");
@@ -47,13 +45,13 @@ export const saveInfoSpecialty = createAsyncThunk("specialty/saveInfoSpecialty",
   }
 });
 
-export const specialtySlice = createSlice({
-  name: "specialty",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {},
-});
+// export const specialtySlice = createSlice({
+//   name: "specialty",
+//   initialState,
+//   reducers: {},
+//   extraReducers: (builder) => {},
+// });
 
-export const {} = specialtySlice.actions;
+// export const {} = specialtySlice.actions;
 
-export default specialtySlice.reducer;
+// export default specialtySlice.reducer;

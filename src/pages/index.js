@@ -5,6 +5,7 @@ import Clinic from "./Clinic";
 import DetailClinic from "./DetailClinic";
 import ClinicSpecialties from "./ClinicSpecialties";
 import DetailClinicSpecialty from "./DetailClinicSpecialty";
+import Doctors from "./Doctors";
 import DetailDoctor from "./DetailDoctor";
 import MedicalPackage from "./MedicalPackage";
 import Login from "./Login";
@@ -35,6 +36,7 @@ export {
   DetailClinic,
   ClinicSpecialties,
   DetailClinicSpecialty,
+  Doctors,
   DetailDoctor,
   MedicalPackage,
   Login,

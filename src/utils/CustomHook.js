@@ -5,11 +5,12 @@ import { useDispatch } from "react-redux";
 export const useFetchDataBaseId = (id, type, functionDispatch, remote = undefined) => {
   const [data, setData] = useState({});
   const dispatch = useDispatch();
-  if (type === "doctor" || type === "moreInfoDoctor" || type === "package") {
-    id = +id;
-  }
 
   const handleFetchData = async (id) => {
+    if (type === "doctor" || type === "moreInfoDoctor" || type === "package") {
+      id = +id;
+    }
+
     try {
       let res;
       if (remote || remote === 0) {
@@ -26,9 +27,9 @@ export const useFetchDataBaseId = (id, type, functionDispatch, remote = undefine
   };
 
   useEffect(() => {
-    if (id) {
-      handleFetchData(id);
-    }
+    if (!id) return;
+
+    handleFetchData(id);
   }, [id]);
 
   return data;

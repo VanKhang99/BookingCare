@@ -4,7 +4,7 @@ import Form from "react-bootstrap/Form";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllUsers, createUser, updateDataUser } from "../../slices/systemReduxSlice";
+import { getAllUsers, createUser, updateDataUser } from "../../slices/userSlice";
 import { getAllCode } from "../../slices/allcodeSlice";
 import { FaUpload } from "react-icons/fa";
 import { isValidEmail, isValidPhone, toBase64, checkData } from "../../utils/helpers";
@@ -214,11 +214,11 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
 
   return (
     <div className="form-user container">
-      <h3 className="form-user-title my-4">
-        {state.action ? t("user-redux.update") : t("user-redux.create")}
+      <h3 className="form-user__title my-4">
+        {state.action ? t("user-manage.update-user") : t("user-manage.create-user")}
       </h3>
 
-      <Form className="form-user">
+      <Form className="form-user-inputs">
         <div className="row">
           <Form.Group className="mb-4 col-6" controlId="formEmail">
             <Form.Label>Email</Form.Label>
@@ -232,7 +232,7 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
           </Form.Group>
 
           <Form.Group className="mb-4 col-6" controlId="formPassword">
-            <Form.Label>{t("user-redux.password")}</Form.Label>
+            <Form.Label>Password</Form.Label>
             <Form.Control
               type="password"
               value={state.password}
@@ -242,7 +242,7 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
           </Form.Group>
 
           <Form.Group className="mb-4 col-6" controlId="formFirstName">
-            <Form.Label>{t("user-redux.first-name")}</Form.Label>
+            <Form.Label>{t("user-manage.first-name")}</Form.Label>
             <Form.Control
               type="text"
               value={state.firstName}
@@ -251,7 +251,7 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
           </Form.Group>
 
           <Form.Group className="mb-4 col-6" controlId="formLastName">
-            <Form.Label>{t("user-redux.last-name")}</Form.Label>
+            <Form.Label>{t("user-manage.last-name")}</Form.Label>
             <Form.Control
               type="text"
               value={state.lastName}
@@ -260,7 +260,7 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
           </Form.Group>
 
           <Form.Group className="mb-4 col-6" controlId="formAddress">
-            <Form.Label>{t("user-redux.address")}</Form.Label>
+            <Form.Label>{t("user-manage.address")}</Form.Label>
             <Form.Control
               type="text"
               value={state.address}
@@ -269,7 +269,7 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
           </Form.Group>
 
           <Form.Group className="mb-4 col-6" controlId="formPhone">
-            <Form.Label>{t("user-redux.phone")}</Form.Label>
+            <Form.Label>{t("user-manage.phone")}</Form.Label>
             <Form.Control
               type="text"
               value={state.phoneNumber}
@@ -280,7 +280,7 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
         <div className="row">
           <div className="col-6">
             <Form.Group className="mb-4 col-12" controlId="formGender">
-              <Form.Label>{t("user-redux.gender")}</Form.Label>
+              <Form.Label>{t("user-manage.gender")}</Form.Label>
               <Form.Select value={state.gender} onChange={(e, id) => handleInputChange(e, "gender")}>
                 {genderArr &&
                   genderArr.length > 0 &&
@@ -295,7 +295,7 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
             </Form.Group>
 
             <Form.Group className="mb-4 col-12" controlId="formPosition">
-              <Form.Label>{t("user-redux.position")}</Form.Label>
+              <Form.Label>{t("user-manage.position")}</Form.Label>
               <Form.Select value={state.positionId} onChange={(e, id) => handleInputChange(e, "positionId")}>
                 {positionArr &&
                   positionArr.length > 0 &&
@@ -310,7 +310,7 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
             </Form.Group>
 
             <Form.Group className="col-12" controlId="formRole">
-              <Form.Label>{t("user-redux.role")}</Form.Label>
+              <Form.Label>{t("user-manage.role")}</Form.Label>
               <Form.Select value={state.roleId} onChange={(e, id) => handleInputChange(e, "roleId")}>
                 {roleArr &&
                   roleArr.length > 0 &&
@@ -328,7 +328,7 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
           <div className="col-6">
             <Form.Group className="col-12  image-preview-container" controlId="formImage">
               <label htmlFor="image" className="form-label">
-                {t("user-redux.image")}
+                {t("user-manage.image")}
               </label>
               <input
                 type="file"
@@ -340,12 +340,14 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
 
               <div className="col-12 input-image-customize">
                 <label htmlFor="image">
-                  <FaUpload /> {t("user-redux.upload")}
+                  <FaUpload /> {t("button.upload")}
                 </label>
               </div>
 
               <div
-                className={`col-12  ${state.previewImgUrl ? "image-preview open" : "image-preview"}`}
+                className={`col-12  ${
+                  state.previewImgUrl ? "image-preview large open" : "image-preview large"
+                }`}
                 onClick={handleOpenImagePreview}
                 style={{
                   backgroundImage: `url(${state.previewImgUrl ? state.previewImgUrl : ""})`,
@@ -355,14 +357,16 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
           </div>
 
           {state.errorInput.show && (
-            <div className="col-12 error-input">{state.errorInput.show && state.errorInput.message}</div>
+            <div className="col-12 form-user-inputs__error">
+              {state.errorInput.show && state.errorInput.message}
+            </div>
           )}
         </div>
 
         <div className="row">
           <div className="form-user-button mt-4 text-end">
             <Button variant="primary" onClick={handleCreateOrUpdateUser}>
-              {state.action ? t("user-redux.button-update") : t("user-redux.button-create")}
+              {state.action ? t("button.update") : t("button.create")}
             </Button>
           </div>
         </div>
@@ -379,16 +383,3 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
 };
 
 export default FormUser;
-
-// if (!isValidPassword(state.password)) {
-//   isValid = false;
-//   setState({
-//     ...state,
-//     errorInput: {
-//       show: true,
-//       message:
-//         "Invalid password. Password must have 1 uppercase, 1 special character, 1 number and must be eight characters or longer. Please try another password!",
-//     },
-//   });
-//   return isValid;
-// }

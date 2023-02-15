@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { TableList } from "../index";
 import { Pagination } from "../../components";
-import { getAllUsers } from "../../slices/systemReduxSlice";
+import { getAllUsers } from "../../slices/userSlice";
 import "bootstrap/dist/css/bootstrap.css";
 import "../styles/UserManage.scss";
 import "../styles/ListUser.scss";
@@ -71,39 +71,33 @@ const ListUser = ({
   }, [language, rolesUser.length]);
 
   return (
-    <div className="list-user-wrapper">
-      <div className="list-user-content">
-        <div className="list-user container">
-          <div className="list-user-header">
-            <h3 className="list-user-header__title">{t("user-redux.list-users")}</h3>
+    <div className="list-user container">
+      <div className="list-user-header">
+        <h3 className="list-user-header__title">{t("user-manage.list-users").toUpperCase()}</h3>
 
-            <div className="roles-filter">
-              <div className="roles-filter-options">
-                {state.optionsRole.length > 0 && (
-                  <select onChange={handleRoleChange}>
-                    {state.optionsRole.map((role) => {
-                      return (
-                        <option key={role} value={role}>
-                          {role}
-                        </option>
-                      );
-                    })}
-                  </select>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <TableList
-            users={users.length > 0 ? users : []}
-            redux
-            onEditDataUser={onEditDataUser}
-            onDeleteUser={onDeleteUser}
-          />
-
-          <Pagination total={total} page={page} limit={limit} onPageChange={onPageChange} />
+        <div className="list-user-filter">
+          {state.optionsRole.length > 0 && (
+            <select onChange={handleRoleChange}>
+              {state.optionsRole.map((role) => {
+                return (
+                  <option key={role} value={role}>
+                    {role}
+                  </option>
+                );
+              })}
+            </select>
+          )}
         </div>
       </div>
+
+      <TableList
+        users={users.length > 0 ? users : []}
+        redux
+        onEditDataUser={onEditDataUser}
+        onDeleteUser={onDeleteUser}
+      />
+
+      <Pagination total={total} page={page} limit={limit} onPageChange={onPageChange} />
     </div>
   );
 };

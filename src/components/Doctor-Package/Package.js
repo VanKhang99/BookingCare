@@ -25,10 +25,6 @@ const Package = ({ id, packageData, onToggleModal, packageClinicSpecialty }) => 
     }
   };
 
-  // console.log(state.schedules);
-  // console.log(packageData);
-  // console.log(id);
-
   return (
     <>
       <li className="package">

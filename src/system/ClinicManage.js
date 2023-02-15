@@ -24,8 +24,8 @@ const initialState = {
   selectedClinic: "",
 
   address: "",
-  haveSpecialtyPage: 0,
-  popular: 0,
+  haveSpecialtyPage: false,
+  popular: true,
   image: "",
   logo: "",
   previewImageUrl: "",
@@ -341,8 +341,8 @@ const ClinicManage = () => {
                     <h4>{t("clinic-manage.popular")}</h4>
                   </div>
                   <Radio.Group onChange={(e) => handleCheckRadio(e, "popular")} value={state.popular}>
-                    <Radio value={0}>{language === "vi" ? "Không phổ biến" : "Unpopular"}</Radio>
-                    <Radio value={1}>{language === "vi" ? "Phổ biến" : "Popular"}</Radio>
+                    <Radio value={false}>{language === "vi" ? "Không phổ biến" : "Unpopular"}</Radio>
+                    <Radio value={true}>{language === "vi" ? "Phổ biến" : "Popular"}</Radio>
                   </Radio.Group>
                 </div>
 
@@ -354,8 +354,8 @@ const ClinicManage = () => {
                     onChange={(e) => handleCheckRadio(e, "haveSpecialtyPage")}
                     value={state.haveSpecialtyPage}
                   >
-                    <Radio value={0}>{language === "vi" ? "Không cần" : "No need"}</Radio>
-                    <Radio value={1}>{language === "vi" ? "Cần" : "Need"}</Radio>
+                    <Radio value={false}>{language === "vi" ? "Không cần" : "No need"}</Radio>
+                    <Radio value={true}>{language === "vi" ? "Cần" : "Need"}</Radio>
                   </Radio.Group>
                 </div>
               </div>

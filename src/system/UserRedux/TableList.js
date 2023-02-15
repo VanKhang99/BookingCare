@@ -15,10 +15,10 @@ const TableList = ({ users, redux, onEditDataUser, onDeleteUser }) => {
           <tr>
             <th scope="col">ID</th>
             <th scope="col">Email</th>
-            <th scope="col">{t("user-redux.first-name")}</th>
-            <th scope="col">{t("user-redux.last-name")}</th>
-            <th scope="col">{t("user-redux.address")}</th>
-            <th scope="col">{t("user-redux.actions")}</th>
+            <th scope="col">{t("user-manage.first-name")}</th>
+            <th scope="col">{t("user-manage.last-name")}</th>
+            <th scope="col">{t("user-manage.address")}</th>
+            <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>

@@ -15,7 +15,7 @@ export const headerNavList = [
   },
   {
     id: 3,
-    router: "/doctor",
+    router: "/doctors",
   },
   {
     id: 4,

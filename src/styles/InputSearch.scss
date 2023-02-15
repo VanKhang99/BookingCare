@@ -1,0 +1,23 @@
+@import "./sass/variables";
+
+.input-search {
+  width: 36rem;
+  input {
+    font-size: $base-size + 0.2rem;
+    width: 100%;
+    color: r$rgba-black-3;
+    padding: 0.8rem 1.8rem;
+    border: 1px solid $rgba-black-1;
+
+    border-radius: 100px;
+    outline: none;
+
+    &::placeholder {
+      color: $rgba-black-2;
+    }
+
+    &:focus {
+      border: 1px solid $color-blue;
+    }
+  }
+}

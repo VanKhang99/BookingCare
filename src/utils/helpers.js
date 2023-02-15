@@ -1,5 +1,6 @@
 import axios from "axios";
 import _ from "lodash";
+import unorm from "unorm";
 
 export const isValidEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
@@ -113,4 +114,18 @@ export const covertDateToTimestamp = (dateString) => {
   const date = new Date(year, month - 1, day);
   const timestamp = date.getTime();
   return timestamp;
+};
+
+export const helperFilterSearch = (input, targetName) => {
+  let targetCompare = unorm.nfd(targetName);
+  targetCompare = targetCompare.replace(/\s/g, "").replace(/[\u0300-\u036f]/g, "");
+
+  let inputPassed = unorm.nfd(input);
+  inputPassed = inputPassed.replace(/\s/g, "").replace(/[\u0300-\u036f]/g, "");
+
+  // 2) Transform to lower case
+  const targetCompareLowerCase = targetCompare.toLowerCase();
+  const inputPassedLowerCase = inputPassed.toLowerCase();
+
+  return { targetCompareLowerCase, inputPassedLowerCase };
 };

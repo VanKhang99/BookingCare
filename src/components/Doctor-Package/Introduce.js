@@ -101,7 +101,7 @@ const Introduce = ({ id, small, buttonSeeMore, packageData, packageClinicSpecial
           {buttonSeeMore && (
             <>
               {remote ? (
-                <Link to={`/remote/doctor/${id}`} className="info-left__button">
+                <Link to={`/doctor/remote/${id}`} className="info-left__button">
                   {t("button.see-more")}
                 </Link>
               ) : (

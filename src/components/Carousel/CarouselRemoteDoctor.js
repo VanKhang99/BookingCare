@@ -34,7 +34,7 @@ const CarouselRemoteDoctor = ({ onChange, settings, doctorRemote }) => {
         specialtiesRemote.map((specialty) => {
           return (
             <Link
-              to={`/${path.REMOTE}/${specialty.specialtyId}`}
+              to={`/${path.SPECIALTY}/${path.REMOTE}/${specialty.specialtyId}`}
               key={specialty.specialtyId}
               className="slide"
             >

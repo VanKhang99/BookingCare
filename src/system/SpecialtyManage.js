@@ -24,8 +24,8 @@ const mdParser = new MarkdownIt(/* Markdown-it options */);
 
 const initialState = {
   selectedSpecialty: "",
-  popular: 0,
-  remote: 0,
+  popular: false,
+  remote: false,
 
   image: "",
   previewImageUrl: "",
@@ -244,8 +244,8 @@ const SpecialtyManage = () => {
                 <h4>{t("specialty-manage.popular")}</h4>
               </div>
               <Radio.Group onChange={(e) => handleCheckRadio(e, "popular")} value={state.popular}>
-                <Radio value={0}>{language === "vi" ? "Không phổ biến" : "Unpopular"}</Radio>
-                <Radio value={1}>{language === "vi" ? "Phổ biến" : "Popular"}</Radio>
+                <Radio value={false}>{language === "vi" ? "Không phổ biến" : "Unpopular"}</Radio>
+                <Radio value={true}>{language === "vi" ? "Phổ biến" : "Popular"}</Radio>
               </Radio.Group>
             </div>
 
@@ -254,8 +254,8 @@ const SpecialtyManage = () => {
                 <h4>Có tư vấn từ xa</h4>
               </div>
               <Radio.Group onChange={(e) => handleCheckRadio(e, "remote")} value={state.remote}>
-                <Radio value={0}>{language === "vi" ? "Không" : "No"}</Radio>
-                <Radio value={1}>{language === "vi" ? "Có" : "Yes"}</Radio>
+                <Radio value={false}>{language === "vi" ? "Không" : "No"}</Radio>
+                <Radio value={true}>{language === "vi" ? "Có" : "Yes"}</Radio>
               </Radio.Group>
             </div>
 

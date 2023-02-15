@@ -101,6 +101,21 @@
 
   "system-welcome": "WELCOME TO THE MANAGEMENT CENTER",
 
+  "user-manage": {
+    "create-user": "CREATE NEW USER",
+    "update-user": "UPDATE USER INFORMATION",
+    "first-name": "First name",
+    "last-name": "Last name",
+    "address": "Address",
+    "phone": "Phone",
+    "gender": "Gender",
+    "image": "Image",
+    "position": "Position",
+    "role": "Role",
+
+    "list-users": "LIST USERS"
+  },
+
   "doctor-manage": {
     "title": "ADDITIONAL DOCTOR INFORMATION",
     "choose-doctor": "Doctor",
@@ -184,10 +199,6 @@
     "button-update": "Save changes"
   },
 
-  "clinic-specialties": {
-    "title": "LIST OF SPECIALTIES"
-  },
-
   "patients-booking-manage": {
     "main-title": "USER MANAGEMENT SCHEDULE MEDICAL EXAMINATION",
     "choose-date": "Choose date",
@@ -220,6 +231,9 @@
     "all-post": "All posts",
     "post": "Post",
     "cooperate": "Cooperate",
-    "contact": "Contact"
+    "contact": "Contact",
+    "create": "Create",
+    "update": "Update",
+    "upload": "Upload"
   }
 }

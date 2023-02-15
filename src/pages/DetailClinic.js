@@ -137,7 +137,7 @@ const DetailClinic = () => {
                 );
               })}
 
-            {dataClinic?.haveSpecialtyPage !== 0 && (
+            {dataClinic?.haveSpecialtyPage && (
               <li className="navigator-list__item navigator-list__item--specialty">
                 <Link to={`/clinics/${clinicId}/specialties`}>
                   {language === "vi" ? "Chọn chuyên khoa" : "Choose specialty"}
@@ -151,7 +151,7 @@ const DetailClinic = () => {
           <div className="clinic-body u-wrapper">
             <BookingCareIntro />
             <BookingCareBenefit html={dataClinic.noteHTML} />
-            {dataClinic.haveSpecialtyPage === 1 || (
+            {dataClinic.haveSpecialtyPage || (
               <ClinicBooking
                 title={language === "vi" ? "Đặt lịch khám" : "Booking"}
                 clinicId={dataClinic.clinicId}

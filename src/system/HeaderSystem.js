@@ -6,7 +6,7 @@ import { Select } from "antd";
 import { languages } from "../utils/constants";
 import { TbLogout } from "react-icons/tb";
 import { Button, Dropdown, Space } from "antd";
-import { handleCurrentKey } from "../slices/systemSlice";
+import { handleCurrentKey } from "../slices/appSlice";
 import { logout } from "../slices/userSlice";
 import { handleChangeLanguage, handleChangePathSystem } from "../slices/appSlice";
 import "./styles/HeaderSystem.scss";
@@ -16,7 +16,7 @@ const Header = ({ menuSystemList }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { userInfo } = useSelector((store) => store.user);
-  const { currentKeyMenu } = useSelector((store) => store.system);
+  const { currentKeyMenu } = useSelector((store) => store.app);
 
   const handleChange = (value) => {
     dispatch(handleChangeLanguage(value));

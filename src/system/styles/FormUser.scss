@@ -1,14 +1,15 @@
 @import "../../styles/sass/base";
+@import "../../styles/sass/mixin";
 
 .form-user {
-  .form-user-title {
+  &__title {
     font-weight: 800;
     font-size: $base-size + 0.4rem;
     color: $main-color-text;
     text-transform: uppercase;
   }
 
-  .form-user {
+  .form-user-inputs {
     .form-label {
       font-size: $base-size + 0.2rem;
       font-weight: 600;
@@ -19,59 +20,14 @@
       font-size: $base-size + 0.2rem;
     }
 
-    .error-input {
+    &__error {
       font-size: $base-size + 0.4rem;
       font-weight: 600;
       color: $color-red;
       margin-top: 1.8rem;
     }
 
-    .image-preview-container {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-
-      .image-preview {
-        flex: 1;
-        border: 1px solid #ced4da;
-        margin-top: 1.4rem;
-        height: 10rem;
-        border-radius: 0.4rem;
-
-        background-repeat: no-repeat;
-        background-size: contain;
-        background-position: center;
-
-        &.open {
-          cursor: pointer;
-        }
-      }
-
-      .input-image-customize {
-        display: flex;
-        gap: 0.8rem;
-
-        label,
-        .image-name {
-          border: 1px solid #ced4da;
-          width: fit-content;
-          padding: 0.6rem 1.2rem;
-          border-radius: 0.4rem;
-          font-size: $base-size + 0.2rem;
-        }
-
-        label {
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          gap: 0.8rem;
-        }
-
-        .image-name {
-          flex: 1;
-        }
-      }
-    }
+    @include image-preview-container;
 
     button {
       padding: 0.8rem 3.2rem;

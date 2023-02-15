@@ -88,7 +88,6 @@ const DetailSpecialty = ({ remote }) => {
 
   const handleProvinceChange = async (option) => {
     const doctorsCopy = await doctorsFilter;
-    console.log(doctorsCopy);
 
     if (option.value === "*") {
       return setState({ ...state, doctors: doctorsCopy });

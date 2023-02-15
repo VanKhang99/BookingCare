@@ -20,7 +20,7 @@ import "../styles/PackageDetail.scss";
 
 const initialState = {
   isOpenModalBooking: false,
-  hourBooked: {},
+  hourClicked: {},
   schedules: [],
 };
 
@@ -58,6 +58,7 @@ const PackageDetail = () => {
       image: packageData.clinicData.logo,
       price: packageData.pricePackage,
       clinicName: packageData.clinicName,
+      priceId: packageData.priceId,
     };
     return dataPackageModal;
   }, [state.hourClicked]);

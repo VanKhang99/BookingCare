@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { FormUser, ListUser } from "../index";
-import { getAllUsers, deleteUser } from "../../slices/systemReduxSlice";
+import { getAllUsers, deleteUser } from "../../slices/userSlice";
 import "../styles/UserManage.scss";
 
 const initialState = {
@@ -31,7 +31,7 @@ const UserManage = () => {
         res = await dispatch(getAllUsers({ page: "", limit: "", role }));
       }
 
-      if (res?.payload?.users.length > 0) {
+      if (res?.payload?.users?.length > 0) {
         const dataRoleTotalUsers = [...new Set(res.payload.countUsers.users.map((user) => user.roleId))];
 
         return setState({
@@ -76,10 +76,10 @@ const UserManage = () => {
   }, [state.totalUsers, state.page, state.limit]);
 
   return (
-    <div className="user-redux-container">
-      <div className="user-redux-content">
-        <div className="user-redux">
-          <div className="user-redux-title text-center mt-3">{t("menu-system.user-management")}</div>
+    <div className="user-manage-container">
+      <div className="user-manage-content">
+        <div className="user-manage">
+          <div className="user-manage__title text-center mt-3">{t("menu-system.user-management")}</div>
 
           <FormUser
             dataUserEdit={state.dataUserEdit ? state.dataUserEdit : ""}

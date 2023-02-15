@@ -20,6 +20,7 @@ import BookingCareBenefit from "./BookingCareBenefit";
 import ClinicBooking from "./ClinicBooking";
 import ClinicTopic from "./ClinicTopic";
 import Pagination from "./Pagination";
+import InputSearch from "./InputSearch";
 
 export {
   Header,
@@ -44,4 +45,5 @@ export {
   ClinicBooking,
   ClinicTopic,
   Pagination,
+  InputSearch,
 };

@@ -6,6 +6,7 @@ import i18next from "i18next";
 const initialState = {
   language: "vi" && localStorage.getItem("language"),
   pathSystem: window.location.pathname,
+  currentKeyMenu: "",
 };
 
 export const appSlice = createSlice({
@@ -22,11 +23,13 @@ export const appSlice = createSlice({
     handleChangePathSystem: (state, { payload }) => {
       state.pathSystem = payload;
     },
+    handleCurrentKey: (state, { payload }) => {
+      state.currentKeyMenu = payload;
+    },
   },
   extraReducers: (builder) => {},
 });
 
-export const { handleChangeLanguage, handleChangePathSystem } =
-  appSlice.actions;
+export const { handleChangeLanguage, handleChangePathSystem, handleCurrentKey } = appSlice.actions;
 
 export default appSlice.reducer;

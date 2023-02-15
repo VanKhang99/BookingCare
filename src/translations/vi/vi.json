@@ -76,6 +76,7 @@
   },
 
   "system-welcome": "CHÀO MỪNG ĐẾN VỚI TRUNG TÂM QUẢN LÝ",
+
   "menu-system": {
     "user": "Người dùng",
     "user-management": "Quản lý người dùng",
@@ -98,6 +99,21 @@
     "package-schedule": "Khung giờ khám bệnh",
 
     "welcome": "Xin chào 🎉 "
+  },
+
+  "user-manage": {
+    "create-user": "Tạo mới người dùng",
+    "update-user": "Cập nhật thông tin người dùng",
+    "first-name": "Tên",
+    "last-name": "Họ",
+    "address": "Địa chỉ",
+    "phone": "Số điện thoại",
+    "gender": "Giới tính",
+    "image": "Ảnh",
+    "position": "Chức danh",
+    "role": "Vai trò",
+
+    "list-users": "Danh sách người dùng"
   },
 
   "doctor-manage": {
@@ -183,10 +199,6 @@
     "button-update": "Lưu thay đổi"
   },
 
-  "clinic-specialties": {
-    "title": "DANH SÁCH CÁC CHUYÊN KHOA"
-  },
-
   "patients-booking-manage": {
     "main-title": "QUẢN LÝ NGƯỜI DÙNG ĐẶT LỊCH KHÁM BỆNH",
     "choose-date": "Chọn ngày",
@@ -219,6 +231,9 @@
     "all-post": "Tất cả bài viết",
     "post": "Bài viết",
     "cooperate": "Hợp tác",
-    "contact": "Liên hệ"
+    "contact": "Liên hệ",
+    "create": "Tạo",
+    "update": "Cập nhật",
+    "upload": "Tải ảnh"
   }
 }

@@ -7,6 +7,7 @@ import {
   DetailClinic,
   ClinicSpecialties,
   DetailClinicSpecialty,
+  Doctors,
   DetailDoctor,
   MedicalPackage,
   Login,
@@ -56,9 +57,13 @@ function App() {
         <Routes>
           <Route path={path.HOME} element={<Home />} />
 
-          <Route path={path.SPECIALTY} element={<Specialty />} />
+          <Route path={path.SPECIALTY} element={<Specialty remote={0} />} />
+          <Route path={`${path.SPECIALTY}/${path.REMOTE}`} element={<Specialty remote={1} />} />
           <Route path={`${path.SPECIALTY}/:specialtyId`} element={<DetailSpecialty remote={0} />} />
-          <Route path={`${path.REMOTE}/:specialtyId`} element={<DetailSpecialty remote={1} />} />
+          <Route
+            path={`${path.SPECIALTY}/${path.REMOTE}/:specialtyId`}
+            element={<DetailSpecialty remote={1} />}
+          />
 
           <Route path={path.CLINIC} element={<Clinic />} />
           <Route path={`${path.CLINIC}/:clinicId`} element={<DetailClinic />} />
@@ -68,8 +73,9 @@ function App() {
             element={<DetailClinicSpecialty />}
           />
 
+          <Route path={`${path.DOCTOR}s`} element={<Doctors remote={0} />} />
           <Route path={`${path.DOCTOR}/:id`} element={<DetailDoctor remote={0} />} />
-          <Route path={`${path.REMOTE}/${path.DOCTOR}/:id`} element={<DetailDoctor remote={1} />} />
+          <Route path={`${path.DOCTOR}/${path.REMOTE}/:id`} element={<DetailDoctor remote={1} />} />
 
           <Route path={path.PACKAGE} element={<MedicalPackage />} />
           <Route path={`${path.PACKAGE_CLINIC}/:packageId`} element={<PackageDetail />} />

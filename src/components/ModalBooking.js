@@ -44,7 +44,7 @@ const ModalBooking = ({ show, onHide, doctorId, packageId, doctor, packageData, 
   const { language } = useSelector((store) => store.app);
   const { genderArr } = useSelector((store) => store.allcode);
   const dispatch = useDispatch();
-  const moreInfo = useFetchDataBaseId(id || doctor.id, "moreInfoDoctor", getInfoAddressPriceClinic);
+  const moreInfo = useFetchDataBaseId(doctor?.id || id, "moreInfoDoctor", getInfoAddressPriceClinic);
 
   const handleHideModal = () => {
     onHide();
@@ -153,13 +153,13 @@ const ModalBooking = ({ show, onHide, doctorId, packageId, doctor, packageData, 
         clinicName,
         packageName,
         packageId: +packageId,
-        priceId: moreInfo.priceId,
-        remote: remote ?? 0,
+        priceId: moreInfo.priceId || packageData.priceId,
+        remote: remote ?? false,
       };
       delete dataSendServer["errorInput"];
 
       const result = await dispatch(createBooking(dataSendServer));
-      console.log(result);
+      // console.log(result);
 
       if (result.payload.status === "error") {
         onHide(hourClicked, "full-booking");

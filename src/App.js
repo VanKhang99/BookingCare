@@ -3,7 +3,7 @@ import {
   Home,
   Specialty,
   DetailSpecialty,
-  Clinic,
+  Clinics,
   DetailClinic,
   ClinicSpecialties,
   DetailClinicSpecialty,
@@ -65,7 +65,7 @@ function App() {
             element={<DetailSpecialty remote={1} />}
           />
 
-          <Route path={path.CLINIC} element={<Clinic />} />
+          <Route path={`${path.CLINIC}s`} element={<Clinics />} />
           <Route path={`${path.CLINIC}/:clinicId`} element={<DetailClinic />} />
           <Route path={`${path.CLINIC}/:clinicId/specialties`} element={<ClinicSpecialties />} />
           <Route

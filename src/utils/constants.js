@@ -3,7 +3,7 @@ export const path = {
   ADMIN: "admin",
   REMOTE: "remote",
   SPECIALTY: "specialty",
-  CLINIC: "clinics",
+  CLINIC: "clinic",
   DOCTOR: "doctor",
   DETAIL_DOCTOR: "detail-doctor",
   PACKAGE: "package",

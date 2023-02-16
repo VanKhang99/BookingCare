@@ -11,7 +11,7 @@
       color: $color-blue-dark;
     }
 
-    .clinic-inputs,
+    .clinic-inputs-top,
     .clinic-markdowns {
       &__title {
         font-weight: 700;
@@ -30,6 +30,19 @@
     }
 
     .clinic-inputs {
+      &-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        button {
+          svg {
+            width: 2rem;
+            height: 2rem;
+          }
+        }
+      }
+
       input {
         font-size: $base-size;
         padding: 0.8rem 1rem;

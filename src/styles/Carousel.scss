@@ -63,7 +63,7 @@
             width: 100%;
             height: 18rem;
             object-fit: cover;
-            border-radius: 0.4rem;
+            border-radius: 0.6rem;
           }
 
           &--name-clinic,
@@ -108,13 +108,29 @@
     }
   }
 
+  &.carousel-outstanding-facilities {
+    .slides {
+      .slick-track {
+        .slide {
+          .slide-content__img {
+            img {
+              object-fit: contain;
+              background-color: #fff;
+              padding: 1rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
   &.carousel-outstanding-doctors {
     .slides {
       .slick-track {
         .slide {
           padding: 0.5rem 0.5rem 1rem;
           border: 1px solid $grey-2;
-          border-radius: 0.4rem;
+          border-radius: 0.6rem;
           color: $main-color-text;
 
           .slide-content__img {

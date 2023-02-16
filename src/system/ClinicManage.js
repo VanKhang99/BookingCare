@@ -12,8 +12,9 @@ import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllCode } from "../slices/allcodeSlice";
-import { getInfoClinic, saveInfoClinic } from "../slices/clinicSlice";
+import { getInfoClinic, saveInfoClinic, deleteClinic } from "../slices/clinicSlice";
 import { FaUpload } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 import { toBase64, checkData } from "../utils/helpers";
 
 import "./styles/ClinicManage.scss";
@@ -24,6 +25,7 @@ const initialState = {
   selectedClinic: "",
 
   address: "",
+  keyWord: "",
   haveSpecialtyPage: false,
   popular: true,
   image: "",
@@ -86,7 +88,6 @@ const ClinicManage = () => {
   const handleStateSelectClinic = async (selectedOption) => {
     try {
       const clinic = await dispatch(getInfoClinic(selectedOption?.value || state.oldSelectedClinic));
-      console.log(clinic);
 
       const findClinicSelected = (id) => {
         return handleOptionClinic(clinicArr).find((item) => item.value === id);
@@ -108,6 +109,7 @@ const ClinicManage = () => {
           ...state,
           selectedClinic: clinicSelected,
           address: clinicData.address,
+          keyWord: clinicData.keyWord,
           haveSpecialtyPage: clinicData.haveSpecialtyPage,
           popular: clinicData.popular,
           image: clinicData.image,
@@ -205,6 +207,16 @@ const ClinicManage = () => {
     }
   };
 
+  // const handleDeleteClinic = async () => {
+  //   try {
+  //     alert("Are you sure you want to delete?");
+  //     const res = await dispatch(deleteClinic(state.selectedClinic.value));
+  //     console.log(res);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
   useEffect(() => {
     dispatch(getAllCode("CLINIC"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -239,9 +251,14 @@ const ClinicManage = () => {
           <div className="clinic-manage__title text-center mt-4">{t("clinic-manage.title")}</div>
 
           <div className="clinic-inputs ">
-            <h2 className="clinic-inputs__title">INPUTS</h2>
+            <div className="clinic-inputs-top">
+              <h2 className="clinic-inputs-top__title">INPUTS</h2>
+              {/* <Button variant="danger" onClick={() => handleDeleteClinic()}>
+                <MdDelete />
+              </Button> */}
+            </div>
             <div className="row">
-              <div className="col-6">
+              <div className="col-4">
                 <div className="title">
                   <h4>{t("clinic-manage.choose-hospital")}</h4>
                 </div>
@@ -261,15 +278,27 @@ const ClinicManage = () => {
                 </div>
               </div>
 
-              <Form.Group className="col-6" controlId="formClinicAddress">
+              <Form.Group className="col-4" controlId="formClinicAddress">
                 <div className="title">
                   <h4>{t("clinic-manage.address")}</h4>
                 </div>
                 <Form.Control
                   type="text"
                   value={state.address}
-                  className="doctor-info-input"
+                  className="doctor-info-input mt-3"
                   onChange={(e, id) => handleInfos(e, "address")}
+                />
+              </Form.Group>
+
+              <Form.Group className="col-4" controlId="formKeyWord">
+                <div className="title">
+                  <h4>Keyword (abbreviations)</h4>
+                </div>
+                <Form.Control
+                  type="text"
+                  value={state.keyWord}
+                  className="doctor-info-input mt-3"
+                  onChange={(e, id) => handleInfos(e, "keyWord")}
                 />
               </Form.Group>
             </div>
@@ -362,6 +391,7 @@ const ClinicManage = () => {
             </div>
           </div>
 
+          {/* MARKDOWNS */}
           <div className="clinic-markdowns">
             <h2 className="clinic-markdowns__title">MARKDOWN EDITOR</h2>
 

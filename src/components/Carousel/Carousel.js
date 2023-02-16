@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { path } from "../../utils/constants";
 import {
   NextArrow,
   PrevArrow,
@@ -54,25 +55,25 @@ const Slider = ({
           <h2 className="carousel-top__title">{mainTitle}</h2>
 
           {doctorRemote && (
-            <Link to="/specialty/remote" className="button button-main">
+            <Link to={`/${path.SPECIALTY}/${path.REMOTE}`} className="button button-main">
               {buttonText}
             </Link>
           )}
 
           {popularSpecialty && (
-            <Link to="/specialty" className="button button-main">
+            <Link to={`/${path.SPECIALTY}`} className="button button-main">
               {buttonText}
             </Link>
           )}
 
           {outstandingFacilities && (
-            <Link to="/specialty" className="button button-main">
+            <Link to={`/${path.CLINIC}s`} className="button button-main">
               {buttonText}
             </Link>
           )}
 
           {outstandingDoctors && (
-            <Link to="/doctors" className="button button-main">
+            <Link to={`/${path.DOCTOR}s`} className="button button-main">
               {buttonText}
             </Link>
           )}

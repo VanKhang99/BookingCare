@@ -11,7 +11,7 @@ export const headerNavList = [
   },
   {
     id: 2,
-    router: "/facilities",
+    router: "/clinics",
   },
   {
     id: 3,

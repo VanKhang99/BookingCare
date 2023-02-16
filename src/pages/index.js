@@ -1,7 +1,7 @@
 import Home from "./Home";
 import Specialty from "./Specialty";
 import DetailSpecialty from "./DetailSpecialty";
-import Clinic from "./Clinic";
+import Clinics from "./Clinics";
 import DetailClinic from "./DetailClinic";
 import ClinicSpecialties from "./ClinicSpecialties";
 import DetailClinicSpecialty from "./DetailClinicSpecialty";
@@ -32,7 +32,7 @@ export {
   Home,
   Specialty,
   DetailSpecialty,
-  Clinic,
+  Clinics,
   DetailClinic,
   ClinicSpecialties,
   DetailClinicSpecialty,

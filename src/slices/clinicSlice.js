@@ -4,12 +4,13 @@ import { toast } from "react-toastify";
 
 const initialState = {
   isLoadingClinicData: false,
+  isDeletingClinic: false,
   clinicData: {},
 };
 
-export const getAllClinicsPopular = createAsyncThunk("clinic/getAllClinicsPopular", async (_, thunkAPI) => {
+export const getAllClinics = createAsyncThunk("clinic/getAllClinics", async (type, thunkAPI) => {
   try {
-    const res = await axios.get("/api/clinics/popular");
+    const res = await axios.get(`/api/clinics/all/${type}`);
     return res.data;
   } catch (error) {
     return error.response.data;
@@ -31,6 +32,16 @@ export const saveInfoClinic = createAsyncThunk("clinic/saveInfoClinic", async (d
     return res;
   } catch (error) {
     toast.error("Save info clinic failed. Please check your data and try again!");
+    return error.response.data;
+  }
+});
+
+export const deleteClinic = createAsyncThunk("clinic/deleteClinic", async (clinicId, thunkAPI) => {
+  try {
+    const res = await axios.delete(`/api/clinics/${clinicId}`);
+    return res;
+  } catch (error) {
+    toast.error("Delete clinic failed. Please check your clinicId again!");
     return error.response.data;
   }
 });

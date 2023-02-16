@@ -45,6 +45,10 @@
             height: 1.6rem;
             fill: $color-yellow-dark-2;
           }
+
+          span {
+            font-weight: 300;
+          }
         }
       }
 
@@ -70,7 +74,7 @@
         &__link {
           font-size: $base-size + 0.2rem;
           color: #fff;
-          font-weight: 400;
+          font-weight: 300;
           text-decoration: none;
         }
       }
@@ -90,6 +94,7 @@
 
           strong {
             display: block;
+            color: $color-yellow-dark-2;
           }
 
           span {

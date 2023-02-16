@@ -41,7 +41,7 @@ const DetailClinic = () => {
 
     entries.forEach((entry) => {
       if (entry[0] === "bookingHTML" && entry[1]) {
-        if (data.haveSpecialtyPage === 0) {
+        if (!data.haveSpecialtyPage) {
           navigatorList.push(`${language === "vi" ? "Đặt lịch khám" : "Booking"}`);
         }
       } else if (entry[0] === "introductionHTML" && entry[1]) {

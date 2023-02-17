@@ -40,6 +40,7 @@
             font-size: $base-size + 0.4rem;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             outline: none;
+            cursor: pointer;
 
             background: url("data:image/svg+xml;utf8,<svg stroke='%23000000' fill='%23000000' stroke-width='0' viewBox='0 0 24 24' height='20px' width='20px' xmlns='http://www.w3.org/2000/svg'><g><path fill='none' d='M0 0h24v24H0z'></path><path d='M12 13.172l4.95-4.95 1.414 1.414L12 16 5.636 9.636 7.05 8.222z'></path></g></svg>")
               no-repeat;
@@ -49,11 +50,7 @@
       }
     }
 
-    .clinics-alphabet {
-      display: flex;
-      justify-content: space-between;
-      gap: 0.6rem;
-      margin-bottom: 6rem;
+    .clinics-alphabet-container {
       background-color: #fff;
 
       &.fixed {
@@ -61,25 +58,48 @@
         top: 0;
         left: 0;
         right: 0;
-        padding: 2rem 0;
+        padding: 1.2rem 0 1rem;
         margin-top: $height-header;
         background-color: #fff;
-        box-shadow: 1px 2px 3px #bbb;
+        box-shadow: 0 1px 3px #bbb;
+
+        .clinics-alphabet {
+          margin-bottom: 0;
+        }
       }
 
-      &__letter {
-        flex: 1;
-        font-weight: 700;
-        // background-color: $color-blue-dark-2;
-        // color: #fff;
-        font-size: $base-size + 0.2rem;
-        text-align: center;
-        vertical-align: middle;
-        padding: 0.2rem 0.4rem;
-        color: $color-blue-dark-2;
-        border: 1px solid currentColor;
-        opacity: 0.9;
-        border-radius: 0.4rem;
+      .clinics-alphabet {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.6rem;
+        margin-bottom: 6rem;
+        background-color: #fff;
+
+        &__letter {
+          flex: 1;
+
+          &-scroll {
+            display: block;
+            font-weight: 700;
+
+            display: block;
+            font-size: $base-size + 0.2rem;
+            text-align: center;
+            padding: 0.2rem 0.4rem;
+            color: $color-blue-dark-2;
+            border: 1px solid $color-blue-dark-2;
+            opacity: 0.9;
+            border-radius: 0.4rem;
+            transition: $transition;
+            cursor: pointer;
+
+            &--active {
+              color: #fff;
+              background-color: $color-blue-dark-2;
+              box-shadow: 1px 2px 3px #bbb;
+            }
+          }
+        }
       }
     }
 

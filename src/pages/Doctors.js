@@ -15,7 +15,6 @@ const Doctors = () => {
   const handleFetchSpecialties = async () => {
     try {
       const res = await dispatch(getOutstandingDoctors());
-      console.log(res);
       if (res?.payload?.data?.doctors.length > 0) {
         setDoctors([...res.payload.data.doctors]);
         setFilterDoctors([...res.payload.data.doctors]);

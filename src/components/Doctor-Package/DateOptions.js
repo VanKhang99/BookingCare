@@ -7,105 +7,113 @@ import "../../styles/DateOptions.scss";
 
 const initialState = {
   dateArr: [],
-  dateSelected: getToday().value,
+  // dateSelected: getToday().value,
 };
 
-const DateOptions = ({ id, small, onGetSchedules }) => {
+const DateOptions = ({ id, small, dateSelected, onDateChange, optionsDate }) => {
   const [state, setState] = useState({ ...initialState });
   const dispatch = useDispatch();
   const { language } = useSelector((store) => store.app);
   const previousLanguage = useRef(localStorage.getItem("language"));
 
-  const handleGetSchedules = (data) => {
-    if (!data) return;
+  // console.log(dateSelected);
 
-    let currentDate;
-    let timeStamp;
-    const currentYear = new Date().getFullYear();
+  // const handleGetSchedules = (data) => {
+  //   if (!data) return;
 
-    if (language === "vi") {
-      currentDate = `${data?.split(" - ")[1]}/${currentYear}`;
-    } else if (language === "en") {
-      currentDate = `${data?.split(" - ")[1].split("/").reverse().join("/")}/${currentYear}`;
-    }
+  //   let currentDate;
+  //   let timeStamp;
+  //   const currentYear = new Date().getFullYear();
 
-    if (previousLanguage.current === "vi") {
-      timeStamp = moment(currentDate, `${language === "vi" ? "DD/MM/YYYY" : "MM/DD/YYYY"}`).valueOf();
-    } else {
-      timeStamp = moment(currentDate, `${language === "vi" ? "MM/DD/YYYY" : "DD/MM/YYYY"}`).valueOf();
-    }
+  //   if (language === "vi") {
+  //     currentDate = `${data?.split(" - ")[1]}/${currentYear}`;
+  //   } else if (language === "en") {
+  //     currentDate = `${data?.split(" - ")[1].split("/").reverse().join("/")}/${currentYear}`;
+  //   }
 
-    if (timeStamp || id) {
-      dispatch(getSchedules({ id: +id, timeStamp: `${timeStamp}`, keyMap: "doctorId" }));
-      onGetSchedules(+id, timeStamp);
-    }
-  };
+  //   // console.log(currentDate);
 
-  const getNext7Days = () => {
-    let dates = [];
-    for (let i = 0; i < 7; i++) {
-      let date = new Date();
-      date.setDate(date.getDate() + i);
+  //   if (previousLanguage.current === "vi") {
+  //     timeStamp = moment(currentDate, `${language === "vi" ? "DD/MM/YYYY" : "MM/DD/YYYY"}`).valueOf();
+  //   } else {
+  //     timeStamp = moment(currentDate, `${language === "vi" ? "MM/DD/YYYY" : "DD/MM/YYYY"}`).valueOf();
+  //   }
 
-      const finalDateString = formatDate(date, language);
-      dates.push(finalDateString);
-    }
+  //   // console.log(timeStamp);
 
-    let currentDate = getToday().date;
+  //   if (timeStamp && id) {
+  //     // dispatch(getSchedules({ id: +id, timeStamp: `${timeStamp}`, keyMap: "doctorId" }));
+  //     onGetSchedules(+id, timeStamp);
+  //   }
+  // };
 
-    if (currentDate === dates[0]?.split(" - ")[1]) {
-      dates[0] = `${language === "vi" ? "Hôm nay" : "Today"} - ${currentDate}`;
-    }
+  // const getNext7Days = () => {
+  //   let dates = [];
+  //   for (let i = 0; i < 7; i++) {
+  //     let date = new Date();
+  //     date.setDate(date.getDate() + i);
 
-    //When change language prevent dateSelected come back fistDay of the list
-    let dateSelectedCopy = state.dateSelected;
-    dateSelectedCopy = dateSelectedCopy
-      ?.split(" - ")[1] // DD/MM or MM/DD
-      .split("/") // [DD, MM] or [MM, DD]
-      .reverse() // [MM, DD] or [DD, MM]
-      .join("/"); // MM/DD or DD/MM
+  //     const finalDateString = formatDate(date, language);
+  //     dates.push(finalDateString);
+  //   }
 
-    dateSelectedCopy = dates.find((date) => date.includes(dateSelectedCopy?.split(" - ")[0]));
+  //   let currentDate = getToday().date;
 
-    setState({
-      ...state,
-      dateArr: dates,
-      dateSelected: dateSelectedCopy ? dateSelectedCopy : state.dateSelected,
-    });
-  };
+  //   if (currentDate === dates[0]?.split(" - ")[1]) {
+  //     dates[0] = `${language === "vi" ? "Hôm nay" : "Today"} - ${currentDate}`;
+  //   }
 
-  const handleDateSelected = (e) => {
-    const dateSelectedCopy = state.dateArr.find((date) => date.includes(e.target.value?.split(" - ")[0]));
+  //   //When change language prevent dateSelected come back fistDay of the list
+  //   let dateSelectedCopy = dateSelected;
+  //   dateSelectedCopy = dateSelectedCopy
+  //     ?.split(" - ")[1] // DD/MM or MM/DD
+  //     .split("/") // [DD, MM] or [MM, DD]
+  //     .reverse() // [MM, DD] or [DD, MM]
+  //     .join("/"); // MM/DD or DD/MM
 
-    setState({
-      ...state,
-      dateSelected: dateSelectedCopy ? dateSelectedCopy : state.dateSelected,
-    });
+  //   dateSelectedCopy = dates.find((date) => date.includes(dateSelectedCopy?.split(" - ")[0]));
 
-    handleGetSchedules(dateSelectedCopy);
-  };
+  //   setState({
+  //     ...state,
+  //     dateArr: dates,
+  //     dateSelected: dateSelectedCopy ? dateSelectedCopy : dateSelected,
+  //   });
+  // };
 
-  useEffect(() => {
-    getNext7Days();
-    handleGetSchedules(state.dateSelected);
-    previousLanguage.current = language;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [language]);
+  // const handleDateSelected = (e) => {
+  //   const dateSelectedCopy = state.dateArr.find((date) => date.includes(e.target.value?.split(" - ")[0]));
+
+  //   setState({
+  //     ...state,
+  //     dateSelected: dateSelectedCopy ? dateSelectedCopy : dateSelected,
+  //   });
+
+  //   handleGetSchedules(dateSelectedCopy);
+  // };
+
+  // useEffect(() => {
+  //   getNext7Days();
+  //   // handleGetSchedules(dateSelected);
+  //   previousLanguage.current = language;
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [language]);
+
+  // console.log(dateSelected);
+
+  // console.log(optionsDate);
 
   return (
     <>
       <div className={`date-options ${small ? "small" : ""}`}>
-        {state.dateArr && state.dateArr.length > 0 && (
-          <select value={state.dateSelected} onChange={handleDateSelected}>
-            {state.dateArr.map((date, index) => {
-              return (
-                <option key={index} value={date}>
-                  {date}
-                </option>
-              );
-            })}
-          </select>
-        )}
+        <select value={dateSelected} onChange={onDateChange}>
+          {optionsDate.map((date, index) => {
+            return (
+              <option key={index} value={date}>
+                {date}
+              </option>
+            );
+          })}
+        </select>
       </div>
     </>
   );

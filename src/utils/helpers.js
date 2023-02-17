@@ -118,10 +118,16 @@ export const covertDateToTimestamp = (dateString) => {
 
 export const helperFilterSearch = (input, targetName) => {
   let targetCompare = unorm.nfd(targetName);
-  targetCompare = targetCompare.replace(/\s/g, "").replace(/[\u0300-\u036f]/g, "");
+  targetCompare = targetCompare
+    .replace(/[đĐ]/g, "d")
+    .replace(/\s/g, "")
+    .replace(/[\u0300-\u036f]/g, "");
 
   let inputPassed = unorm.nfd(input);
-  inputPassed = inputPassed.replace(/\s/g, "").replace(/[\u0300-\u036f]/g, "");
+  inputPassed = inputPassed
+    .replace(/[đĐ]/g, "d")
+    .replace(/\s/g, "")
+    .replace(/[\u0300-\u036f]/g, "");
 
   // 2) Transform to lower case
   const targetCompareLowerCase = targetCompare.toLowerCase();

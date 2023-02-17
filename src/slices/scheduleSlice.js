@@ -3,8 +3,8 @@ import axios from "../axios";
 import { toast } from "react-toastify";
 
 const initialState = {
-  isLoadingSchedules: false,
-  schedules: [],
+  // isLoadingSchedules: false,
+  // schedules: [],
 };
 
 export const createSchedules = createAsyncThunk("schedule/createSchedules", async (data, thunkAPI) => {
@@ -31,17 +31,17 @@ const scheduleSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(getSchedules.pending, (state) => {
-        state.isLoadingSchedules = true;
-      })
-      .addCase(getSchedules.fulfilled, (state, { payload }) => {
-        state.isLoadingSchedules = false;
-        state.schedules = payload.schedules;
-      })
-      .addCase(getSchedules.rejected, (state) => {
-        state.isLoadingSchedules = false;
-      });
+    // builder
+    //   .addCase(getSchedules.pending, (state) => {
+    //     state.isLoadingSchedules = true;
+    //   })
+    //   .addCase(getSchedules.fulfilled, (state, { payload }) => {
+    //     state.isLoadingSchedules = false;
+    //     state.schedules = payload.schedules;
+    //   })
+    //   .addCase(getSchedules.rejected, (state) => {
+    //     state.isLoadingSchedules = false;
+    //   });
   },
 });
 

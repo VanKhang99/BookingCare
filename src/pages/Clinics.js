@@ -1,17 +1,22 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useInView, InView } from "react-intersection-observer";
+import { Element, Link as LinkScroll } from "react-scroll";
 import { Header, InputSearch, Footer } from "../components";
 import { GoSearch } from "react-icons/go";
-import { RiArrowDownSLine } from "react-icons/ri";
 import { getAllClinics } from "../slices/clinicSlice";
+import { helperFilterSearch } from "../utils/helpers";
 import { path } from "../utils/constants";
 import "../styles/Clinics.scss";
 
 const initialState = {
-  clinicsSorted: [],
+  alphabetNavigator: [],
+  clinicsForActions: [],
+  clinicsFiltered: [],
+  inputSearch: "",
+  alphabetIsActivated: "",
 };
 
 const Clinics = () => {
@@ -22,15 +27,8 @@ const Clinics = () => {
   const { ref, inView } = useInView({
     root: null,
     threshold: 0,
-    rootMargin: "-120px",
+    rootMargin: "-80px",
   });
-  const alphabetItem = useMemo(() => {
-    return "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map((letter) => (
-      <li key={letter} className="clinics-alphabet__letter">
-        {letter}
-      </li>
-    ));
-  }, []);
 
   const handleFetchClinics = async () => {
     try {
@@ -49,36 +47,86 @@ const Clinics = () => {
 
         // Filter object have array > 0
         const clinicsAlphabetOrder = Object.entries(alphabetObject).filter(([key, arr], index) => arr.length);
-        return setState({ ...state, clinicsSorted: clinicsAlphabetOrder });
+        const alphabetNavigator = clinicsAlphabetOrder.map((clinic) => clinic[0]);
+        return setState({
+          ...state,
+          alphabetNavigator,
+          clinicsForActions: clinicsAlphabetOrder,
+          clinicsFiltered: clinicsAlphabetOrder,
+        });
       }
     } catch (error) {
       console.log(error);
     }
   };
 
+  const handleSelectProvince = (e) => {
+    let clinicsCopy = [...state.clinicsForActions];
+    if (e.target.value === "Tỉnh thành") return setState({ ...state, clinicsFiltered: clinicsCopy });
+
+    handleSearchClinics(e.target.value, "select");
+  };
+
+  const handleOnChangeSearch = (e) => {
+    return setState({ ...state, inputSearch: e.target.value });
+  };
+
+  const handleSearchClinics = (inputToActions, type) => {
+    let clinicsCopy = [...state.clinicsForActions];
+    let newClinics = clinicsCopy.map(([key, clinic]) => {
+      const clinicFiltered = clinic.filter((cl) => {
+        const { targetCompareLowerCase, inputPassedLowerCase } = helperFilterSearch(
+          inputToActions,
+          type === "select" ? cl.address : cl.nameClinicData[language === "vi" ? "valueVi" : "valueEn"]
+        );
+
+        return targetCompareLowerCase.includes(inputPassedLowerCase);
+      });
+
+      return [key, clinicFiltered];
+    });
+
+    newClinics = newClinics.filter((cl) => cl[1].length);
+
+    return setState({ ...state, clinicsFiltered: newClinics });
+  };
+
+  const handlePressEnter = (e) => {
+    if (e.key !== "Enter") return;
+
+    handleSearchClinics(state.inputSearch, "search");
+  };
+
+  const handleActiveAlphabet = (letter) => {
+    return setState({ ...state, alphabetIsActivated: letter });
+  };
+
+  const handleInActiveAlphabet = (letter) => {
+    if (letter === "A") return setState({ ...state, alphabetIsActivated: "" });
+  };
+
   useEffect(() => {
     handleFetchClinics();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div className="clinics">
       <Header />
 
-      <div className="clinics-content u-wrapper">
+      <div className="clinics-content">
         <InView>
-          <div className="clinics-top" ref={ref}>
+          <div className="clinics-top u-wrapper" ref={ref}>
             <h2>{language === "vi" ? "Cơ sở y tế" : "Health facilities"}</h2>
 
             <div className="clinics-actions">
               <div className="clinics-actions-filter">
-                <select id="test" className="clinics-actions-filter__list">
-                  <option value={language === "vi" ? "Tỉnh thành" : "Province"}>
-                    {language === "vi" ? "Tỉnh thành" : "Province"}
-                  </option>
-                  <option value={language === "vi" ? "Thành phố Hồ Chí Minh" : "Ho Chi Minh City"}>
+                <select id="test" className="clinics-actions-filter__list" onChange={handleSelectProvince}>
+                  <option value="Tỉnh thành">{language === "vi" ? "Tỉnh thành" : "Province"}</option>
+                  <option value="Thành phố Hồ Chí Minh">
                     {language === "vi" ? "Thành phố Hồ Chí Minh" : "Ho Chi Minh City"}
                   </option>
-                  <option value={language === "vi" ? "Thành phố Hà Nội" : "Ha Noi City"}>
+                  <option value="Thành phố Hà Nội">
                     {language === "vi" ? "Thành phố Hà Nội" : "Ha Noi City"}
                   </option>
                 </select>
@@ -88,48 +136,83 @@ const Clinics = () => {
                 <InputSearch
                   placeholder={language === "vi" ? "Tìm kiếm cơ sở y tế" : "Search for medical facilities"}
                   icon={<GoSearch />}
-                  // onSearch={handleSearchSpecialties}
+                  onSearch={handleOnChangeSearch}
+                  onClickSearch={() => handleSearchClinics(state.inputSearch, "search")}
+                  onEnterKey={handlePressEnter}
                 />
               </div>
             </div>
           </div>
         </InView>
 
-        <ul className={`clinics-alphabet ${inView ? "" : "fixed u-wrapper"}`}>
-          <>{alphabetItem}</>
-        </ul>
+        <div className={`clinics-alphabet-container ${inView ? "" : "fixed"}`}>
+          <ul className="clinics-alphabet u-wrapper">
+            <>
+              {state.alphabetNavigator.length > 0 &&
+                state.alphabetNavigator.map((letter) => {
+                  let offset;
+                  offset = window.scrollY > 100 ? -75 : -165;
+                  if (letter === "Y") {
+                    offset = -270;
+                  }
 
-        <div className="clinics-list">
-          {state.clinicsSorted.map((clinic, index) => {
+                  return (
+                    <li key={letter} className="clinics-alphabet__letter">
+                      <LinkScroll
+                        className={`clinics-alphabet__letter-scroll ${
+                          state.alphabetIsActivated === letter
+                            ? "clinics-alphabet__letter-scroll--active"
+                            : ""
+                        }`}
+                        to={letter}
+                        spy={true}
+                        // smooth={true}
+                        offset={offset}
+                        onSetActive={handleActiveAlphabet}
+                        onSetInactive={handleInActiveAlphabet}
+                      >
+                        {letter}
+                      </LinkScroll>
+                    </li>
+                  );
+                })}
+            </>
+          </ul>
+        </div>
+
+        <div className="clinics-list u-wrapper">
+          {state.clinicsFiltered.map((clinic, index) => {
             return (
               <React.Fragment key={index}>
-                <div className="clinics-letter">
-                  <div className="clinics-letter__header">
-                    <span>{clinic[0]}</span>
-                  </div>
+                <Element name={clinic[0]}>
+                  <div className="clinics-letter">
+                    <div className="clinics-letter__header">
+                      <span>{clinic[0]}</span>
+                    </div>
 
-                  <div className="clinics-letter-list">
-                    {clinic[1].map((cl) => {
-                      return (
-                        <React.Fragment key={cl.clinicId}>
-                          <Link to={`/${path.CLINIC}/${cl.clinicId}`} className="clinics-letter-item">
-                            <div className="clinics-letter-item__image">
-                              <img
-                                src={cl.logo}
-                                alt={
-                                  language === "vi" ? cl.nameClinicData.valueVi : cl.nameClinicData.valueEn
-                                }
-                              />
-                            </div>
-                            <div className="clinics-letter-item__name">
-                              {language === "vi" ? cl.nameClinicData.valueVi : cl.nameClinicData.valueEn}
-                            </div>
-                          </Link>
-                        </React.Fragment>
-                      );
-                    })}
+                    <div className="clinics-letter-list">
+                      {clinic[1].map((cl) => {
+                        return (
+                          <React.Fragment key={cl.clinicId}>
+                            <Link to={`/${path.CLINIC}/${cl.clinicId}`} className="clinics-letter-item">
+                              <div className="clinics-letter-item__image">
+                                <img
+                                  src={cl.logo}
+                                  alt={
+                                    language === "vi" ? cl.nameClinicData.valueVi : cl.nameClinicData.valueEn
+                                  }
+                                />
+                              </div>
+                              <div className="clinics-letter-item__name">
+                                {language === "vi" ? cl.nameClinicData.valueVi : cl.nameClinicData.valueEn}
+                              </div>
+                            </Link>
+                          </React.Fragment>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
+                </Element>
               </React.Fragment>
             );
           })}

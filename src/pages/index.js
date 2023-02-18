@@ -1,5 +1,5 @@
 import Home from "./Home";
-import Specialty from "./Specialty";
+import Specialties from "./Specialties";
 import DetailSpecialty from "./DetailSpecialty";
 import Clinics from "./Clinics";
 import DetailClinic from "./DetailClinic";
@@ -30,7 +30,7 @@ import SharedLayout from "./SharedLayout";
 
 export {
   Home,
-  Specialty,
+  Specialties,
   DetailSpecialty,
   Clinics,
   DetailClinic,

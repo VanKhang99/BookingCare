@@ -5,7 +5,9 @@
     display: flex;
     flex-wrap: wrap;
     gap: 1.2rem;
+
     margin-bottom: 1rem;
+    margin-right: 1rem;
 
     button {
       width: 18rem;
@@ -19,11 +21,19 @@
       }
     }
 
-    span {
+    &--no-hour {
+      display: flex;
+      gap: 0.4rem;
       font-size: $base-size + 0.3rem;
       padding: 1rem 2rem 1rem 0;
       color: $color-red;
       font-weight: 700;
+
+      svg {
+        margin-top: 2px;
+        width: 2rem;
+        height: 2rem;
+      }
     }
   }
 
@@ -42,15 +52,28 @@
       height: 1.8rem;
     }
   }
+}
 
-  &.small {
-    .booking-schedule-button {
+.booking-hours.small {
+  .booking-hours-list {
+    button {
       width: 16.2rem;
       font-size: $base-size;
     }
 
-    .booking-schedule-fee {
-      margin-bottom: 1.2rem;
+    &--no-hour {
+      svg {
+        margin-top: 4px;
+        flex-shrink: 0;
+        width: 1.6rem;
+        height: 1.6rem;
+      }
     }
+  }
+
+  .booking-hours__fee {
+    margin-bottom: 1.2rem;
+    font-size: $base-size;
+    font-weight: 400;
   }
 }

@@ -14,15 +14,8 @@ const Doctor = ({ doctorId, doctorData, onToggleModal, needAddress, assurance, r
   const dispatch = useDispatch();
   const { language } = useSelector((store) => store.app);
 
-  const handleGetSchedules = async (id, timeStamp) => {
-    try {
-      const res = await dispatch(getSchedules({ id: +id, timeStamp: `${timeStamp}`, keyMap: "doctorId" }));
-      if (res?.payload?.schedules) {
-        return setState({ ...state, schedules: res.payload.schedules });
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const handleUpdateSchedules = (schedulesArr) => {
+    return setState({ ...state, schedules: schedulesArr });
   };
 
   return (
@@ -40,7 +33,7 @@ const Doctor = ({ doctorId, doctorData, onToggleModal, needAddress, assurance, r
         </div>
 
         <div className="doctor-right">
-          <DateOptions id={doctorId} small onGetSchedules={handleGetSchedules} />
+          <DateOptions id={doctorId} small onUpdateSchedules={handleUpdateSchedules} />
           <BookingHours
             doctorId={doctorId}
             schedules={state.schedules ? state.schedules : []}

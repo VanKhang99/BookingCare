@@ -34,7 +34,7 @@
   "detail-doctor": {
     "exam-schedule": "Lịch khám",
     "exam-schedule-video": "Lịch tư vấn qua video",
-    "no-schedule": "Hiện ngày được chọn chưa có lịch khám bệnh. Xin hãy chọn ngày khác hoặc quay lại sau, chân thành cảm ơn!",
+    "no-schedule": "Ngày được chọn hiện chưa có lịch khám bệnh. Xin vui lòng chọn ngày khác hoặc quay lại sau, chân thành cảm ơn!",
     "fee": "Chọn khung giờ và đặt (Phí đặt lịch 0<sup>đ</sup>)",
     "address-exam": "Địa chỉ khám bệnh",
     "price": "Giá khám",

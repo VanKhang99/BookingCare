@@ -20,7 +20,7 @@ const BookingHours = ({ schedules, doctorId, packageId, onToggleModal, small, re
   };
 
   return (
-    <div className={`${small ? "small" : "col-8"} booking-hours`}>
+    <div className={`booking-hours ${small ? "small" : "col-8"} `}>
       <div className="col-12 booking-hours-title">
         {remote ? <FaVideo /> : <FaCalendarAlt />}
         <span>{remote ? t("detail-doctor.exam-schedule-video") : t("detail-doctor.exam-schedule")}</span>
@@ -39,16 +39,19 @@ const BookingHours = ({ schedules, doctorId, packageId, onToggleModal, small, re
             );
           })
         ) : (
-          <span>
-            <BiError /> {t("detail-doctor.no-schedule")}
-          </span>
+          <div className="booking-hours-list--no-hour">
+            <BiError />
+            <span>{t("detail-doctor.no-schedule")}</span>
+          </div>
         )}
       </div>
 
-      <p className="booking-hours__fee">
-        <FaRegHandPointRight />
-        <span>{HtmlReactParser(t("detail-doctor.fee"))}</span>
-      </p>
+      {schedules?.length > 0 && (
+        <p className="booking-hours__fee">
+          <FaRegHandPointRight />
+          <span>{HtmlReactParser(t("detail-doctor.fee"))}</span>
+        </p>
+      )}
     </div>
   );
 };

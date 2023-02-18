@@ -139,7 +139,7 @@ const DetailClinic = () => {
 
             {dataClinic?.haveSpecialtyPage && (
               <li className="navigator-list__item navigator-list__item--specialty">
-                <Link to={`/clinics/${clinicId}/specialties`}>
+                <Link to={`/clinic/${clinicId}/specialties`}>
                   {language === "vi" ? "Chọn chuyên khoa" : "Choose specialty"}
                 </Link>
               </li>

@@ -5,9 +5,9 @@ import { Header, InputSearch, Footer } from "../components";
 import { getAllSpecialties, getAllSpecialtiesRemote } from "../slices/specialtySlice";
 import { path } from "../utils/constants";
 import { helperFilterSearch } from "../utils/helpers";
-import "../styles/Specialty.scss";
+import "../styles/Specialties.scss";
 
-const Specialty = ({ remote }) => {
+const Specialties = ({ remote }) => {
   const [specialties, setSpecialties] = useState([]);
   const [filterSpecialties, setFilterSpecialties] = useState([]);
   const dispatch = useDispatch();
@@ -47,17 +47,17 @@ const Specialty = ({ remote }) => {
   }, []);
 
   return (
-    <div className="specialty">
+    <div className="specialties">
       <Header />
 
-      <div className="specialty-list u-wrapper">
-        <div className="specialty-top">
+      <div className="specialties-list u-wrapper">
+        <div className="specialties-top">
           <h2>
             {language === "vi"
               ? `Các chuyên khoa ${remote ? "từ xa" : "phổ biến"}`
               : `${remote ? "Telemedicine" : "Popular"} specialties `}
           </h2>
-          <div className="specialty-top-search">
+          <div className="specialties-top-search">
             <InputSearch
               placeholder={language === "vi" ? "Tìm kiếm chuyên khoa" : "Search for a specialty"}
               onSearch={handleSearchSpecialties}
@@ -74,16 +74,16 @@ const Specialty = ({ remote }) => {
                     : `/${path.SPECIALTY}/${specialty.specialtyId}`
                 }
                 key={specialty.specialtyId}
-                className="specialty-item"
+                className="specialties-item"
               >
-                <div className="specialty-item__image">
+                <div className="specialties-item__image">
                   <img
                     src={remote ? specialty.imageRemote : specialty.image}
                     alt={language === "vi" ? specialty.nameData.valueVi : specialty.nameData.valueEn}
                   />
                 </div>
 
-                <div className="specialty-item__name">
+                <div className="specialties-item__name">
                   {remote ? (
                     <span>
                       {language === "vi"
@@ -104,4 +104,4 @@ const Specialty = ({ remote }) => {
   );
 };
 
-export default Specialty;
+export default Specialties;

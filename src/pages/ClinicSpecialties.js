@@ -71,7 +71,7 @@ const ClinicSpecialties = () => {
             filterSpecialties.map((specialty, index) => {
               return (
                 <Link
-                  to={`/clinics/${specialty.clinicId}/specialties/${specialty.specialtyId}`}
+                  to={`/clinic/${specialty.clinicId}/specialties/${specialty.specialtyId}`}
                   key={specialty.specialtyId}
                   className="clinic-specialties-item"
                 >

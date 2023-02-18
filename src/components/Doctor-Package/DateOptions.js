@@ -1,112 +1,163 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
-import { getSchedules } from "../../slices/scheduleSlice";
 import { getToday, formatDate } from "../../utils/helpers";
+import { getSchedules } from "../../slices/scheduleSlice";
 import "../../styles/DateOptions.scss";
 
 const initialState = {
-  dateArr: [],
-  // dateSelected: getToday().value,
+  dateSelected: "",
+  optionsDate: [],
+
+  initialFetch: true,
 };
 
-const DateOptions = ({ id, small, dateSelected, onDateChange, optionsDate }) => {
+const DateOptions = ({ small, id, onUpdateSchedules, keyMapFetchPackage }) => {
   const [state, setState] = useState({ ...initialState });
   const dispatch = useDispatch();
   const { language } = useSelector((store) => store.app);
-  const previousLanguage = useRef(localStorage.getItem("language"));
+  const initDateSelected = useMemo(() => {
+    return getToday().value;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language]);
 
-  // console.log(dateSelected);
+  const handleGetScheduleNextDay = async () => {
+    try {
+      let newDateSelected = new Date();
+      newDateSelected.setDate(newDateSelected.getDate() + 1);
+      newDateSelected = formatDate(newDateSelected, language);
 
-  // const handleGetSchedules = (data) => {
-  //   if (!data) return;
+      const currentDate = new Date();
+      currentDate.setDate(currentDate.getDate() + 1);
+      currentDate.setMonth(currentDate.getMonth() + 1);
 
-  //   let currentDate;
-  //   let timeStamp;
-  //   const currentYear = new Date().getFullYear();
+      const nextDay =
+        language === "vi"
+          ? `${currentDate.getDate()}/${currentDate.getMonth()}/${currentDate.getFullYear()}`
+          : `${currentDate.getMonth()}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
+      const timeStampToRequestData = moment(
+        nextDay,
+        `${language === "vi" ? "DD/MM/YYYY" : "MM/DD/YYYY"}`
+      ).valueOf();
 
-  //   if (language === "vi") {
-  //     currentDate = `${data?.split(" - ")[1]}/${currentYear}`;
-  //   } else if (language === "en") {
-  //     currentDate = `${data?.split(" - ")[1].split("/").reverse().join("/")}/${currentYear}`;
-  //   }
+      const resultHoursNextDay = await dispatch(
+        getSchedules({
+          id: +id,
+          timeStamp: `${timeStampToRequestData}`,
+          keyMap: "doctorId",
+          timesFetch: "not-initial-fetch",
+        })
+      );
 
-  //   // console.log(currentDate);
+      return {
+        dateSelected: newDateSelected,
+        schedules: resultHoursNextDay.payload.schedules,
+      };
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-  //   if (previousLanguage.current === "vi") {
-  //     timeStamp = moment(currentDate, `${language === "vi" ? "DD/MM/YYYY" : "MM/DD/YYYY"}`).valueOf();
-  //   } else {
-  //     timeStamp = moment(currentDate, `${language === "vi" ? "MM/DD/YYYY" : "DD/MM/YYYY"}`).valueOf();
-  //   }
+  const handleGetSchedules = async (data, initFetch) => {
+    if (!data) return;
 
-  //   // console.log(timeStamp);
+    let timeStampToRequestData;
+    const currentYear = new Date().getFullYear();
+    const dateFormat = `${data.split(" - ")[1]}/${currentYear}`;
+    timeStampToRequestData = moment(
+      dateFormat,
+      `${language === "vi" ? "DD/MM/YYYY" : "MM/DD/YYYY"}`
+    ).valueOf();
 
-  //   if (timeStamp && id) {
-  //     // dispatch(getSchedules({ id: +id, timeStamp: `${timeStamp}`, keyMap: "doctorId" }));
-  //     onGetSchedules(+id, timeStamp);
-  //   }
-  // };
+    try {
+      const res = await dispatch(
+        getSchedules({
+          id: +id,
+          timeStamp: `${timeStampToRequestData}`,
+          keyMap: keyMapFetchPackage ? "packageId" : "doctorId",
+          timesFetch: initFetch ? "initial-fetch" : "not-initial-fetch",
+        })
+      );
 
-  // const getNext7Days = () => {
-  //   let dates = [];
-  //   for (let i = 0; i < 7; i++) {
-  //     let date = new Date();
-  //     date.setDate(date.getDate() + i);
+      if (!res?.payload?.schedules.length) {
+        if (initFetch) {
+          const { dateSelected, schedules } = await handleGetScheduleNextDay();
+          if (schedules.length > 0) {
+            onUpdateSchedules(schedules);
+            return setState({
+              ...state,
+              dateSelected,
+              initialFetch: false,
+            });
+          }
+          onUpdateSchedules(state.schedules);
+        }
+        onUpdateSchedules([]);
+      }
+      onUpdateSchedules(res.payload.schedules);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-  //     const finalDateString = formatDate(date, language);
-  //     dates.push(finalDateString);
-  //   }
+  const createOptionsDate = () => {
+    let dates = [];
+    for (let i = 0; i < 7; i++) {
+      let date = new Date();
+      date.setDate(state.initialFetch ? date.getDate() + i : date.getDate() + i + 1);
 
-  //   let currentDate = getToday().date;
+      const finalDateString = formatDate(date, language);
+      dates.push(finalDateString);
+    }
 
-  //   if (currentDate === dates[0]?.split(" - ")[1]) {
-  //     dates[0] = `${language === "vi" ? "Hôm nay" : "Today"} - ${currentDate}`;
-  //   }
+    let currentDate = getToday().date;
+    if (currentDate === dates[0].split(" - ")[1]) {
+      dates[0] = `${language === "vi" ? "Hôm nay" : "Today"} - ${currentDate}`;
+    }
 
-  //   //When change language prevent dateSelected come back fistDay of the list
-  //   let dateSelectedCopy = dateSelected;
-  //   dateSelectedCopy = dateSelectedCopy
-  //     ?.split(" - ")[1] // DD/MM or MM/DD
-  //     .split("/") // [DD, MM] or [MM, DD]
-  //     .reverse() // [MM, DD] or [DD, MM]
-  //     .join("/"); // MM/DD or DD/MM
+    //When change language prevent dateSelected come back fistDay of the list
+    const dateSelectedCopy = initDateSelected.split(" - ")[1];
+    const dateSelectedCopyReverse = initDateSelected.split(" - ")[1].split("/").reverse().join("/");
 
-  //   dateSelectedCopy = dates.find((date) => date.includes(dateSelectedCopy?.split(" - ")[0]));
+    const findDateSelected = dates.find(
+      (date) => date.includes(dateSelectedCopy) || date.includes(dateSelectedCopyReverse)
+    );
 
-  //   setState({
-  //     ...state,
-  //     dateArr: dates,
-  //     dateSelected: dateSelectedCopy ? dateSelectedCopy : dateSelected,
-  //   });
-  // };
+    return setState({
+      ...state,
+      optionsDate: [...dates],
+      dateSelected: findDateSelected,
+    });
+  };
 
-  // const handleDateSelected = (e) => {
-  //   const dateSelectedCopy = state.dateArr.find((date) => date.includes(e.target.value?.split(" - ")[0]));
+  const handleDateChange = (e) => {
+    const optionDateSelected = state.optionsDate.find((date) => date.includes(e.target.value));
 
-  //   setState({
-  //     ...state,
-  //     dateSelected: dateSelectedCopy ? dateSelectedCopy : dateSelected,
-  //   });
+    optionDateSelected === initDateSelected
+      ? handleGetSchedules(optionDateSelected, true)
+      : handleGetSchedules(optionDateSelected, false);
 
-  //   handleGetSchedules(dateSelectedCopy);
-  // };
+    return setState({
+      ...state,
+      dateSelected: optionDateSelected,
+    });
+  };
 
-  // useEffect(() => {
-  //   getNext7Days();
-  //   // handleGetSchedules(dateSelected);
-  //   previousLanguage.current = language;
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [language]);
+  useEffect(() => {
+    handleGetSchedules(initDateSelected, state.initialFetch);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // console.log(dateSelected);
-
-  // console.log(optionsDate);
+  useEffect(() => {
+    createOptionsDate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language, state.optionsDate.length]);
 
   return (
     <>
       <div className={`date-options ${small ? "small" : ""}`}>
-        <select value={dateSelected} onChange={onDateChange}>
-          {optionsDate.map((date, index) => {
+        <select value={state.dateSelected} onChange={handleDateChange}>
+          {state.optionsDate?.map((date, index) => {
             return (
               <option key={index} value={date}>
                 {date}

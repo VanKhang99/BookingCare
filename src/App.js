@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import {
   Home,
-  Specialty,
+  Specialties,
   DetailSpecialty,
   Clinics,
   DetailClinic,
@@ -57,8 +57,8 @@ function App() {
         <Routes>
           <Route path={path.HOME} element={<Home />} />
 
-          <Route path={path.SPECIALTY} element={<Specialty remote={0} />} />
-          <Route path={`${path.SPECIALTY}/${path.REMOTE}`} element={<Specialty remote={1} />} />
+          <Route path={path.SPECIALTY} element={<Specialties remote={0} />} />
+          <Route path={`${path.SPECIALTY}/${path.REMOTE}`} element={<Specialties remote={1} />} />
           <Route path={`${path.SPECIALTY}/:specialtyId`} element={<DetailSpecialty remote={0} />} />
           <Route
             path={`${path.SPECIALTY}/${path.REMOTE}/:specialtyId`}

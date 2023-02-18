@@ -38,15 +38,8 @@ const PackageDetail = () => {
     });
   };
 
-  const handleGetSchedules = async (id, timeStamp) => {
-    try {
-      const res = await dispatch(getSchedules({ id: +id, timeStamp: `${timeStamp}`, keyMap: "packageId" }));
-      if (res?.payload?.schedules) {
-        return setState({ ...state, schedules: res.payload.schedules });
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const handleUpdateSchedules = (schedulesArr) => {
+    return setState({ ...state, schedules: schedulesArr });
   };
 
   const handlePackageDataOnModal = useCallback(() => {
@@ -70,7 +63,12 @@ const PackageDetail = () => {
         <Introduce id={packageId ? packageId : ""} packageData={packageData ? packageData : {}} />
 
         <div className="schedule u-wrapper">
-          <DateOptions id={packageId ? packageId : ""} inSpecialty onGetSchedules={handleGetSchedules} />
+          <DateOptions
+            id={packageId ? packageId : ""}
+            inSpecialty
+            onUpdateSchedules={handleUpdateSchedules}
+            keyMapFetchPackage="packageId"
+          />
 
           <div className="hours-address-price row">
             <BookingHours schedules={state.schedules ? state.schedules : []} onToggleModal={handleModal} />

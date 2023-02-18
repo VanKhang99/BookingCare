@@ -11,18 +11,10 @@ const initialState = {
 
 const Package = ({ id, packageData, onToggleModal, packageClinicSpecialty }) => {
   const [state, setState] = useState({ ...initialState });
-  const dispatch = useDispatch();
   const { language } = useSelector((store) => store.app);
 
-  const handleGetSchedules = async (id, timeStamp) => {
-    try {
-      const res = await dispatch(getSchedules({ id: +id, timeStamp: `${timeStamp}`, keyMap: "packageId" }));
-      if (res?.payload?.schedules) {
-        return setState({ ...state, schedules: res.payload.schedules });
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const handleUpdateSchedules = (schedulesArr) => {
+    return setState({ ...state, schedules: schedulesArr });
   };
 
   return (
@@ -48,7 +40,12 @@ const Package = ({ id, packageData, onToggleModal, packageClinicSpecialty }) => 
         </div>
 
         <div className="package-right">
-          <DateOptions id={id} small onGetSchedules={handleGetSchedules} />
+          <DateOptions
+            id={id}
+            small
+            onUpdateSchedules={handleUpdateSchedules}
+            keyMapFetchPackage="packageId"
+          />
           <BookingHours
             packageId={id}
             schedules={state.schedules ? state.schedules : []}

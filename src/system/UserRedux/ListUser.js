@@ -6,8 +6,6 @@ import { TableList } from "../index";
 import { Pagination } from "../../components";
 import { getAllUsers } from "../../slices/userSlice";
 import "bootstrap/dist/css/bootstrap.css";
-import "../styles/UserManage.scss";
-import "../styles/ListUser.scss";
 
 const initialState = {
   optionsRole: [],
@@ -71,13 +69,16 @@ const ListUser = ({
   }, [language, rolesUser.length]);
 
   return (
-    <div className="list-user container">
-      <div className="list-user-header">
-        <h3 className="list-user-header__title">{t("user-manage.list-users").toUpperCase()}</h3>
+    <div className="list-user container" style={{ margin: "4.8rem auto" }}>
+      <div className="d-flex justify-content-between align-items-center">
+        <h3 className="u-sub-title">{t("user-manage.list-users").toUpperCase()}</h3>
 
         <div className="list-user-filter">
           {state.optionsRole.length > 0 && (
-            <select onChange={handleRoleChange}>
+            <select
+              onChange={handleRoleChange}
+              style={{ padding: "0.4rem 0 0.4rem 0.4rem", borderRadius: "0.5rem", outline: "none" }}
+            >
               {state.optionsRole.map((role) => {
                 return (
                   <option key={role} value={role}>

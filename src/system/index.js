@@ -4,13 +4,14 @@ import UserManage from "./UserRedux/UserManage";
 import FormUser from "./UserRedux/FormUser";
 import ListUser from "./UserRedux/ListUser";
 import TableList from "./UserRedux/TableList";
-import AddInfoDoctor from "./AddInfoDoctor";
+import DoctorManage from "./DoctorManage";
 import DoctorSchedule from "./UserRedux/DoctorSchedule";
 import ScheduleManage from "./ScheduleManage";
 import PatientBooking from "./PatientBooking";
 import ClinicManage from "./ClinicManage";
-import ClinicAddSpecialty from "./ClinicAddSpecialty";
+import ClinicSpecialtyManage from "./ClinicSpecialtyManage";
 import SpecialtyManage from "./SpecialtyManage";
+import PackageTypeManage from "./PackageTypeManage";
 import PackageManage from "./PackageManage";
 import PackageSchedule from "./PackageSchedule";
 import CRUDAllcodeModel from "./CRUDAllcodeModel";
@@ -24,13 +25,14 @@ export {
   UserManage,
   FormUser,
   ListUser,
-  AddInfoDoctor,
+  DoctorManage,
   DoctorSchedule,
   ScheduleManage,
   PatientBooking,
   ClinicManage,
-  ClinicAddSpecialty,
+  ClinicSpecialtyManage,
   SpecialtyManage,
+  PackageTypeManage,
   PackageManage,
   PackageSchedule,
   CRUDAllcodeModel,

@@ -6,14 +6,14 @@ import MdEditor from "react-markdown-editor-lite";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { Radio } from "antd";
+import { IoReload } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { getAllCode } from "../slices/allcodeSlice";
-import { getAllDoctors, postInfoDoctor, getDetailDoctor } from "../slices/doctorSlice";
+import { getAllDoctors, postInfoDoctor, getDetailDoctor, deleteDoctor } from "../slices/doctorSlice";
 import { checkData } from "../utils/helpers";
 import "react-markdown-editor-lite/lib/index.css";
-import "./styles/AddInfoDoctor.scss";
 
 const mdParser = new MarkdownIt(/* Markdown-it options */);
 
@@ -201,6 +201,24 @@ const AddInfoDoctor = () => {
     }
   };
 
+  const handleDeleteInfoDoctor = async () => {
+    try {
+      if (!state.selectedDoctor) throw new Error("Doctor is not selected");
+      alert("Are you sure you want to delete?");
+
+      console.log(state.selectedDoctor);
+
+      const res = await dispatch(deleteDoctor(state.selectedDoctor.value));
+      if (res.payload === "") {
+        toast.success("Doctor is deleted successfully!");
+        await dispatch(getAllDoctors());
+        return setState({ ...initialState });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleCheckRadio = (e, type) => {
     return setState({ ...state, [type]: e.target.value });
   };
@@ -225,201 +243,196 @@ const AddInfoDoctor = () => {
   }, [language]);
 
   return (
-    <div className="doctor-manage-wrapper">
-      <div className="doctor-manage-content">
-        <div className="doctor-manage container">
-          <div className="doctor-manage-title text-center mt-3">{t("doctor-manage.title")}</div>
+    <div className="doctor-manage container">
+      <div className="u-main-title text-center mt-3">{t("doctor-manage.title")}</div>
 
-          <div className="content-top row">
-            <div className="col-4">
-              <div className="title">
-                <h4>{t("doctor-manage.choose-doctor")}</h4>
-              </div>
+      <div className="doctor-manage-inputs mt-5">
+        <h2 className="u-sub-title d-flex justify-content-between">
+          INPUTS
+          <button className="u-system-button--refresh-data" onClick={() => setState({ ...initialState })}>
+            <IoReload />
+          </button>
+        </h2>
+        <div className="row">
+          <div className="col-4">
+            <label className="u-input-label">{t("doctor-manage.choose-doctor")}</label>
 
-              <div className="select-doctors mt-3">
-                {doctors && doctors.length > 0 && (
-                  <Select
-                    value={state.selectedDoctor}
-                    onChange={(option) => {
-                      handleInfos(option, "selectedDoctor");
-                      handleStateSelectDoctor(option);
-                    }}
-                    options={handleInfoOptions("doctor", doctors)}
-                    placeholder={t("doctor-manage.placeholder-doctor")}
-                  />
-                )}
-              </div>
-            </div>
-
-            <div className="col-4">
-              <div className="title">
-                <h4>{t("doctor-manage.choose-price")}</h4>
-              </div>
-
-              <div className="select-price mt-3">
-                {priceArr && priceArr.length > 0 && (
-                  <Select
-                    value={state.selectedPrice}
-                    onChange={(option) => handleInfos(option, "selectedPrice")}
-                    options={handleInfoOptions("price", priceArr)}
-                    placeholder={t("doctor-manage.placeholder-price")}
-                  />
-                )}
-              </div>
-            </div>
-
-            <div className="col-4">
-              <div className="title">
-                <h4>{t("doctor-manage.choose-clinic")}</h4>
-              </div>
-
-              <div className="select-clinic mt-3">
-                {clinicArr?.length > 0 && (
-                  <Select
-                    value={state.selectedClinic}
-                    onChange={(option) => handleInfos(option, "selectedClinic")}
-                    options={handleInfoOptions("clinic", clinicArr)}
-                    placeholder={t("doctor-manage.placeholder-clinic")}
-                  />
-                )}
-              </div>
-            </div>
-
-            <div className="col-4 mt-5">
-              <div className="title">
-                <h4>{t("doctor-manage.choose-method-payment")}</h4>
-              </div>
-
-              <div className="select-method-payment mt-3">
-                {paymentArr && paymentArr.length > 0 && (
-                  <Select
-                    value={state.selectedPayment}
-                    onChange={(option) => handleInfos(option, "selectedPayment")}
-                    options={handleInfoOptions("payment", paymentArr)}
-                    placeholder={t("doctor-manage.placeholder-payment")}
-                  />
-                )}
-              </div>
-            </div>
-
-            <div className="col-4 mt-5">
-              <div className="title">
-                <h4>{t("doctor-manage.choose-province")}</h4>
-              </div>
-
-              <div className="select-province mt-3">
-                {provinceArr && provinceArr.length > 0 && (
-                  <Select
-                    value={state.selectedProvince}
-                    onChange={(option) => handleInfos(option, "selectedProvince")}
-                    options={handleInfoOptions("province", provinceArr)}
-                    placeholder={t("doctor-manage.placeholder-province")}
-                  />
-                )}
-              </div>
-            </div>
-
-            <div className="col-4 mt-5">
-              <div className="title">
-                <h4>{t("doctor-manage.choose-specialty")}</h4>
-              </div>
-
-              <div className="select-specialty mt-3">
-                {specialtyArr && specialtyArr.length > 0 && (
-                  <Select
-                    value={state.selectedSpecialty}
-                    onChange={(option) => handleInfos(option, "selectedSpecialty")}
-                    options={handleInfoOptions("specialty", specialtyArr)}
-                    placeholder={t("doctor-manage.placeholder-specialty")}
-                  />
-                )}
-              </div>
-            </div>
-
-            <Form.Group className="mt-5 col-6" controlId="formClinicAddress">
-              <div className="title">
-                <h4>{t("doctor-manage.clinic-address")}</h4>
-              </div>
-              <Form.Control
-                type="text"
-                value={state.addressClinic}
-                className="doctor-info-input"
-                onChange={(e, id) => handleInfos(e, "addressClinic")}
-              />
-            </Form.Group>
-
-            <Form.Group className="mt-5 col-6" controlId="formNote">
-              <div className="title">
-                <h4>{t("doctor-manage.note")}</h4>
-              </div>
-              <Form.Control
-                type="text"
-                value={state.note}
-                className="doctor-info-input"
-                onChange={(e, id) => handleInfos(e, "note")}
-              />
-            </Form.Group>
-
-            <div className="col-6 mt-5">
-              <div className="title">
-                <h4>{t("doctor-manage.outstanding-doctor")}</h4>
-              </div>
-              <Radio.Group onChange={(e) => handleCheckRadio(e, "popular")} value={state.popular}>
-                <Radio value={false}>{language === "vi" ? "Không phổ biến" : "Unpopular"}</Radio>
-                <Radio value={true}>{language === "vi" ? "Phổ biến" : "Popular"}</Radio>
-              </Radio.Group>
-            </div>
-
-            <div className="col-12 mt-5">
-              <div className="title">
-                <h4>Có tư vấn từ xa</h4>
-              </div>
-              <Radio.Group onChange={(e) => handleCheckRadio(e, "remote")} value={state.remote}>
-                <Radio value={false}>{language === "vi" ? "Không" : "No"}</Radio>
-                <Radio value={true}>{language === "vi" ? "Có" : "Yes"}</Radio>
-              </Radio.Group>
-            </div>
-
-            <div className="col-12 mt-5">
-              <div className="title">
-                <h4>{t("doctor-manage.summary")}</h4>
-              </div>
-
-              <div className="introduce mt-3">
-                <MdEditor
-                  value={state.introductionMarkdown}
-                  style={{
-                    height: 180,
-                    marginBottom: 24,
+            <div className="mt-3">
+              {doctors && doctors.length > 0 && (
+                <Select
+                  value={state.selectedDoctor}
+                  onChange={(option) => {
+                    handleInfos(option, "selectedDoctor");
+                    handleStateSelectDoctor(option);
                   }}
-                  renderHTML={(text) => mdParser.render(text)}
-                  onChange={(value) => handleMarkdownChange(value, "introduction")}
+                  options={handleInfoOptions("doctor", doctors)}
+                  placeholder={t("doctor-manage.placeholder-doctor")}
                 />
-              </div>
+              )}
             </div>
           </div>
 
-          <div className="more-info">
-            <div className="title mb-3">
-              <h4>{t("doctor-manage.more-info")}</h4>
-            </div>
+          <div className="col-4">
+            <label className="u-input-label">{t("common.choose-price")}</label>
 
-            <MdEditor
-              value={state.aboutMarkdown}
-              style={{ height: "500px" }}
-              renderHTML={(text) => mdParser.render(text)}
-              onChange={(value) => handleMarkdownChange(value, "about")}
+            <div className="mt-3">
+              {priceArr && priceArr.length > 0 && (
+                <Select
+                  value={state.selectedPrice}
+                  onChange={(option) => handleInfos(option, "selectedPrice")}
+                  options={handleInfoOptions("price", priceArr)}
+                  placeholder={t("common.placeholder-price")}
+                />
+              )}
+            </div>
+          </div>
+
+          <div className="col-4">
+            <label className="u-input-label">{t("common.choose-clinic")}</label>
+
+            <div className="mt-3">
+              {clinicArr?.length > 0 && (
+                <Select
+                  value={state.selectedClinic}
+                  onChange={(option) => handleInfos(option, "selectedClinic")}
+                  options={handleInfoOptions("clinic", clinicArr)}
+                  placeholder={t("common.placeholder-clinic")}
+                />
+              )}
+            </div>
+          </div>
+
+          <div className="col-4 mt-5">
+            <label className="u-input-label">{t("common.choose-method-payment")}</label>
+
+            <div className="mt-3">
+              {paymentArr && paymentArr.length > 0 && (
+                <Select
+                  value={state.selectedPayment}
+                  onChange={(option) => handleInfos(option, "selectedPayment")}
+                  options={handleInfoOptions("payment", paymentArr)}
+                  placeholder={t("common.placeholder-payment")}
+                />
+              )}
+            </div>
+          </div>
+
+          <div className="col-4 mt-5">
+            <label className="u-input-label">{t("common.choose-province")}</label>
+
+            <div className="mt-3">
+              {provinceArr && provinceArr.length > 0 && (
+                <Select
+                  value={state.selectedProvince}
+                  onChange={(option) => handleInfos(option, "selectedProvince")}
+                  options={handleInfoOptions("province", provinceArr)}
+                  placeholder={t("common.placeholder-province")}
+                />
+              )}
+            </div>
+          </div>
+
+          <div className="col-4 mt-5">
+            <label className="u-input-label">{t("common.choose-specialty")}</label>
+
+            <div className="select-specialty mt-3">
+              {specialtyArr && specialtyArr.length > 0 && (
+                <Select
+                  value={state.selectedSpecialty}
+                  onChange={(option) => handleInfos(option, "selectedSpecialty")}
+                  options={handleInfoOptions("specialty", specialtyArr)}
+                  placeholder={t("common.placeholder-specialty")}
+                />
+              )}
+            </div>
+          </div>
+
+          <Form.Group className="mt-5 col-6" controlId="formClinicAddress">
+            <label className="u-input-label">{t("doctor-manage.clinic-address")}</label>
+
+            <Form.Control
+              type="text"
+              value={state.addressClinic}
+              className="u-input"
+              onChange={(e, id) => handleInfos(e, "addressClinic")}
             />
+          </Form.Group>
+
+          <Form.Group className="mt-5 col-6" controlId="formNote">
+            <label className="u-input-label">{t("doctor-manage.note")}</label>
+
+            <Form.Control
+              type="text"
+              value={state.note}
+              className="u-input"
+              onChange={(e, id) => handleInfos(e, "note")}
+            />
+          </Form.Group>
+
+          <div className="col-6 mt-5">
+            <label className="u-input-label d-block ">{t("common.outstanding")}</label>
+
+            <Radio.Group
+              className="mt-2"
+              onChange={(e) => handleCheckRadio(e, "popular")}
+              value={state.popular}
+            >
+              <Radio value={false}>{language === "vi" ? "Không phổ biến" : "Unpopular"}</Radio>
+              <Radio value={true}>{language === "vi" ? "Phổ biến" : "Popular"}</Radio>
+            </Radio.Group>
           </div>
 
-          <div className="row">
-            <div className="doctor-manage-button mt-4 text-end">
-              <Button variant="primary" onClick={handleSaveInfoDoctor}>
-                {state.isHaveInfo ? t("doctor-manage.button-update") : t("doctor-manage.button-save")}
-              </Button>
-            </div>
+          <div className="col-12 mt-5">
+            <label className="u-input-label d-block ">{t("common.consultant-remote")}</label>
+
+            <Radio.Group
+              className="mt-2"
+              onChange={(e) => handleCheckRadio(e, "remote")}
+              value={state.remote}
+            >
+              <Radio value={false}>{language === "vi" ? "Không" : "No"}</Radio>
+              <Radio value={true}>{language === "vi" ? "Có" : "Yes"}</Radio>
+            </Radio.Group>
           </div>
         </div>
+      </div>
+
+      <div className="doctor-manage-markdowns mt-5">
+        <h2 className="u-sub-title">MARKDOWNS</h2>
+        <div className="doctor-manage-markdown">
+          <label className="u-input-label">{t("doctor-manage.summary")}</label>
+
+          <MdEditor
+            value={state.introductionMarkdown}
+            style={{
+              height: 300,
+              marginBottom: 24,
+            }}
+            renderHTML={(text) => mdParser.render(text)}
+            onChange={(value) => handleMarkdownChange(value, "introduction")}
+          />
+        </div>
+
+        <div className="doctor-manage-markdown">
+          <label className="u-input-label">{t("doctor-manage.more-info")}</label>
+
+          <MdEditor
+            value={state.aboutMarkdown}
+            style={{ height: "300px" }}
+            renderHTML={(text) => mdParser.render(text)}
+            onChange={(value) => handleMarkdownChange(value, "about")}
+          />
+        </div>
+      </div>
+
+      <div className="u-system-button my-5 d-flex gap-3 justify-content-end">
+        <Button variant="danger" onClick={handleDeleteInfoDoctor}>
+          {t("button.delete")}
+        </Button>
+
+        <Button variant="primary" onClick={handleSaveInfoDoctor}>
+          {state.isHaveInfo ? t("button.update") : t("button.create")}
+        </Button>
       </div>
     </div>
   );

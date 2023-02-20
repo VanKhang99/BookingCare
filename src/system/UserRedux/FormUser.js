@@ -4,9 +4,10 @@ import Form from "react-bootstrap/Form";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllUsers, createUser, updateDataUser } from "../../slices/userSlice";
+import { createUser, updateDataUser } from "../../slices/userSlice";
 import { getAllCode } from "../../slices/allcodeSlice";
 import { FaUpload } from "react-icons/fa";
+import { IoReload } from "react-icons/io5";
 import { isValidEmail, isValidPhone, toBase64, checkData } from "../../utils/helpers";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
@@ -214,8 +215,11 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
 
   return (
     <div className="form-user container">
-      <h3 className="form-user__title my-4">
+      <h3 className="u-sub-title my-4 d-flex justify-content-between">
         {state.action ? t("user-manage.update-user") : t("user-manage.create-user")}
+        <button className="u-system-button--refresh-data" onClick={() => setState({ ...initialState })}>
+          <IoReload />
+        </button>
       </h3>
 
       <Form className="form-user-inputs">
@@ -364,7 +368,7 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
         </div>
 
         <div className="row">
-          <div className="form-user-button mt-4 text-end">
+          <div className="u-system-button mt-4 text-end">
             <Button variant="primary" onClick={handleCreateOrUpdateUser}>
               {state.action ? t("button.update") : t("button.create")}
             </Button>

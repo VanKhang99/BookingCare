@@ -13,27 +13,26 @@ const MenuSystem = ({ roleId }) => {
 
   const adminMenuList = {
     user: [
-      // {
-      //   label: <Link to="user-manage">CRUD</Link>,
-      //   key: "1",
-      //   icon: <AiOutlineUser />,
-      // },
       {
-        label: <Link to="doctor-manage">{t("menu-system.user-management")}</Link>,
+        label: <Link to="user-manage">{t("menu-system.user-management")}</Link>,
+        key: "1",
+        icon: <AiOutlineUser />,
+      },
+    ],
+
+    doctor: [
+      {
+        label: <Link to="doctor-manage">{t("menu-system.doctor-manage")}</Link>,
         key: "1",
         icon: <AiOutlineUser />,
       },
       {
-        label: <Link to="add-info-doctor">{t("menu-system.add-info-doctor")}</Link>,
-        key: "2",
-        icon: <AiOutlineUser />,
-      },
-      {
-        label: <Link to="schedule-manage">{t("menu-system.schedule-management")}</Link>,
+        label: <Link to="doctor-schedule-manage">{t("menu-system.doctor-schedule-management")}</Link>,
         key: "3",
         icon: <AiOutlineUser />,
       },
     ],
+
     clinic: [
       {
         label: <Link to="clinic-manage">{t("menu-system.clinic-management")}</Link>,
@@ -41,7 +40,7 @@ const MenuSystem = ({ roleId }) => {
         icon: <BiClinic />,
       },
       {
-        label: <Link to="clinic-add-specialty">{t("menu-system.clinic-add-specialty")}</Link>,
+        label: <Link to="clinic-specialty-manage">{t("menu-system.clinic-specialty-manage")}</Link>,
         key: "2",
         icon: <BiClinic />,
       },
@@ -62,13 +61,18 @@ const MenuSystem = ({ roleId }) => {
     ],
     package: [
       {
-        label: <Link to="package-manage">{t("menu-system.package-management")}</Link>,
+        label: <Link to="package-type">{t("menu-system.package-type")}</Link>,
         key: "1",
         icon: <GoPackage />,
       },
       {
-        label: <Link to="package-schedule">{t("menu-system.package-schedule")}</Link>,
+        label: <Link to="package-manage">{t("menu-system.package-management")}</Link>,
         key: "2",
+        icon: <GoPackage />,
+      },
+      {
+        label: <Link to="package-schedule">{t("menu-system.package-schedule")}</Link>,
+        key: "3",
         icon: <GoPackage />,
       },
     ],

@@ -13,8 +13,9 @@ import { Radio } from "antd";
 import { toast } from "react-toastify";
 import { toBase64 } from "../utils/helpers";
 import { FaUpload } from "react-icons/fa";
+import { IoReload } from "react-icons/io5";
 import { getAllCode } from "../slices/allcodeSlice";
-import { getInfoSpecialty, saveInfoSpecialty } from "../slices/specialtySlice";
+import { getInfoSpecialty, saveInfoSpecialty, deleteInfoSpecialty } from "../slices/specialtySlice";
 import { checkData } from "../utils/helpers";
 
 import "react-image-lightbox/style.css";
@@ -187,6 +188,24 @@ const SpecialtyManage = () => {
     }
   };
 
+  const handleDeleteDataSpecialty = async () => {
+    try {
+      if (!state.selectedSpecialty) throw new Error("Specialty is not selected");
+      alert("Are you sure you want to delete?");
+
+      console.log(state.selectedDoctor);
+
+      const res = await dispatch(deleteInfoSpecialty(state.selectedSpecialty.value));
+      if (res.payload === "") {
+        toast.success("Specialty is deleted successfully!");
+        await dispatch(getAllCode("SPECIALTY"));
+        return setState({ ...initialState });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     dispatch(getAllCode("SPECIALTY"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -214,164 +233,165 @@ const SpecialtyManage = () => {
   }, [state.image, state.imageRemote]);
 
   return (
-    <div className="specialty container">
-      <div className="specialty-content">
-        <div className="specialty-content__title mt-3">{t("specialty-manage.title")}</div>
+    <div className="specialty-manage container">
+      <div className="u-main-title mt-3">{t("specialty-manage.title")}</div>
 
-        <div className="specialty-inputs">
-          <div className="row">
-            <Form.Group className="mt-5 col-4" controlId="formClinicAddress">
-              <div className="label">
-                <h4>{t("specialty-manage.choose-specialty")}</h4>
+      <div className="specialty-manage-inputs">
+        <h2 className="u-sub-title mt-5 d-flex justify-content-between">
+          INPUTS
+          <button className="u-system-button--refresh-data" onClick={() => setState({ ...initialState })}>
+            <IoReload />
+          </button>
+        </h2>
+        <div className="row">
+          <Form.Group className="mt-2 col-4" controlId="formClinicAddress">
+            <h4 className="u-input-label">{t("common.choose-specialty")}</h4>
+
+            {specialtyArr && specialtyArr.length > 0 && (
+              <Select
+                value={state.selectedSpecialty}
+                onChange={(option) => {
+                  handleInfos(option);
+                  handleStateSelectedSpecialty(option);
+                }}
+                options={handleInfoOptions(specialtyArr)}
+                placeholder={t("common.placeholder-specialty")}
+              />
+            )}
+          </Form.Group>
+        </div>
+
+        <div className="row">
+          <div className="col-12 mt-5">
+            <h4 className="u-input-label">{t("common.outstanding")}</h4>
+
+            <Radio.Group onChange={(e) => handleCheckRadio(e, "popular")} value={state.popular}>
+              <Radio value={false}>{language === "vi" ? "Không phổ biến" : "Unpopular"}</Radio>
+              <Radio value={true}>{language === "vi" ? "Phổ biến" : "Popular"}</Radio>
+            </Radio.Group>
+          </div>
+
+          <div className="col-12 mt-5">
+            <h4 className="u-input-label">{t("common.consultant-remote")}</h4>
+
+            <Radio.Group onChange={(e) => handleCheckRadio(e, "remote")} value={state.remote}>
+              <Radio value={false}>{language === "vi" ? "Không" : "No"}</Radio>
+              <Radio value={true}>{language === "vi" ? "Có" : "Yes"}</Radio>
+            </Radio.Group>
+          </div>
+
+          <div className="col-4 mt-5">
+            <Form.Group className="form-group col-12 image-preview-container" controlId="formImage">
+              <label htmlFor="image" className="u-input-label">
+                {t("specialty-manage.image-specialty")}
+              </label>
+              <input
+                type="file"
+                id="image"
+                className="form-control"
+                onChange={(e) => handleOnChangeImage(e, "Image")}
+                hidden
+              />
+
+              <div className="col-12 input-image-customize">
+                <label htmlFor="image">
+                  <FaUpload /> {t("specialty-manage.button-upload")}
+                </label>
               </div>
-              {specialtyArr && specialtyArr.length > 0 && (
-                <Select
-                  value={state.selectedSpecialty}
-                  onChange={(option) => {
-                    handleInfos(option);
-                    handleStateSelectedSpecialty(option);
-                  }}
-                  options={handleInfoOptions(specialtyArr)}
-                  placeholder={t("specialty-manage.placeholder")}
-                />
-              )}
+
+              <div
+                className={`col-12  ${state.previewImageUrl ? "image-preview open" : "image-preview"}`}
+                onClick={() => handleOpenImagePreview("Image")}
+                style={{
+                  backgroundImage: `url(${state.previewImageUrl ? state.previewImageUrl : ""})`,
+                }}
+              ></div>
             </Form.Group>
           </div>
 
-          <div className="row">
-            <div className="col-12 mt-5">
-              <div className="label">
-                <h4>{t("specialty-manage.popular")}</h4>
-              </div>
-              <Radio.Group onChange={(e) => handleCheckRadio(e, "popular")} value={state.popular}>
-                <Radio value={false}>{language === "vi" ? "Không phổ biến" : "Unpopular"}</Radio>
-                <Radio value={true}>{language === "vi" ? "Phổ biến" : "Popular"}</Radio>
-              </Radio.Group>
-            </div>
+          <div className="col-4 mt-5">
+            <Form.Group
+              className="form-group col-12 image-remote-preview-container"
+              controlId="formImageRemote"
+            >
+              <label htmlFor="imageRemote" className="u-input-label">
+                {t("specialty-manage.image-specialty-remote")}
+              </label>
+              <input
+                type="file"
+                id="imageRemote"
+                className="form-control"
+                onChange={(e) => handleOnChangeImage(e, "ImageRemote")}
+                hidden
+              />
 
-            <div className="col-12 mt-5">
-              <div className="label">
-                <h4>Có tư vấn từ xa</h4>
-              </div>
-              <Radio.Group onChange={(e) => handleCheckRadio(e, "remote")} value={state.remote}>
-                <Radio value={false}>{language === "vi" ? "Không" : "No"}</Radio>
-                <Radio value={true}>{language === "vi" ? "Có" : "Yes"}</Radio>
-              </Radio.Group>
-            </div>
-
-            <div className="col-4 mt-5">
-              <Form.Group className="form-group col-12 image-preview-container" controlId="formImage">
-                <label htmlFor="image" className="image-label">
-                  {t("specialty-manage.image-specialty")}
+              <div className="col-12 input-image-remote-customize">
+                <label htmlFor="imageRemote">
+                  <FaUpload /> {t("specialty-manage.button-upload")}
                 </label>
-                <input
-                  type="file"
-                  id="image"
-                  className="form-control"
-                  onChange={(e) => handleOnChangeImage(e, "Image")}
-                  hidden
-                />
+              </div>
 
-                <div className="col-12 input-image-customize">
-                  <label htmlFor="image">
-                    <FaUpload /> {t("specialty-manage.button-upload")}
-                  </label>
-                </div>
-
-                <div
-                  className={`col-12  ${state.previewImageUrl ? "image-preview open" : "image-preview"}`}
-                  onClick={() => handleOpenImagePreview("Image")}
-                  style={{
-                    backgroundImage: `url(${state.previewImageUrl ? state.previewImageUrl : ""})`,
-                  }}
-                ></div>
-              </Form.Group>
-            </div>
-
-            <div className="col-4 mt-5">
-              <Form.Group
-                className="form-group col-12 image-remote-preview-container"
-                controlId="formImageRemote"
-              >
-                <label htmlFor="imageRemote" className="image-label">
-                  Ảnh chuyên khoa từ xa
-                </label>
-                <input
-                  type="file"
-                  id="imageRemote"
-                  className="form-control"
-                  onChange={(e) => handleOnChangeImage(e, "ImageRemote")}
-                  hidden
-                />
-
-                <div className="col-12 input-image-remote-customize">
-                  <label htmlFor="imageRemote">
-                    <FaUpload /> {t("specialty-manage.button-upload")}
-                  </label>
-                </div>
-
-                <div
-                  className={`col-12  ${
-                    state.previewImageRemoteUrl ? "image-remote-preview open" : "image-remote-preview"
-                  }`}
-                  onClick={() => handleOpenImagePreview("ImageRemote")}
-                  style={{
-                    backgroundImage: `url(${state.previewImageRemoteUrl ? state.previewImageRemoteUrl : ""})`,
-                  }}
-                ></div>
-              </Form.Group>
-            </div>
-          </div>
-
-          <div className="description mt-5">
-            <div className="label mb-3">
-              <h4>{t("specialty-manage.introduction-specialty")}</h4>
-            </div>
-
-            <MdEditor
-              value={state.descriptionMarkdown}
-              style={{ height: "350px" }}
-              renderHTML={(text) => mdParser.render(text)}
-              onChange={(value) => handleMarkdownChange(value, "description")}
-            />
-          </div>
-
-          <div className="description-remote mt-5">
-            <div className="label mb-3">
-              <h4>Giới thiệu về chuyên khoa từ xa</h4>
-            </div>
-
-            <MdEditor
-              value={state.descriptionRemoteMarkdown}
-              style={{ height: "350px" }}
-              renderHTML={(text) => mdParser.render(text)}
-              onChange={(value) => handleMarkdownChange(value, "descriptionRemote")}
-            />
-          </div>
-
-          <div className="specialty-button mt-5 text-end">
-            <Button variant="primary" onClick={() => handleSaveDataSpecialty()}>
-              {state.isHaveInfo
-                ? `${t("specialty-manage.button-update")}`
-                : `${t("specialty-manage.button-save")}`}
-            </Button>
+              <div
+                className={`col-12  ${
+                  state.previewImageRemoteUrl ? "image-remote-preview open" : "image-remote-preview"
+                }`}
+                onClick={() => handleOpenImagePreview("ImageRemote")}
+                style={{
+                  backgroundImage: `url(${state.previewImageRemoteUrl ? state.previewImageRemoteUrl : ""})`,
+                }}
+              ></div>
+            </Form.Group>
           </div>
         </div>
-
-        {state.isOpenImagePreview && (
-          <Lightbox
-            mainSrc={state.previewImageUrl}
-            onCloseRequest={() => setState({ ...state, isOpenImagePreview: false })}
-          />
-        )}
-
-        {state.isOpenImageRemotePreview && (
-          <Lightbox
-            mainSrc={state.previewImageRemoteUrl}
-            onCloseRequest={() => setState({ ...state, isOpenImageRemotePreview: false })}
-          />
-        )}
       </div>
+
+      <div className="specialty-manage-markdowns mt-5">
+        <h2 className="u-sub-title">MARKDOWNS</h2>
+
+        <div className="specialty-manage-markdown mt-3">
+          <h4 className="u-input-label">{t("specialty-manage.introduction-specialty")}</h4>
+
+          <MdEditor
+            value={state.descriptionMarkdown}
+            style={{ height: "350px" }}
+            renderHTML={(text) => mdParser.render(text)}
+            onChange={(value) => handleMarkdownChange(value, "description")}
+          />
+        </div>
+
+        <div className="specialty-manage-markdown mt-5">
+          <h4 className="u-input-label">Giới thiệu về chuyên khoa từ xa</h4>
+
+          <MdEditor
+            value={state.descriptionRemoteMarkdown}
+            style={{ height: "350px" }}
+            renderHTML={(text) => mdParser.render(text)}
+            onChange={(value) => handleMarkdownChange(value, "descriptionRemote")}
+          />
+        </div>
+      </div>
+
+      <div className="u-system-button d-flex gap-3 justify-content-end my-5 text-end">
+        <Button variant="danger" className="u-system-button" onClick={() => handleDeleteDataSpecialty()}>
+          {t("button.delete")}
+        </Button>
+        <Button variant="primary" className="u-system-button" onClick={() => handleSaveDataSpecialty()}>
+          {state.isHaveInfo ? `${t("button.update")}` : `${t("button.create")}`}
+        </Button>
+      </div>
+
+      {state.isOpenImagePreview && (
+        <Lightbox
+          mainSrc={state.previewImageUrl}
+          onCloseRequest={() => setState({ ...state, isOpenImagePreview: false })}
+        />
+      )}
+      {state.isOpenImageRemotePreview && (
+        <Lightbox
+          mainSrc={state.previewImageRemoteUrl}
+          onCloseRequest={() => setState({ ...state, isOpenImageRemotePreview: false })}
+        />
+      )}
     </div>
   );
 };

@@ -1,0 +1,15 @@
+@import "../../styles/sass/base";
+@import "../../styles/sass/mixin";
+
+.package-type {
+  &-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    // margin: 0 auto;
+  }
+
+  &-inputs {
+    @include image-preview-container;
+  }
+}

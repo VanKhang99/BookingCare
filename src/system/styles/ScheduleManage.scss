@@ -1,67 +1,47 @@
 @import "../../styles/sass/base";
 
-.schedule {
+.schedule-manage {
   &-content {
-    &__title {
-      font-size: $base-size + 1.4rem;
-      text-transform: uppercase;
-      font-weight: 800;
-      text-align: center;
-      color: $color-blue-dark;
-    }
-
-    .title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .doctor-name {
       h4 {
         font-size: $base-size + 0.4rem;
         font-weight: 700;
+        color: $color-blue-dark-2;
+
+        span {
+          font-weight: 400;
+          color: $main-color-text;
+        }
       }
     }
+  }
 
-    .schedule-select {
-      .doctor-name {
-        h4 {
-          font-size: $base-size + 0.4rem;
-          font-weight: 700;
-          color: $color-blue-dark-2;
+  .select-hours {
+    .hours-list {
+      border: 1px solid $grey-2;
+      padding: 2rem;
+      border-radius: 0.4rem;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 3rem;
 
-          span {
-            font-weight: 400;
-            color: $main-color-text;
+      &__item {
+        .button {
+          transition: all 0.3s;
+
+          &.selected {
+            background-color: $color-yellow-dark;
+            font-weight: 600;
           }
         }
       }
     }
+  }
 
-    .schedule-hours {
-      .hours-list {
-        border: 1px solid $grey-2;
-        padding: 2rem;
-        border-radius: 0.4rem;
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 3rem;
-
-        .hours-item {
-          .button {
-            transition: all 0.3s;
-
-            &.selected {
-              background-color: $color-blue;
-              font-weight: 600;
-            }
-          }
-        }
-      }
-    }
-
-    .schedule-button {
-      button {
-        padding: 0.8rem 3.2rem;
-        font-size: $base-size;
-        text-transform: uppercase;
-        font-weight: 700;
-      }
-    }
+  &-buttons {
   }
 }

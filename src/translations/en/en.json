@@ -78,13 +78,15 @@
   "menu-system": {
     "user": "Users",
     "user-management": "User management",
-    "add-info-doctor": "Add doctor information",
-    "schedule-management": "Manage medical examination hours",
+
+    "doctor": "Doctors",
+    "doctor-manage": "Doctor management",
+    "doctor-schedule-management": "Manage medical examination hours",
     "patient-booking-manage": "Manage users to book medical appointments",
 
     "clinic": "Clinic",
     "clinic-management": "Clinic management",
-    "clinic-add-specialty": "Add specialties for the clinic",
+    "clinic-specialty-manage": "Management specialties for the clinic - hospital",
 
     "specialty": "Specialty",
     "specialty-management": "Specialty management",
@@ -93,6 +95,7 @@
     "handbook-management": "Handbook management",
 
     "package": "Package",
+    "package-type": "Manage type of examination package",
     "package-management": "Package management",
     "package-schedule": "Package schedule management",
 
@@ -116,10 +119,7 @@
     "list-users": "LIST USERS"
   },
 
-  "doctor-manage": {
-    "title": "ADDITIONAL DOCTOR INFORMATION",
-    "choose-doctor": "Doctor",
-    "placeholder-doctor": "Choose a doctor",
+  "common": {
     "choose-price": "Price",
     "placeholder-price": "Choose a price",
     "outstanding-doctor": "Popular last week",
@@ -131,9 +131,19 @@
     "placeholder-specialty": "Choose a specialty",
     "choose-clinic": "Hospital - Clinic",
     "placeholder-clinic": "Choose a clinic (hospital)",
+
+    "outstanding": "Popular last week",
+    "consultant-remote": "Remote consultant"
+  },
+
+  "doctor-manage": {
+    "title": "MANAGE DOCTOR INFORMATION",
+    "choose-doctor": "Doctor",
+    "placeholder-doctor": "Choose a doctor",
     "clinic-name": "Clinic name",
     "clinic-address": "Clinic address",
     "note": "Note",
+
     "summary": "Summary information",
     "more-info": "More information about the doctor",
     "button-save": "Save information",
@@ -170,20 +180,8 @@
     "button-update": "Save changes"
   },
 
-  "specialty-manage": {
-    "title": "Management of medical examination specialist information",
-    "choose-specialty": "Choose a specialty",
-    "placeholder": "Choose a specialty",
-    "image-specialty": "Specialty Image",
-    "popular": "Popular last week",
-    "introduction-specialty": "Introduction to the specialty",
-    "button-upload": "Upload",
-    "button-save": "Save information",
-    "button-update": "Save changes"
-  },
-
-  "add-specialty-clinic": {
-    "main-title": "ADD SPECIALTIES FOR HOSPITALS AND CLINICS",
+  "clinic-specialty-manage": {
+    "main-title": "MANAGE SPECIALTIES FOR HOSPITALS AND CLINICS",
     "add-specialty": "Add specialty for clinic",
     "placeholder-specialty": "Choose a specialty",
     "clinic": "Hospital - Clinic",
@@ -197,6 +195,39 @@
     "button-upload": "Upload",
     "button-save": "Save information",
     "button-update": "Save changes"
+  },
+
+  "specialty-manage": {
+    "title": "Management of medical examination specialist information",
+    "choose-specialty": "Choose a specialty",
+    "placeholder": "Choose a specialty",
+    "image-specialty": "Specialty image",
+    "image-specialty-remote": "Remote specialty image",
+    "popular": "Popular last week",
+    "introduction-specialty": "Introduction to the specialty",
+    "button-upload": "Upload",
+    "button-save": "Save information",
+    "button-update": "Save changes"
+  },
+
+  "package-manage": {
+    "main-title": "INFORMATION MANAGEMENT OF MEDICAL EXAMINATION PACKAGE",
+    "package-create": "PACKAGE CREATED",
+    "place-holder": "Choose a package",
+    "name-en": "Name (ENG)",
+    "name-vi": "Name (VN)",
+    "address": "Address",
+    "markdown-introduction": "Introduction",
+    "markdown-package-content": "Content",
+    "markdown-package-list-exam": "List Examination"
+  },
+
+  "package-type-manage": {
+    "main-title": "MANAGEMENT TYPE OF EXAMINATION PACKAGE",
+    "type-eng": "Type name (ENG)",
+    "type-vi": "Type name (VN)",
+    "image": "Image",
+    "place-holder": "Choose a type package"
   },
 
   "patients-booking-manage": {
@@ -234,6 +265,7 @@
     "contact": "Contact",
     "create": "Create",
     "update": "Update",
-    "upload": "Upload"
+    "upload": "Upload",
+    "delete": "Delete"
   }
 }

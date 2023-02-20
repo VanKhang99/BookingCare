@@ -22,3 +22,57 @@
   color: $color-blue-dark-2;
   border-bottom: 1px solid $grey-5;
 }
+
+//CLASS FOR SYSTEM ADMIN
+.u-main-title {
+  font-size: $base-size + 1.4rem;
+  text-transform: uppercase;
+  font-weight: 800;
+  text-align: center;
+  color: $color-blue-dark;
+}
+
+.u-sub-title {
+  font-size: $base-size + 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.u-input-label {
+  font-size: $base-size + 0.4rem;
+  color: $color-blue-dark-2;
+  margin-bottom: 0.6rem;
+  font-weight: 600;
+}
+
+.u-input {
+  padding: 0.7rem 1.2rem !important;
+  font-size: $base-size !important;
+}
+
+.u-system-button {
+  button {
+    padding: 0.8rem 3.2rem;
+    font-size: $base-size;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  &--refresh-data {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 4.8rem;
+    height: 3.2rem;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: $color-blue-2;
+    outline: none;
+    cursor: pointer;
+
+    svg {
+      color: #fff;
+    }
+  }
+}

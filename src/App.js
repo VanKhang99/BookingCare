@@ -28,12 +28,13 @@ import {
 import {
   // UserManage,
   UserManage,
-  AddInfoDoctor,
+  DoctorManage,
   DoctorSchedule,
   PatientBooking,
   ClinicManage,
-  ClinicAddSpecialty,
+  ClinicSpecialtyManage,
   SpecialtyManage,
+  PackageTypeManage,
   PackageManage,
   PackageSchedule,
   CRUDAllcodeModel,
@@ -103,15 +104,21 @@ function App() {
           >
             <Route index element={<System />} />
             {/* <Route path="user-manage" element={<UserManage />} /> */}
-            <Route path="doctor-manage" element={<UserManage />} />
-            <Route path="add-info-doctor" element={<AddInfoDoctor />} />
-            <Route path="schedule-manage" element={<DoctorSchedule />} />
+            <Route path="user-manage" element={<UserManage />} />
+
+            <Route path="doctor-manage" element={<DoctorManage />} />
+            <Route path="doctor-schedule-manage" element={<DoctorSchedule />} />
             <Route path="patient-booking-manage" element={<PatientBooking />} />
+
             <Route path="clinic-manage" element={<ClinicManage />} />
-            <Route path="clinic-add-specialty" element={<ClinicAddSpecialty />} />
+            <Route path="clinic-specialty-manage" element={<ClinicSpecialtyManage />} />
+
             <Route path="specialty-manage" element={<SpecialtyManage />} />
+
+            <Route path="package-type" element={<PackageTypeManage />} />
             <Route path="package-manage" element={<PackageManage />} />
             <Route path="package-schedule" element={<PackageSchedule />} />
+
             <Route path="crud-allcode-model" element={<CRUDAllcodeModel />} />
           </Route>
 
@@ -125,7 +132,7 @@ function App() {
           >
             <Route index element={<System />} />
             <Route path="patient-booking-manage" element={<PatientBooking />} />
-            <Route path="schedule-manage" element={<DoctorSchedule isDoctorManage={true} />} />
+            <Route path="schedule-manage" element={<DoctorSchedule isDoctorAccount={true} />} />
           </Route>
 
           {/* BANNER */}

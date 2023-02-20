@@ -10,11 +10,16 @@ import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllCode } from "../slices/allcodeSlice";
-import { addSpecialtyForClinic } from "../slices/clinicSpecialtySlice";
-import { getSpecialtyOfClinic } from "../slices/clinicSpecialtySlice";
+import {
+  getSpecialtyOfClinic,
+  addSpecialtyForClinic,
+  deleteSpecialtyForClinic,
+} from "../slices/clinicSpecialtySlice";
+
 import { toBase64, checkData } from "../utils/helpers";
 import { FaUpload } from "react-icons/fa";
-import "./styles/ClinicAddSpecialty.scss";
+import { IoReload } from "react-icons/io5";
+import "./styles/ClinicSpecialtyManage.scss";
 
 const initialState = {
   selectedClinic: "",
@@ -48,7 +53,6 @@ const ClinicAddSpecialty = () => {
   const saveOldClinic = useRef(null);
 
   const handleInfos = (e, type) => {
-    console.log(type, e);
     const stateCopy = JSON.parse(JSON.stringify({ ...state }));
     if (type.startsWith("selected")) {
       stateCopy[type] = e;
@@ -182,6 +186,29 @@ const ClinicAddSpecialty = () => {
     }
   };
 
+  const handleDeleteSpecialOfClinic = async () => {
+    try {
+      if (!state.selectedSpecialty) throw new Error("Specialty is not selected");
+      if (!state.selectedClinic) throw new Error("Clinic is not selected");
+      alert("Are you sure you want to delete?");
+
+      const res = await dispatch(
+        deleteSpecialtyForClinic({
+          specialtyId: state.selectedSpecialty.value,
+          doctorId: state.selectedClinic.value,
+        })
+      );
+      if (res.payload === "") {
+        toast.success("Delete specialty of clinic is deleted successfully!");
+        await dispatch(getAllCode("CLINIC"));
+        await dispatch(getAllCode("SPECIALTY"));
+        return setState({ ...initialState });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     dispatch(getAllCode("CLINIC"));
     dispatch(getAllCode("SPECIALTY"));
@@ -209,171 +236,160 @@ const ClinicAddSpecialty = () => {
   }, [state.image]);
 
   return (
-    <div className="add-specialty-wrapper">
-      <div className="add-specialty-content">
-        <div className="add-specialty container">
-          <div className="add-specialty__title text-center mt-4">{t("add-specialty-clinic.main-title")}</div>
+    <div className="clinic-specialty-manage container">
+      <div className="u-main-title text-center mt-4">{t("clinic-specialty-manage.main-title")}</div>
 
-          <div className="add-specialty-inputs">
-            <h2 className="add-specialty-inputs__title mt-5">INPUTS</h2>
-            <div className="row mt-3">
-              <div className="col-4">
-                <div className="title">
-                  <h4>{t("add-specialty-clinic.add-specialty")}</h4>
-                </div>
+      <div className="clinic-specialty-manage-inputs">
+        <h2 className="u-sub-title mt-5 d-flex justify-content-between">
+          INPUTS
+          <button className="u-system-button--refresh-data" onClick={() => setState({ ...initialState })}>
+            <IoReload />
+          </button>
+        </h2>
+        <div className="row mt-3">
+          <div className="col-4">
+            <h4 className="u-input-label">{t("clinic-specialty-manage.add-specialty")}</h4>
 
-                <div className="select-specialties mt-3">
-                  {specialtyArr?.length > 0 && (
-                    <Select
-                      value={state.selectedSpecialty}
-                      onChange={(option) => {
-                        handleInfos(option, "selectedSpecialty");
-                        // handleStateSelectClinic(option);
-                      }}
-                      options={handleOptionClinic(specialtyArr)}
-                      placeholder={t("add-specialty-clinic.placeholder-specialty")}
-                    />
-                  )}
-                </div>
-              </div>
-
-              <div className="col-4">
-                <div className="title">
-                  <h4>{t("add-specialty-clinic.clinic")}</h4>
-                </div>
-
-                <div className="select-clinics mt-3">
-                  {clinicArr?.length > 0 && (
-                    <Select
-                      value={state.selectedClinic}
-                      onChange={(option) => {
-                        handleInfos(option, "selectedClinic");
-                        handleStateSelectClinic(option);
-                      }}
-                      options={handleOptionClinic(clinicArr)}
-                      placeholder={t("add-specialty-clinic.placeholder-clinic")}
-                    />
-                  )}
-                </div>
-              </div>
-
-              <Form.Group className="col-4" controlId="formAddress">
-                <div className="title">
-                  <h4>{t("add-specialty-clinic.address")}</h4>
-                </div>
-                <Form.Control
-                  type="text"
-                  value={state.address}
-                  className="add-specialty-input__address"
-                  onChange={(e, id) => handleInfos(e, "address")}
+            <div className="select-specialties mt-2">
+              {specialtyArr?.length > 0 && (
+                <Select
+                  value={state.selectedSpecialty}
+                  onChange={(option) => {
+                    handleInfos(option, "selectedSpecialty");
+                    // handleStateSelectClinic(option);
+                  }}
+                  options={handleOptionClinic(specialtyArr)}
+                  placeholder={t("clinic-specialty-manage.placeholder-specialty")}
                 />
-              </Form.Group>
-            </div>
-
-            <div className="row">
-              <div className="col-4 mt-5">
-                <Form.Group className="form-group col-12 image-preview-container" controlId="formImage">
-                  <label htmlFor="image" className="image-label">
-                    {t("add-specialty-clinic.image")}
-                  </label>
-                  <input
-                    type="file"
-                    id="image"
-                    className="form-control"
-                    onChange={(e) => handleOnChangeImage(e)}
-                    hidden
-                  />
-
-                  <div className="col-12 input-image-customize">
-                    <label htmlFor="image">
-                      <FaUpload /> {t("add-specialty-clinic.button-upload")}
-                    </label>
-                  </div>
-
-                  <div
-                    className={`col-12  ${state.previewImageUrl ? "image-preview open" : "image-preview"}`}
-                    onClick={() => handleOpenImagePreview()}
-                    style={{
-                      backgroundImage: `url(${state.previewImageUrl ? state.previewImageUrl : ""})`,
-                    }}
-                  ></div>
-                </Form.Group>
-              </div>
+              )}
             </div>
           </div>
 
-          <div className="add-specialty-markdowns">
-            <h2 className="add-specialty-markdowns__title">MARKDOWNS</h2>
+          <div className="col-4">
+            <h4 className="u-input-label">{t("clinic-specialty-manage.clinic")}</h4>
 
-            <div className="add-specialty-markdowns__booking">
-              <div className="label mb-3">
-                <h4>{t("add-specialty-clinic.markdown-booking")}</h4>
-              </div>
-
-              <MdEditor
-                value={state.bookingMarkdown}
-                style={{ height: "400px" }}
-                renderHTML={(text) => mdParser.render(text)}
-                onChange={(value) => handleMarkdownChange(value, "booking")}
-              />
-            </div>
-
-            <div className="add-specialty-markdowns__introduction mt-5">
-              <div className="label mb-3">
-                <h4>{t("add-specialty-clinic.markdown-introduction")}</h4>
-              </div>
-
-              <MdEditor
-                value={state.introductionMarkdown}
-                style={{ height: "400px" }}
-                renderHTML={(text) => mdParser.render(text)}
-                onChange={(value) => handleMarkdownChange(value, "introduction")}
-              />
-            </div>
-
-            <div className="add-specialty-markdowns__examAndTreatment mt-5">
-              <div className="label mb-3">
-                <h4>{t("add-specialty-clinic.markdown-examAndTreatment")}</h4>
-              </div>
-
-              <MdEditor
-                value={state.examAndTreatmentMarkdown}
-                style={{ height: "400px" }}
-                renderHTML={(text) => mdParser.render(text)}
-                onChange={(value) => handleMarkdownChange(value, "examAndTreatment")}
-              />
-            </div>
-
-            <div className="clinic-markdowns__strengths mt-5">
-              <div className="label mb-3">
-                <h4>{t("add-specialty-clinic.markdown-strengths")}</h4>
-              </div>
-
-              <MdEditor
-                value={state.strengthsMarkdown}
-                style={{ height: "400px" }}
-                renderHTML={(text) => mdParser.render(text)}
-                onChange={(value) => handleMarkdownChange(value, "strengths")}
-              />
+            <div className="select-clinics mt-2">
+              {clinicArr?.length > 0 && (
+                <Select
+                  value={state.selectedClinic}
+                  onChange={(option) => {
+                    handleInfos(option, "selectedClinic");
+                    handleStateSelectClinic(option);
+                  }}
+                  options={handleOptionClinic(clinicArr)}
+                  placeholder={t("clinic-specialty-manage.placeholder-clinic")}
+                />
+              )}
             </div>
           </div>
 
-          <div className="add-specialty-button mt-5 text-end">
-            <Button variant="primary" onClick={() => handleSaveDataClinic()}>
-              {state.isHaveInfo
-                ? `${t("add-specialty-clinic.button-update")}`
-                : `${t("add-specialty-clinic.button-save")}`}
-            </Button>
-          </div>
+          <Form.Group className="col-4" controlId="formAddress">
+            <h4 className="u-input-label">{t("clinic-specialty-manage.address")}</h4>
 
-          {state.isOpenImagePreview && (
-            <Lightbox
-              mainSrc={state.previewImageUrl}
-              onCloseRequest={() => setState({ ...state, isOpenImagePreview: false })}
+            <Form.Control
+              type="text"
+              value={state.address}
+              className="u-input"
+              onChange={(e, id) => handleInfos(e, "address")}
             />
-          )}
+          </Form.Group>
+        </div>
+
+        <div className="row">
+          <div className="col-4 mt-5">
+            <Form.Group className="form-group col-12 image-preview-container" controlId="formImage">
+              <label htmlFor="image" className="u-input-label">
+                {t("clinic-specialty-manage.image")}
+              </label>
+              <input
+                type="file"
+                id="image"
+                className="form-control"
+                onChange={(e) => handleOnChangeImage(e)}
+                hidden
+              />
+
+              <div className="col-12 input-image-customize">
+                <label htmlFor="image">
+                  <FaUpload /> {t("clinic-specialty-manage.button-upload")}
+                </label>
+              </div>
+
+              <div
+                className={`col-12  ${state.previewImageUrl ? "image-preview open" : "image-preview"}`}
+                onClick={() => handleOpenImagePreview()}
+                style={{
+                  backgroundImage: `url(${state.previewImageUrl ? state.previewImageUrl : ""})`,
+                }}
+              ></div>
+            </Form.Group>
+          </div>
         </div>
       </div>
+
+      <div className="clinic-specialty-manage-markdowns mt-5">
+        <h2 className="u-sub-title">MARKDOWNS</h2>
+
+        <div className="clinic-specialty-manage-markdown mt-3">
+          <h4 className="u-input-label">{t("clinic-specialty-manage.markdown-booking")}</h4>
+
+          <MdEditor
+            value={state.bookingMarkdown}
+            style={{ height: "400px" }}
+            renderHTML={(text) => mdParser.render(text)}
+            onChange={(value) => handleMarkdownChange(value, "booking")}
+          />
+        </div>
+
+        <div className="clinic-specialty-manage-markdown mt-5">
+          <h4 className="u-input-label">{t("clinic-specialty-manage.markdown-introduction")}</h4>
+
+          <MdEditor
+            value={state.introductionMarkdown}
+            style={{ height: "400px" }}
+            renderHTML={(text) => mdParser.render(text)}
+            onChange={(value) => handleMarkdownChange(value, "introduction")}
+          />
+        </div>
+
+        <div className="clinic-specialty-manage-markdown mt-5">
+          <h4 className="u-input-label">{t("clinic-specialty-manage.markdown-examAndTreatment")}</h4>
+
+          <MdEditor
+            value={state.examAndTreatmentMarkdown}
+            style={{ height: "400px" }}
+            renderHTML={(text) => mdParser.render(text)}
+            onChange={(value) => handleMarkdownChange(value, "examAndTreatment")}
+          />
+        </div>
+
+        <div className="clinic-specialty-manage-markdown mt-5">
+          <h4 className="u-input-label">{t("clinic-specialty-manage.markdown-strengths")}</h4>
+
+          <MdEditor
+            value={state.strengthsMarkdown}
+            style={{ height: "400px" }}
+            renderHTML={(text) => mdParser.render(text)}
+            onChange={(value) => handleMarkdownChange(value, "strengths")}
+          />
+        </div>
+      </div>
+
+      <div className="u-system-button my-5 d-flex justify-content-end gap-3">
+        <Button variant="danger" onClick={handleDeleteSpecialOfClinic}>
+          {t("button.delete")}
+        </Button>
+        <Button variant="primary" onClick={() => handleSaveDataClinic()}>
+          {state.isHaveInfo ? `${t("button.update")}` : `${t("button.create")}`}
+        </Button>
+      </div>
+
+      {state.isOpenImagePreview && (
+        <Lightbox
+          mainSrc={state.previewImageUrl}
+          onCloseRequest={() => setState({ ...state, isOpenImagePreview: false })}
+        />
+      )}
     </div>
   );
 };

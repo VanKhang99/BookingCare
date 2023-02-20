@@ -45,6 +45,18 @@ export const addSpecialtyForClinic = createAsyncThunk(
   }
 );
 
+export const deleteSpecialtyForClinic = createAsyncThunk(
+  "clinic-specialty/deleteSpecialtyForClinic",
+  async (data, thunkAPI) => {
+    try {
+      const res = await axios.delete(`/api/clinics-specialties/${data.specialtyId}/${data.doctorId}`);
+      return res;
+    } catch (error) {
+      return error.response.data;
+    }
+  }
+);
+
 const clinicSpecialtySlice = createSlice({
   name: "clinicSpecialty",
   initialState,

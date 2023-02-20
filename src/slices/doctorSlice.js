@@ -4,11 +4,9 @@ import axios from "../axios";
 
 const initialState = {
   isLoadingDoctors: false,
-  isLoadingSchedules: false,
   isFetchDoctor: false,
   outstandingDoctors: [],
   doctors: [],
-  schedules: [],
 };
 
 export const getOutstandingDoctors = createAsyncThunk(
@@ -74,6 +72,15 @@ export const getDoctorsBaseKeyMap = createAsyncThunk(
     }
   }
 );
+
+export const deleteDoctor = createAsyncThunk("doctor/deleteDoctor", async (doctorId, thunkAPI) => {
+  try {
+    const res = await axios.delete(`api/doctor/${doctorId}`);
+    return res;
+  } catch (error) {
+    return error.response.data;
+  }
+});
 
 export const doctorSlice = createSlice({
   name: "app",

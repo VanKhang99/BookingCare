@@ -21,7 +21,7 @@ export const saveInfoPackage = createAsyncThunk("package/createPackage", async (
     const res = await axios.post("/api/packages", data);
     return res;
   } catch (error) {
-    toast.error("Save info clinic failed. Please check your data and try again!");
+    toast.error("Save info package failed. Please check your data and try again!");
     return error.response.data;
   }
 });
@@ -59,6 +59,16 @@ export const getAllPackagesByIds = createAsyncThunk(
     }
   }
 );
+
+export const deletePackage = createAsyncThunk("package/deletePackage", async (packageId, thunkAPI) => {
+  try {
+    const url = `/api/packages/${packageId}`;
+    const res = await axios.delete(url);
+    return res;
+  } catch (error) {
+    return error.response.data;
+  }
+});
 
 const packageSlice = createSlice({
   name: "package",

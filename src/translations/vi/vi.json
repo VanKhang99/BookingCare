@@ -80,13 +80,15 @@
   "menu-system": {
     "user": "Người dùng",
     "user-management": "Quản lý người dùng",
-    "add-info-doctor": "Thêm thông tin bác sĩ",
-    "schedule-management": "Quản lý khung giờ khám bệnh",
+
+    "doctor": "Bác sĩ",
+    "doctor-manage": "Quản lý thông tin bác sĩ",
+    "doctor-schedule-management": "Quản lý khung giờ khám bệnh",
     "patient-booking-manage": "Quản lý người dùng đặt lịch khám bệnh",
 
     "clinic": "Phòng khám",
     "clinic-management": "Quản lý phòng khám",
-    "clinic-add-specialty": "Thêm chuyên khoa cho phòng khám",
+    "clinic-specialty-manage": "Quản lý chuyên khoa cho bệnh viện - phòng khám",
 
     "specialty": "Chuyên khoa",
     "specialty-management": "Quản lý chuyên khoa",
@@ -95,10 +97,28 @@
     "handbook-management": "Quản lý cẩm nang",
 
     "package": "Gói khám",
+    "package-type": "Quản lý loại gói khám",
     "package-management": "Quản lý gói khám",
     "package-schedule": "Khung giờ khám bệnh",
 
     "welcome": "Xin chào 🎉 "
+  },
+
+  "common": {
+    "choose-price": "Giá khám bệnh",
+    "placeholder-price": "Chọn giá khám bệnh",
+    "outstanding-doctor": "Phổ biến tuần vừa qua",
+    "choose-method-payment": "Phương thức thanh toán",
+    "placeholder-payment": "Chọn phương thức thanh toán",
+    "choose-province": "Tỉnh (Thành phố)",
+    "placeholder-province": "Chọn tỉnh thành",
+    "choose-specialty": "Chuyên khoa",
+    "placeholder-specialty": "Chọn chuyên khoa",
+    "choose-clinic": "Bệnh viện - Phòng khám",
+    "placeholder-clinic": "Chọn bệnh viện hoặc phòng khám",
+
+    "outstanding": "Phổ biến tuần vừa qua",
+    "consultant-remote": "Tư vấn từ xa"
   },
 
   "user-manage": {
@@ -117,23 +137,13 @@
   },
 
   "doctor-manage": {
-    "title": "THÊM THÔNG TIN BÁC SĨ",
+    "title": "QUẢN LÝ THÔNG TIN BÁC SĨ",
     "choose-doctor": "Bác sĩ",
     "placeholder-doctor": "Chọn bác sĩ",
-    "choose-price": "Giá khám bệnh",
-    "placeholder-price": "Chọn giá khám bệnh",
-    "outstanding-doctor": "Phổ biến tuần vừa qua",
-    "choose-method-payment": "Phương thức thanh toán",
-    "placeholder-payment": "Chọn phương thức thanh toán",
-    "choose-province": "Tỉnh (Thành phố)",
-    "placeholder-province": "Chọn tỉnh thành",
-    "choose-specialty": "Chuyên khoa",
-    "placeholder-specialty": "Chọn chuyên khoa",
-    "choose-clinic": "Bệnh viện - Phòng khám",
-    "placeholder-clinic": "Chọn bệnh viện hoặc phòng khám",
     "clinic-name": "Tên phòng khám",
     "clinic-address": "Địa chỉ phòng khám",
     "note": "Ghi chú",
+
     "summary": "Thông tin tóm tắt",
     "more-info": "Thông tin thêm về bác sĩ",
     "button-save": "Lưu thông tin",
@@ -161,6 +171,23 @@
     "button-update": "Lưu thay đổi"
   },
 
+  "clinic-specialty-manage": {
+    "main-title": "QUẢN LÝ CHUYÊN KHOA CHO BỆNH VIỆN - PHÒNG KHÁM",
+    "add-specialty": "Thêm chuyên khoa",
+    "placeholder-specialty": "Chọn chuyên khoa",
+    "clinic": "Bệnh viện - Phòng khám",
+    "placeholder-clinic": "Chọn bệnh viện - phòng khám",
+    "address": "Địa chỉ chuyên khoa",
+    "image": "Ảnh chuyên khoa",
+    "markdown-booking": "Đặt lịch khám",
+    "markdown-introduction": "Giới thiệu",
+    "markdown-examAndTreatment": "Khám và điều trị",
+    "markdown-strengths": "Thế mạnh cạnh tranh",
+    "button-upload": "Tải ảnh",
+    "button-save": "Lưu thông tin",
+    "button-update": "Lưu thay đổi"
+  },
+
   "schedule-manage": {
     "title": "QUẢN LÝ KHUNG GIỜ KHÁM BỆNH CỦA BÁC SĨ",
     "choose-doctor": "Chọn bác sĩ",
@@ -175,25 +202,9 @@
     "choose-specialty": "Chọn chuyên khoa",
     "placeholder": "...",
     "image-specialty": "Ảnh chuyên khoa",
+    "image-specialty-remote": "Ảnh chuyên khoa từ xa",
     "popular": "Phổ biến tuần vừa qua",
     "introduction-specialty": "Giới thiệu về chuyên khoa",
-    "button-upload": "Tải ảnh",
-    "button-save": "Lưu thông tin",
-    "button-update": "Lưu thay đổi"
-  },
-
-  "add-specialty-clinic": {
-    "main-title": "THÊM CHUYÊN KHOA CHO BỆNH VIỆN - PHÒNG KHÁM",
-    "add-specialty": "Thêm chuyên khoa",
-    "placeholder-specialty": "Chọn chuyên khoa",
-    "clinic": "Bệnh viện - Phòng khám",
-    "placeholder-clinic": "Chọn bệnh viện - phòng khám",
-    "address": "Địa chỉ chuyên khoa",
-    "image": "Ảnh chuyên khoa",
-    "markdown-booking": "Đặt lịch khám",
-    "markdown-introduction": "Giới thiệu",
-    "markdown-examAndTreatment": "Khám và điều trị",
-    "markdown-strengths": "Thế mạnh cạnh tranh",
     "button-upload": "Tải ảnh",
     "button-save": "Lưu thông tin",
     "button-update": "Lưu thay đổi"
@@ -223,6 +234,26 @@
     "button-send": "Gửi"
   },
 
+  "package-manage": {
+    "main-title": "QUẢN LÝ THÔNG TIN GÓI KHÁM BỆNH",
+    "package-create": "Các gói khám bệnh đã tạo",
+    "place-holder": "Chọn gói khám bệnh",
+    "name-en": "Tên tiếng Anh",
+    "name-vi": "Tên tiếng Việt",
+    "address": "Địa chỉ",
+    "markdown-introduction": "Giới thiệu",
+    "markdown-package-content": "Nội dung gói khám",
+    "markdown-package-list-exam": "Đề mục cần khám"
+  },
+
+  "package-type-manage": {
+    "main-title": "QUẢN LÝ LOẠI GÓI KHÁM",
+    "type-eng": "Tên loại (ENG)",
+    "type-vi": "Tên loại (VN)",
+    "image": "Ảnh đại diện",
+    "place-holder": "Chọn loại gói khám"
+  },
+
   "button": {
     "booking-examination": "Đặt lịch khám",
     "confirm-booking": "Ấn vào đây",
@@ -232,8 +263,9 @@
     "post": "Bài viết",
     "cooperate": "Hợp tác",
     "contact": "Liên hệ",
-    "create": "Tạo",
+    "create": "Tạo mới",
     "update": "Cập nhật",
-    "upload": "Tải ảnh"
+    "upload": "Tải ảnh",
+    "delete": "Xóa"
   }
 }

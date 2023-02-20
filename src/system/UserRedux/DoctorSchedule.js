@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllDoctors } from "../../slices/doctorSlice";
 import { ScheduleManage } from "../index";
 
-const DoctorSchedule = ({ isDoctorManage }) => {
+const DoctorSchedule = ({ isDoctorAccount }) => {
   const dispatch = useDispatch();
   const { doctors } = useSelector((store) => store.doctor);
 
@@ -12,7 +12,7 @@ const DoctorSchedule = ({ isDoctorManage }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <ScheduleManage doctors={doctors} scheduleOf="doctor" isDoctorManage={isDoctorManage} />;
+  return <ScheduleManage doctors={doctors} scheduleOf="doctor" isDoctorAccount={isDoctorAccount} />;
 };
 
 export default DoctorSchedule;

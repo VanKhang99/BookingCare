@@ -1,45 +1,8 @@
 @import "../../styles/sass/base";
 @import "../../styles/sass/mixin";
 
-.specialty {
-  &-content {
-    &__title {
-      font-size: $base-size + 1.4rem;
-      text-transform: uppercase;
-      font-weight: 800;
-      text-align: center;
-      color: $color-blue-dark;
-    }
-
-    .specialty-inputs {
-      .label {
-        h4 {
-          font-size: $base-size + 0.3rem;
-          color: $color-blue-dark-2;
-          margin-bottom: 0.6rem;
-        }
-      }
-
-      input {
-        font-size: $base-size;
-        padding: 0.8rem 1rem;
-      }
-
-      @include image-preview-container;
-      .image-label {
-        font-size: $base-size + 0.3rem;
-        color: $color-blue-dark-2;
-        margin-bottom: 0.6rem;
-      }
-    }
-
-    .specialty-button {
-      button {
-        padding: 0.8rem 3.2rem;
-        font-size: $base-size;
-        text-transform: uppercase;
-        font-weight: 700;
-      }
-    }
+.specialty-manage {
+  &-inputs {
+    @include image-preview-container;
   }
 }

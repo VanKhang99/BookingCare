@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { FormUser, ListUser } from "../index";
 import { getAllUsers, deleteUser } from "../../slices/userSlice";
-import "../styles/UserManage.scss";
 
 const initialState = {
   usersFromServer: [],
@@ -76,30 +75,26 @@ const UserManage = () => {
   }, [state.totalUsers, state.page, state.limit]);
 
   return (
-    <div className="user-manage-container">
-      <div className="user-manage-content">
-        <div className="user-manage">
-          <div className="user-manage__title text-center mt-3">{t("menu-system.user-management")}</div>
+    <div className="user-manage container" style={{ padding: "0 3rem", marginBottom: "4rem" }}>
+      <div className="u-main-title text-center mt-3">{t("menu-system.user-management")}</div>
 
-          <FormUser
-            dataUserEdit={state.dataUserEdit ? state.dataUserEdit : ""}
-            handleGetAllUsers={handleGetAllUsers}
-            total={state.totalUsers ? state.totalUsers : ""}
-            roleToFilter={state.roleToFilter}
-          />
-          <ListUser
-            users={state.usersFromServer.length ? state.usersFromServer : []}
-            total={state.totalUsers ? state.totalUsers : ""}
-            page={state.page}
-            limit={state.limit}
-            rolesUser={state.rolesUser}
-            onEditDataUser={handleEditDataUser}
-            onPageChange={handlePageChange}
-            onDeleteUser={handleDeleteUser}
-            onFilterUsers={handleFilterUsers}
-          />
-        </div>
-      </div>
+      <FormUser
+        dataUserEdit={state.dataUserEdit ? state.dataUserEdit : ""}
+        handleGetAllUsers={handleGetAllUsers}
+        total={state.totalUsers ? state.totalUsers : ""}
+        roleToFilter={state.roleToFilter}
+      />
+      <ListUser
+        users={state.usersFromServer.length ? state.usersFromServer : []}
+        total={state.totalUsers ? state.totalUsers : ""}
+        page={state.page}
+        limit={state.limit}
+        rolesUser={state.rolesUser}
+        onEditDataUser={handleEditDataUser}
+        onPageChange={handlePageChange}
+        onDeleteUser={handleDeleteUser}
+        onFilterUsers={handleFilterUsers}
+      />
     </div>
   );
 };

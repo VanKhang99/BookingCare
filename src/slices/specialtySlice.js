@@ -45,6 +45,18 @@ export const saveInfoSpecialty = createAsyncThunk("specialty/saveInfoSpecialty",
   }
 });
 
+export const deleteInfoSpecialty = createAsyncThunk(
+  "specialty/deleteInfoSpecialty",
+  async (specialtyId, thunkAPI) => {
+    try {
+      const res = await axios.delete(`api/specialties/${specialtyId}`);
+      return res;
+    } catch (error) {
+      return error.response.data;
+    }
+  }
+);
+
 // export const specialtySlice = createSlice({
 //   name: "specialty",
 //   initialState,

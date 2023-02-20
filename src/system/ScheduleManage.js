@@ -4,12 +4,14 @@ import Select from "react-select";
 import _ from "lodash";
 import moment from "moment";
 import { toast } from "react-toastify";
+import { DatePicker, Space } from "antd";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { createSchedules } from "../slices/scheduleSlice";
 import { getAllCode } from "../slices/allcodeSlice";
-import { DatePicker, Space } from "antd";
+import { getSchedules } from "../slices/scheduleSlice";
 import { DATE_FORMAT } from "../utils/constants";
+import { IoReload } from "react-icons/io5";
 import Button from "react-bootstrap/Button";
 import "./styles/ScheduleManage.scss";
 
@@ -19,9 +21,10 @@ const initialState = {
   selectedPackage: "",
   date: "",
   hoursList: [],
+  initHoursList: [],
 };
 
-const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorManage }) => {
+const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
   const [state, setState] = useState({ ...initialState });
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -30,7 +33,7 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorManage }) => {
   const handleHoursList = async () => {
     const res = await dispatch(getAllCode("TIME"));
     if (res && res.payload && res.payload.allCode.length > 0) {
-      setState({ ...state, hoursList: res.payload.allCode });
+      setState({ ...state, hoursList: res.payload.allCode, initHoursList: res.payload.allCode });
     }
   };
 
@@ -71,8 +74,43 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorManage }) => {
     return current < dayjs().startOf("day");
   }, []);
 
-  const handleSelectedDate = (date, dateString) => {
-    setState({ ...state, date: dateString });
+  const handleSelectedDate = async (date, dateString) => {
+    try {
+      if (!isDoctorAccount) {
+        if (_.isEmpty(state.selectedPackage) && scheduleOf === "package") {
+          return toast.error("Package not yet chosen!");
+        } else if (_.isEmpty(state.selectedDoctor) && scheduleOf === "doctor") {
+          return toast.error("Doctor not yet chosen!");
+        }
+      }
+
+      const timeStampToRequestData = moment(dateString, "DD/MM/YYYY").valueOf();
+
+      const res = await dispatch(
+        getSchedules({
+          id: state.selectedDoctor.value,
+          timeStamp: `${timeStampToRequestData}`,
+          keyMap: "doctorId",
+          timesFetch: "not-initial-fetch",
+        })
+      );
+
+      if (res.payload.schedules.length > 0) {
+        const listTimeFrameCreated = res.payload.schedules.map((schedule) => schedule.timeType);
+        const newHourList = state.hoursList.map((hour) => {
+          if (!listTimeFrameCreated.includes(hour.keyMap)) return hour;
+          return { ...hour, isSelected: true };
+        });
+
+        return setState({ ...state, date: dateString, hoursList: newHourList });
+      }
+
+      console.log(res);
+
+      // setState({ ...state, date: dateString });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleSelectedHour = (hour) => {
@@ -95,7 +133,7 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorManage }) => {
 
   const handleSaveSchedule = async () => {
     let result = [];
-    if (!isDoctorManage) {
+    if (!isDoctorAccount) {
       if (_.isEmpty(state.selectedPackage) && scheduleOf === "package") {
         return toast.error("Package not yet chosen!");
       } else if (_.isEmpty(state.selectedDoctor) && scheduleOf === "doctor") {
@@ -115,7 +153,7 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorManage }) => {
     timeSelected = timeSelected.forEach((time) => {
       // console.log(time);
       const objectTime = {};
-      if (isDoctorManage) {
+      if (isDoctorAccount) {
         objectTime.doctorId = JSON.parse(localStorage.getItem("userInfo")).id;
       } else {
         doctors
@@ -146,8 +184,6 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorManage }) => {
         return toast.success(res.payload.message);
       }
     }
-
-    // return toast.error("Please select a suitable time frame for medical consultation!");
   };
 
   useEffect(() => {
@@ -165,90 +201,90 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorManage }) => {
   }, [language]);
 
   return (
-    <div className="schedule container">
-      <div className="schedule-content">
-        <div className="schedule-content__title mt-3">{t("schedule-manage.title")}</div>
+    <div className="schedule-manage container">
+      <div className="u-main-title mt-3">{t("schedule-manage.title")}</div>
 
-        <div className="schedule-select mt-5">
-          <div className="schedule-select-doctor col-6 mt-5">
-            {!isDoctorManage && (
-              <div className="title">
-                <h4>{doctors ? t("schedule-manage.choose-doctor") : t("schedule-manage.choose-package")}</h4>
-              </div>
-            )}
+      <div className="schedule-manage-content mt-3">
+        <div className="select-doctor col-6 mt-5">
+          {!isDoctorAccount && (
+            <h4 className="u-input-label">
+              {doctors ? t("schedule-manage.choose-doctor") : t("schedule-manage.choose-package")}
+            </h4>
+          )}
 
-            {isDoctorManage && (
-              <div className="doctor-name">
-                <h4>
-                  {language === "vi" ? "Bác sĩ" : "Doctor"}:{" "}
-                  <span>
-                    {language === "vi"
-                      ? `${JSON.parse(localStorage.getItem("userInfo")).lastName} ${
-                          JSON.parse(localStorage.getItem("userInfo")).firstName
-                        }`
-                      : `${JSON.parse(localStorage.getItem("userInfo")).firstName} ${
-                          JSON.parse(localStorage.getItem("userInfo")).lastName
-                        }`}
-                  </span>
-                </h4>
-              </div>
-            )}
+          {isDoctorAccount && (
+            <h4 className="u-input-label">
+              {language === "vi" ? "Bác sĩ" : "Doctor"}:{" "}
+              <span>
+                {language === "vi"
+                  ? `${JSON.parse(localStorage.getItem("userInfo")).lastName} ${
+                      JSON.parse(localStorage.getItem("userInfo")).firstName
+                    }`
+                  : `${JSON.parse(localStorage.getItem("userInfo")).firstName} ${
+                      JSON.parse(localStorage.getItem("userInfo")).lastName
+                    }`}
+              </span>
+            </h4>
+          )}
 
-            {doctors?.length > 0 && !isDoctorManage && (
-              <div className="mt-3">
-                <Select
-                  value={state.selectedDoctor}
-                  onChange={(option) => handleChangeSelect(option, "selectedDoctor")}
-                  options={handleOptionsSelect("doctor")}
-                />
-              </div>
-            )}
-
-            {packages?.length > 0 && (
-              <div className="mt-3">
-                <Select
-                  value={state.selectedPackage}
-                  onChange={(option) => handleChangeSelect(option, "selectedPackage")}
-                  options={handleOptionsSelect("package")}
-                />
-              </div>
-            )}
-          </div>
-
-          <div className="schedule-select-date col-6 mt-5">
-            <div className="title">
-              <h4>{t("schedule-manage.choose-date")}</h4>
-            </div>
-
+          {doctors?.length > 0 && !isDoctorAccount && (
             <div className="mt-3">
-              <Space direction="vertical" size={12} style={{ width: "100%" }}>
-                <DatePicker
-                  size={state.sizeDatePicker}
-                  format={DATE_FORMAT}
-                  disabledDate={disabledDate}
-                  onChange={handleSelectedDate}
-                  style={{
-                    width: "100%",
-                    padding: "7px 11px",
-                    borderRadius: "4px",
-                  }}
-                />
-              </Space>
+              <Select
+                value={state.selectedDoctor}
+                onChange={(option) => handleChangeSelect(option, "selectedDoctor")}
+                options={handleOptionsSelect("doctor")}
+              />
             </div>
+          )}
+
+          {packages?.length > 0 && (
+            <div className="mt-3">
+              <Select
+                value={state.selectedPackage}
+                onChange={(option) => handleChangeSelect(option, "selectedPackage")}
+                options={handleOptionsSelect("package")}
+              />
+            </div>
+          )}
+        </div>
+
+        <div className="select-date col-6 mt-5">
+          <h4 className="u-input-label">{t("schedule-manage.choose-date")}</h4>
+
+          <div className="mt-3">
+            <Space direction="vertical" size={12} style={{ width: "100%" }}>
+              <DatePicker
+                size={state.sizeDatePicker}
+                format={DATE_FORMAT}
+                disabledDate={disabledDate}
+                onChange={handleSelectedDate}
+                style={{
+                  width: "100%",
+                  padding: "7px 11px",
+                  borderRadius: "4px",
+                }}
+              />
+            </Space>
           </div>
         </div>
 
-        <div className="schedule-hours mt-5">
-          <div className="title mb-3">
-            <h4>{t("schedule-manage.time-frame")}</h4>
-          </div>
+        <div className="select-hours mt-5 col-6">
+          <h4 className="u-input-label mb-3 d-flex justify-content-between">
+            {t("schedule-manage.time-frame")}
+            <button
+              className="u-system-button--refresh-data"
+              onClick={() => setState({ ...initialState, hoursList: state.initHoursList })}
+            >
+              <IoReload />
+            </button>
+          </h4>
 
           <ul className="hours-list">
             {state.hoursList &&
               state.hoursList.length > 0 &&
               state.hoursList.map((time) => {
                 return (
-                  <li key={time.id} className="hours-item">
+                  <li key={time.id} className="hours-list__item">
                     <button
                       className={`${time.isSelected ? "button selected" : "button"}`}
                       onClick={() => handleSelectedHour(time)}
@@ -261,12 +297,11 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorManage }) => {
           </ul>
         </div>
 
-        <div className="row">
-          <div className="schedule-button mt-4">
-            <Button variant="primary" onClick={handleSaveSchedule}>
-              {t("schedule-manage.button-schedule")}
-            </Button>
-          </div>
+        <div className="u-system-button my-4 d-flex justify-content-end gap-3 col-6">
+          <Button variant="danger">{t("button.delete")}</Button>
+          <Button variant="primary" onClick={handleSaveSchedule}>
+            {t("schedule-manage.button-schedule")}
+          </Button>
         </div>
       </div>
     </div>

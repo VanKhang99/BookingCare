@@ -58,6 +58,20 @@ const Header = ({ menuSystemList }) => {
             </Dropdown>
           )}
 
+          {menuSystemList["doctor"] && (
+            <Dropdown
+              menu={{
+                items: menuSystemList["doctor"],
+                onClick: handleMenuClick,
+                selectedKeys: currentKeyMenu,
+              }}
+            >
+              <Button className="system-button">
+                <Space>{t("menu-system.doctor")}</Space>
+              </Button>
+            </Dropdown>
+          )}
+
           {menuSystemList["clinic"] && (
             <Dropdown
               menu={{

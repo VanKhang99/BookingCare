@@ -8,12 +8,12 @@
   .system-header-content {
     margin: 0 auto;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
 
     .system-header-left {
       display: flex;
-      align-items: center;
+      flex-wrap: wrap;
       gap: 1rem;
       font-weight: 600;
       font-size: $base-size + 0.2rem;
@@ -22,6 +22,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        width: 12rem;
 
         .ant-space-item {
           font-size: $base-size + 0.2rem;

@@ -99,7 +99,9 @@
     "package": "Gói khám",
     "package-type": "Quản lý loại gói khám",
     "package-management": "Quản lý gói khám",
-    "package-schedule": "Khung giờ khám bệnh",
+    "package-schedule": "Quản lý khung giờ khám bệnh",
+
+    "allcode": "Quản lý bảng Allcode",
 
     "welcome": "Xin chào 🎉 "
   },

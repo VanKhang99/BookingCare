@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { createUser, updateDataUser } from "../../slices/userSlice";
-import { getAllCode } from "../../slices/allcodeSlice";
+import { getAllCodes } from "../../slices/allcodeSlice";
 import { FaUpload } from "react-icons/fa";
 import { IoReload } from "react-icons/io5";
 import { isValidEmail, isValidPhone, toBase64, checkData } from "../../utils/helpers";
@@ -159,9 +159,9 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
   };
 
   useEffect(() => {
-    dispatch(getAllCode("GENDER"));
-    dispatch(getAllCode("POSITION"));
-    dispatch(getAllCode("ROLE"));
+    dispatch(getAllCodes("GENDER"));
+    dispatch(getAllCodes("POSITION"));
+    dispatch(getAllCodes("ROLE"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

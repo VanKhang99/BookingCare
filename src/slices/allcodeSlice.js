@@ -22,9 +22,18 @@ const initialState = {
   clinicArr: [],
 };
 
-export const getAllCode = createAsyncThunk("allcode/getAllCode", async (type, thunkAPI) => {
+export const getAllCodes = createAsyncThunk("allcode/getAllCodes", async (type, thunkAPI) => {
   try {
     const res = await axios.get(`/api/allcodes/${type}`);
+    return res.data;
+  } catch (error) {
+    return error.response.data;
+  }
+});
+
+export const getOneAllCode = createAsyncThunk("allcode/getOneAllCode", async (keyMap, thunkAPI) => {
+  try {
+    const res = await axios.get(`/api/allcodes/get-one/${keyMap}`);
     return res.data;
   } catch (error) {
     return error.response.data;
@@ -47,7 +56,7 @@ export const allcodeSlice = createSlice({
   extraReducers: (builder) => {
     builder
       //GET ALL CODE
-      .addCase(getAllCode.pending, (state, action) => {
+      .addCase(getAllCodes.pending, (state, action) => {
         if (action.meta.arg === "GENDER") state.isLoadingGender = true;
         if (action.meta.arg === "POSITION") state.isLoadingPosition = true;
         if (action.meta.arg === "ROLE") state.isLoadingRole = true;
@@ -57,7 +66,7 @@ export const allcodeSlice = createSlice({
         if (action.meta.arg === "SPECIALTY") state.isLoadingSpecialty = true;
         if (action.meta.arg === "CLINIC") state.isLoadingClinic = true;
       })
-      .addCase(getAllCode.fulfilled, (state, { payload }) => {
+      .addCase(getAllCodes.fulfilled, (state, { payload }) => {
         if (payload.allCode.length > 0) {
           if (payload.allCode[0].type === "GENDER") {
             state.isLoadingGender = false;
@@ -100,7 +109,7 @@ export const allcodeSlice = createSlice({
           }
         }
       })
-      .addCase(getAllCode.rejected, (state, action) => {
+      .addCase(getAllCodes.rejected, (state, action) => {
         if (action.meta.arg === "GENDER") state.isLoadingGender = false;
         if (action.meta.arg === "POSITION") state.isLoadingPosition = false;
         if (action.meta.arg === "ROLE") state.isLoadingRole = false;

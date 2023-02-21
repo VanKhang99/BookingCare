@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 import { toBase64 } from "../utils/helpers";
 import { FaUpload } from "react-icons/fa";
 import { IoReload } from "react-icons/io5";
-import { getAllCode } from "../slices/allcodeSlice";
+import { getAllCodes } from "../slices/allcodeSlice";
 import { getInfoSpecialty, saveInfoSpecialty, deleteInfoSpecialty } from "../slices/specialtySlice";
 import { checkData } from "../utils/helpers";
 
@@ -198,7 +198,7 @@ const SpecialtyManage = () => {
       const res = await dispatch(deleteInfoSpecialty(state.selectedSpecialty.value));
       if (res.payload === "") {
         toast.success("Specialty is deleted successfully!");
-        await dispatch(getAllCode("SPECIALTY"));
+        await dispatch(getAllCodes("SPECIALTY"));
         return setState({ ...initialState });
       }
     } catch (error) {
@@ -207,7 +207,7 @@ const SpecialtyManage = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllCode("SPECIALTY"));
+    dispatch(getAllCodes("SPECIALTY"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -28,7 +28,7 @@ const MenuSystem = ({ roleId }) => {
       },
       {
         label: <Link to="doctor-schedule-manage">{t("menu-system.doctor-schedule-management")}</Link>,
-        key: "3",
+        key: "2",
         icon: <AiOutlineUser />,
       },
     ],
@@ -78,7 +78,7 @@ const MenuSystem = ({ roleId }) => {
     ],
     allcode: [
       {
-        label: <Link to="crud-allcode-model">CRUD allcode table</Link>,
+        label: <Link to="allcode-manage">{t("menu-system.allcode")}</Link>,
         key: "1",
         icon: <BsFolderPlus />,
       },
@@ -93,7 +93,7 @@ const MenuSystem = ({ roleId }) => {
         icon: <AiOutlineUser />,
       },
       {
-        label: <Link to="schedule-manage">{t("menu-system.schedule-management")}</Link>,
+        label: <Link to="schedule-manage">{t("menu-system.doctor-schedule-management")}</Link>,
         key: "2",
         icon: <AiOutlineUser />,
       },

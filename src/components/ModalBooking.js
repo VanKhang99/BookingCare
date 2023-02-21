@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllCode } from "../slices/allcodeSlice";
+import { getAllCodes } from "../slices/allcodeSlice";
 import { createBooking } from "../slices/bookingSlice";
 import { IoClose } from "react-icons/io5";
 import { DatePicker, Space } from "antd";
@@ -239,7 +239,7 @@ const ModalBooking = ({ show, onHide, doctorId, packageId, doctor, packageData, 
   }, []);
 
   useEffect(() => {
-    dispatch(getAllCode("GENDER"));
+    dispatch(getAllCodes("GENDER"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

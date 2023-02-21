@@ -14,7 +14,7 @@ import SpecialtyManage from "./SpecialtyManage";
 import PackageTypeManage from "./PackageTypeManage";
 import PackageManage from "./PackageManage";
 import PackageSchedule from "./PackageSchedule";
-import CRUDAllcodeModel from "./CRUDAllcodeModel";
+import AllcodeManage from "./AllcodeManage";
 
 // import ModalAddUser from "./UserNormal/ModalAddUser";
 // import ModalEditUser from "./UserNormal/ModalEditUser";
@@ -35,7 +35,7 @@ export {
   PackageTypeManage,
   PackageManage,
   PackageSchedule,
-  CRUDAllcodeModel,
+  AllcodeManage,
   TableList,
   // ModalAddUser,
   // ModalEditUser,

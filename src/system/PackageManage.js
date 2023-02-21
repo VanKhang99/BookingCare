@@ -9,7 +9,7 @@ import Form from "react-bootstrap/Form";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { getAllCode } from "../slices/allcodeSlice";
+import { getAllCodes } from "../slices/allcodeSlice";
 import { getAllPackages, saveInfoPackage, getPackage, deletePackage } from "../slices/packageSlice";
 import { checkData } from "../utils/helpers";
 import { IoReload } from "react-icons/io5";
@@ -216,11 +216,11 @@ const PackageManage = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllCode("PRICE"));
-    dispatch(getAllCode("PAYMENT"));
-    dispatch(getAllCode("PROVINCE"));
-    dispatch(getAllCode("SPECIALTY"));
-    dispatch(getAllCode("CLINIC"));
+    dispatch(getAllCodes("PRICE"));
+    dispatch(getAllCodes("PAYMENT"));
+    dispatch(getAllCodes("PROVINCE"));
+    dispatch(getAllCodes("SPECIALTY"));
+    dispatch(getAllCodes("CLINIC"));
     dispatch(getAllPackages());
     nameEnRef.current.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps

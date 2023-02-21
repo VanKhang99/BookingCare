@@ -28,6 +28,15 @@ export const getSchedules = createAsyncThunk("schedule/getSchedules", async (dat
   }
 });
 
+export const deleteSchedules = createAsyncThunk("schedule/deleteSchedules", async (data, thunkAPI) => {
+  try {
+    const res = await axios.patch(`/api/schedules/${data.typeId}/${data.id}/${data.date}`, data.schedules);
+    return res;
+  } catch (error) {
+    return error.response.data;
+  }
+});
+
 const scheduleSlice = createSlice({
   name: "schedule",
   initialState,

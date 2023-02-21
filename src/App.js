@@ -37,7 +37,7 @@ import {
   PackageTypeManage,
   PackageManage,
   PackageSchedule,
-  CRUDAllcodeModel,
+  AllcodeManage,
 } from "./system";
 import { path } from "./utils/constants";
 import { setAuthToken } from "./utils/helpers";
@@ -119,7 +119,7 @@ function App() {
             <Route path="package-manage" element={<PackageManage />} />
             <Route path="package-schedule" element={<PackageSchedule />} />
 
-            <Route path="crud-allcode-model" element={<CRUDAllcodeModel />} />
+            <Route path="allcode-manage" element={<AllcodeManage />} />
           </Route>
 
           <Route

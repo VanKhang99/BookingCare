@@ -9,7 +9,7 @@ import Lightbox from "react-image-lightbox";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllCode } from "../slices/allcodeSlice";
+import { getAllCodes } from "../slices/allcodeSlice";
 import {
   getSpecialtyOfClinic,
   addSpecialtyForClinic,
@@ -200,8 +200,8 @@ const ClinicAddSpecialty = () => {
       );
       if (res.payload === "") {
         toast.success("Delete specialty of clinic is deleted successfully!");
-        await dispatch(getAllCode("CLINIC"));
-        await dispatch(getAllCode("SPECIALTY"));
+        await dispatch(getAllCodes("CLINIC"));
+        await dispatch(getAllCodes("SPECIALTY"));
         return setState({ ...initialState });
       }
     } catch (error) {
@@ -210,8 +210,8 @@ const ClinicAddSpecialty = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllCode("CLINIC"));
-    dispatch(getAllCode("SPECIALTY"));
+    dispatch(getAllCodes("CLINIC"));
+    dispatch(getAllCodes("SPECIALTY"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

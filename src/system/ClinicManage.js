@@ -11,7 +11,7 @@ import { Radio } from "antd";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllCode } from "../slices/allcodeSlice";
+import { getAllCodes } from "../slices/allcodeSlice";
 import { getInfoClinic, saveInfoClinic, deleteClinic } from "../slices/clinicSlice";
 import { FaUpload } from "react-icons/fa";
 import { IoReload } from "react-icons/io5";
@@ -217,7 +217,7 @@ const ClinicManage = () => {
       const res = await dispatch(deleteClinic(state.selectedClinic.value));
       if (res.payload === "") {
         toast.success("Clinic information is deleted successfully!");
-        await dispatch(getAllCode("CLINIC"));
+        await dispatch(getAllCodes("CLINIC"));
         return setState({ ...initialState });
       }
     } catch (error) {
@@ -226,7 +226,7 @@ const ClinicManage = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllCode("CLINIC"));
+    dispatch(getAllCodes("CLINIC"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -2,31 +2,37 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import axios from "../axios";
 
-export const getAllSpecialties = createAsyncThunk("specialty/getAllSpecialties", async (_, thunkAPI) => {
+const initialState = {
+  isLoadingSpecialties: false,
+  specialties: [],
+};
+
+export const getAllSpecialties = createAsyncThunk("specialty/getAllSpecialties", async (type, thunkAPI) => {
   try {
-    const res = await axios.get("/api/specialties");
+    const res = await axios.get(`/api/specialties/type=${type}`);
     return res.data;
   } catch (error) {
     return error.response.data;
   }
 });
 
-export const getAllSpecialtiesRemote = createAsyncThunk(
-  "specialty/getAllSpecialties",
-  async (_, thunkAPI) => {
-    try {
-      const res = await axios.get("/api/specialties/remote");
-      return res.data;
-    } catch (error) {
-      return error.response.data;
-    }
-  }
-);
+// export const getAllSpecialtiesRemote = createAsyncThunk(
+//   "specialty/getAllSpecialties",
+//   async (_, thunkAPI) => {
+//     try {
+//       const res = await axios.get("/api/specialties/remote");
+//       return res.data;
+//     } catch (error) {
+//       return error.response.data;
+//     }
+//   }
+// );
 
 export const getInfoSpecialty = createAsyncThunk(
   "specialty/getInfoSpecialty",
   async (specialtyId, thunkAPI) => {
     try {
+      console.log(specialtyId);
       const res = await axios.get(`/api/specialties/${specialtyId}`);
       return res.data;
     } catch (error) {
@@ -37,7 +43,7 @@ export const getInfoSpecialty = createAsyncThunk(
 
 export const saveInfoSpecialty = createAsyncThunk("specialty/saveInfoSpecialty", async (data, thunkAPI) => {
   try {
-    const res = await axios.post("/api/specialties", data);
+    const res = await axios.post("/api/specialties", { ...data });
     return res;
   } catch (error) {
     toast.error("Save info specialty failed. Please check your data and try again!");
@@ -57,13 +63,26 @@ export const deleteInfoSpecialty = createAsyncThunk(
   }
 );
 
-// export const specialtySlice = createSlice({
-//   name: "specialty",
-//   initialState,
-//   reducers: {},
-//   extraReducers: (builder) => {},
-// });
+export const specialtySlice = createSlice({
+  name: "specialty",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(getAllSpecialties.pending, (state) => {
+        state.isLoadingSpecialties = true;
+      })
+      .addCase(getAllSpecialties.fulfilled, (state, { payload }) => {
+        state.isLoadingSpecialties = false;
+        state.specialties = payload.specialties;
+      })
+      .addCase(getAllSpecialties.rejected, (state) => {
+        state.isLoadingSpecialties = false;
+        state.specialties = [];
+      });
+  },
+});
 
 // export const {} = specialtySlice.actions;
 
-// export default specialtySlice.reducer;
+export default specialtySlice.reducer;

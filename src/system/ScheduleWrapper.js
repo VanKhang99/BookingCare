@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllDoctors } from "../../slices/doctorSlice";
-import { ScheduleManage } from "../index";
+import { getAllDoctors } from "../slices/doctorSlice";
+import { ScheduleManage } from "./index";
 
-const DoctorSchedule = ({ isDoctorAccount }) => {
+const ScheduleWrapper = ({ isDoctorAccount }) => {
   const dispatch = useDispatch();
   const { doctors } = useSelector((store) => store.doctor);
 
@@ -15,4 +15,4 @@ const DoctorSchedule = ({ isDoctorAccount }) => {
   return <ScheduleManage doctors={doctors} scheduleOf="doctor" isDoctorAccount={isDoctorAccount} />;
 };
 
-export default DoctorSchedule;
+export default ScheduleWrapper;

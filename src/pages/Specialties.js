@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Header, InputSearch, Footer } from "../components";
-import { getAllSpecialties, getAllSpecialtiesRemote } from "../slices/specialtySlice";
+import { getAllSpecialties } from "../slices/specialtySlice";
 import { path } from "../utils/constants";
 import { helperFilterSearch } from "../utils/helpers";
 import "../styles/Specialties.scss";
@@ -15,7 +15,9 @@ const Specialties = ({ remote }) => {
 
   const handleFetchSpecialties = async () => {
     try {
-      const res = remote ? await dispatch(getAllSpecialtiesRemote()) : await dispatch(getAllSpecialties());
+      const res = remote
+        ? await dispatch(getAllSpecialties("remote"))
+        : await dispatch(getAllSpecialties("popular"));
       if (res?.payload?.specialties.length > 0) {
         setSpecialties([...res.payload.specialties]);
         setFilterSpecialties([...res.payload.specialties]);

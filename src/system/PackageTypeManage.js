@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import _ from "lodash";
 import Select from "react-select";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -8,10 +7,9 @@ import Lightbox from "react-image-lightbox";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { toBase64 } from "../utils/helpers";
 import { FaUpload } from "react-icons/fa";
 import { IoReload } from "react-icons/io5";
-import { checkData } from "../utils/helpers";
+import { checkData, postImageToS3, deleteImageOnS3 } from "../utils/helpers";
 import {
   saveInfoPackageType,
   getAllPackagesType,
@@ -28,6 +26,7 @@ const initialState = {
   typeEn: "",
   typeVi: "",
   image: "",
+  fileImage: "",
   previewImageUrl: "",
   isOpenImagePreview: false,
 
@@ -66,17 +65,18 @@ const PackageTypeManage = () => {
     return objectOptions;
   };
 
-  const handleOnChangeImage = async (e, type) => {
+  const handleOnChangeImage = (e, type) => {
     if (!e.target.files || !e.target.files.length) return;
     const file = e.target.files[0];
     if (file) {
       const objectURL = URL.createObjectURL(file);
-      const fileCovert = await toBase64(file);
+      // const fileCovert = await toBase64(file);
 
       return setState({
         ...state,
-        [`${type === "Image" ? "image" : "logo"}`]: fileCovert,
-        [`preview${type === "Image" ? "Image" : "Logo"}Url`]: objectURL,
+        fileImage: file,
+        image: state.image || file.name,
+        previewImageUrl: objectURL,
       });
     }
   };
@@ -87,31 +87,41 @@ const PackageTypeManage = () => {
     setState({ ...state, [`isOpen${type === "Image" ? "Image" : "Logo"}Preview`]: true });
   };
 
-  const handleSaveData = async () => {
+  const handleSaveData = async (e) => {
+    e.preventDefault();
     try {
-      let propsCheckArr = [];
-      if (!state.selectedType) {
-        propsCheckArr = ["image", "typeEn", "typeVi"];
-      } else {
-        propsCheckArr = ["selectedType", "typeEn", "typeVi", "image"];
-      }
+      const propsCheckArr = ["typeEn", "typeVi", "image"];
       const validate = checkData(state, propsCheckArr);
-      if (!validate) throw new Error("Input data not enough");
+      if (!validate) return toast.error("Please fill in all information before saving");
 
+      // upLoad file image to aws s3 bucket
+      let imageUploadToS3;
+      if (typeof state.fileImage !== "string") {
+        if (state.action === "edit") {
+          // Delete old image before update new image
+          await deleteImageOnS3(state.image);
+        }
+
+        // update new image
+        imageUploadToS3 = await postImageToS3(state.fileImage);
+      }
+
+      //Save image to db
       const packageTypeInfo = {
-        ...state,
         id: state.selectedType?.value,
+        typeEn: state.typeEn,
+        typeVi: state.typeVi,
+        image: imageUploadToS3?.data?.data?.image,
         action: state.action || "create",
         table: "package-type",
       };
-
       const info = await dispatch(saveInfoPackageType(packageTypeInfo));
 
       if (info?.payload?.status === "success") {
         toast.success("Package type is saved successfully!");
         await dispatch(getAllPackagesType());
-        return setState({ ...initialState });
       }
+      return setState({ ...initialState });
     } catch (error) {
       toast.error(error.message);
       console.log(error);
@@ -132,7 +142,7 @@ const PackageTypeManage = () => {
         typeEn: packageTypeData.typeEn ?? "",
         typeVi: packageTypeData.typeVi ?? "",
         image: packageTypeData.image,
-        previewImageUrl: packageTypeData.image,
+        previewImageUrl: packageTypeData.imageUrl,
         isHaveInfo: true,
         action: "edit",
         oldSelectedPackage: packageTypeData.id,
@@ -144,8 +154,10 @@ const PackageTypeManage = () => {
 
   const handleDeletePackageType = async () => {
     try {
-      if (!state.selectedType) throw new Error("Package type is not selected");
+      if (!state.selectedType) return toast.error("Package type is not selected");
       alert("Are you sure you want to delete?");
+
+      await deleteImageOnS3(state.image);
 
       const res = await dispatch(deletePackageType(state.selectedType.value));
       if (res.payload === "") {
@@ -179,7 +191,7 @@ const PackageTypeManage = () => {
         <div className="package-type-created">
           <div className="row justify-content-center">
             <div className="col-12 col-lg-6 col-sm-12">
-              <h2 className="u-sub-title mt-5 d-flex justify-content-between">
+              <h2 className="u-sub-title mt-5 mb-3 d-flex justify-content-between align-items-center">
                 TYPES CREATED
                 <button
                   className="u-system-button--refresh-data"
@@ -209,67 +221,65 @@ const PackageTypeManage = () => {
           <div className="row justify-content-center">
             <div className="col-12 col-lg-6 col-sm-12">
               <h2 className="u-sub-title mt-5">INPUTS</h2>
-              <Form.Group className="" controlId="formTypeVi">
-                <h4 className="u-input-label">{t("package-type-manage.type-vi")}</h4>
-                <Form.Control
-                  type="text"
-                  value={state.typeVi}
-                  className="u-input"
-                  onChange={(e, id) => handleInputs(e, "typeVi")}
-                />
-              </Form.Group>
+              <Form onSubmit={handleSaveData}>
+                <Form.Group className="" controlId="formTypeVi">
+                  <h4 className="u-input-label">{t("package-type-manage.type-vi")}</h4>
+                  <Form.Control
+                    type="text"
+                    value={state.typeVi}
+                    className="u-input"
+                    onChange={(e, id) => handleInputs(e, "typeVi")}
+                  />
+                </Form.Group>
 
-              <Form.Group className="mt-5" controlId="formTypeEn">
-                <h4 className="u-input-label">{t("package-type-manage.type-eng")}</h4>
-                <Form.Control
-                  type="text"
-                  value={state.typeEn}
-                  className="u-input"
-                  onChange={(e, id) => handleInputs(e, "typeEn")}
-                />
-              </Form.Group>
+                <Form.Group className="mt-5" controlId="formTypeEn">
+                  <h4 className="u-input-label">{t("package-type-manage.type-eng")}</h4>
+                  <Form.Control
+                    type="text"
+                    value={state.typeEn}
+                    className="u-input"
+                    onChange={(e, id) => handleInputs(e, "typeEn")}
+                  />
+                </Form.Group>
 
-              <Form.Group className="form-group mt-5 image-preview-container" controlId="formImage">
-                <label htmlFor="image" className="u-input-label">
-                  {t("package-type-manage.image")}
-                </label>
-                <input
-                  type="file"
-                  id="image"
-                  className="form-control"
-                  onChange={(e) => handleOnChangeImage(e, "Image")}
-                  hidden
-                />
-
-                <div className="col-12 input-image-customize">
-                  <label htmlFor="image">
-                    <FaUpload /> {t("button.upload")}
+                <Form.Group className="form-group mt-5 image-preview-container" controlId="formImage">
+                  <label htmlFor="image" className="u-input-label">
+                    {t("package-type-manage.image")}
                   </label>
+                  <input
+                    type="file"
+                    id="image"
+                    name="uploaded_file"
+                    accept="image/*"
+                    className="form-control"
+                    onChange={(e) => handleOnChangeImage(e, "Image")}
+                    hidden
+                  />
+
+                  <div className="col-12 input-image-customize">
+                    <label htmlFor="image">
+                      <FaUpload /> {t("button.upload")}
+                    </label>
+                  </div>
+
+                  <div
+                    className={`col-12  ${state.previewImageUrl ? "image-preview open" : "image-preview"}`}
+                    onClick={() => handleOpenImagePreview("Image")}
+                    style={{
+                      backgroundImage: `url(${state.previewImageUrl ? state.previewImageUrl : ""})`,
+                    }}
+                  ></div>
+                </Form.Group>
+
+                <div className="u-system-button text-end my-4">
+                  <Button className="me-4" variant="danger" onClick={() => handleDeletePackageType()}>
+                    {t("button.delete")}
+                  </Button>
+                  <Button variant="primary" type="submit">
+                    {state.isHaveInfo ? `${t("button.update")}` : `${t("button.create")}`}
+                  </Button>
                 </div>
-
-                <div
-                  className={`col-12  ${state.previewImageUrl ? "image-preview open" : "image-preview"}`}
-                  onClick={() => handleOpenImagePreview("Image")}
-                  style={{
-                    backgroundImage: `url(${state.previewImageUrl ? state.previewImageUrl : ""})`,
-                  }}
-                ></div>
-              </Form.Group>
-            </div>
-          </div>
-        </div>
-
-        <div className="package-type-buttons mt-5">
-          <div className="row justify-content-center gx-4">
-            <div className="col-sm-12 col-lg-6 col-12 text-end">
-              <div className="u-system-button">
-                <Button className="me-4" variant="danger" onClick={() => handleDeletePackageType()}>
-                  {t("button.delete")}
-                </Button>
-                <Button variant="primary" onClick={() => handleSaveData()}>
-                  {state.isHaveInfo ? `${t("button.update")}` : `${t("button.create")}`}
-                </Button>
-              </div>
+              </Form>
             </div>
           </div>
         </div>

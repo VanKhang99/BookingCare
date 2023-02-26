@@ -4,7 +4,7 @@ import appReducer from "./slices/appSlice";
 import doctorReducer from "./slices/doctorSlice";
 import userReducer from "./slices/userSlice";
 import bookingReducer from "./slices/bookingSlice";
-// import specialtyReducer from "./slices/specialtySlice";
+import specialtyReducer from "./slices/specialtySlice";
 import clinicReducer from "./slices/clinicSlice";
 import clinicSpecialtyReducer from "./slices/clinicSpecialtySlice";
 import allcodeReducer from "./slices/allcodeSlice";
@@ -18,7 +18,7 @@ export const store = configureStore({
     user: userReducer,
     doctor: doctorReducer,
     booking: bookingReducer,
-    // specialty: specialtyReducer,
+    specialty: specialtyReducer,
     clinic: clinicReducer,
     clinicSpecialty: clinicSpecialtyReducer,
     allcode: allcodeReducer,

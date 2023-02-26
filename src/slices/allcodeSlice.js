@@ -49,6 +49,15 @@ export const createAllCode = createAsyncThunk("allcode/createAllCode", async (da
   }
 });
 
+export const deleteAllCode = createAsyncThunk("allcode/deleteAllCode", async (keyMap, thunkAPI) => {
+  try {
+    const res = await axios.delete(`/api/allcodes/delete/${keyMap}`);
+    return res;
+  } catch (error) {
+    return error.response.data;
+  }
+});
+
 export const allcodeSlice = createSlice({
   name: "allcode",
   initialState,

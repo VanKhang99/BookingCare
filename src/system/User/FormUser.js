@@ -23,15 +23,18 @@ const initialState = {
   gender: "",
   positionId: "",
   roleId: "",
+
   image: "",
+  fileImage: "",
+  previewImgUrl: "",
+  isOpenImagePreview: false,
 
   errorInput: {
     show: false,
     message: "",
   },
-  previewImgUrl: "",
-  isOpenImagePreview: false,
-  action: "",
+
+  action: "create",
 };
 
 const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
@@ -52,11 +55,13 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
     const file = e.target.files[0];
     if (file) {
       const objectURL = URL.createObjectURL(file);
-      const fileCovert = await toBase64(file);
+      // const fileCovert = await toBase64(file);
+
       return setState({
         ...state,
-        image: fileCovert,
-        previewImgUrl: objectURL,
+        fileImage: file,
+        image: state.image || file.name,
+        previewImageUrl: objectURL,
       });
     }
   };
@@ -70,12 +75,13 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
   const handleCreateOrUpdateUser = async () => {
     setState({ ...state, errorInput: { show: false, message: "" } });
 
-    const propsCheckKey = !state.action
-      ? ["email", "password", "firstName", "lastName", "address", "phoneNumber"]
-      : ["firstName", "lastName", "address", "phoneNumber"];
+    const propsCheckKey =
+      state.action === "create"
+        ? ["email", "password", "firstName", "lastName", "address", "phoneNumber"]
+        : ["firstName", "lastName", "address", "phoneNumber"];
 
-    const resultCheckInput = checkData(state, propsCheckKey);
-    if (!resultCheckInput) {
+    const validateInput = checkData(state, propsCheckKey);
+    if (!validateInput) {
       setState({
         ...state,
         errorInput: {
@@ -110,7 +116,7 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
 
     try {
       let res;
-      if (state.action && state.action === "editing") {
+      if (state.action && state.action === "edit") {
         res = await dispatch(
           updateDataUser({
             id: dataUserEdit.id,
@@ -129,7 +135,6 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
         );
         toast.success("Successfully updated!");
       } else {
-        console.log(state);
         res = await dispatch(createUser(state));
         if (res.payload?.status === "error") {
           toast.error("User creation failed!");
@@ -166,19 +171,19 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
   }, []);
 
   useEffect(() => {
-    if (genderArr && genderArr.length > 0) {
+    if (genderArr?.length > 0) {
       setState((prevState) => {
         return { ...prevState, gender: genderArr[0].keyMap };
       });
     }
 
-    if (positionArr && positionArr.length > 0) {
+    if (positionArr?.length > 0) {
       setState((prevState) => {
         return { ...prevState, positionId: positionArr[0].keyMap };
       });
     }
 
-    if (roleArr && roleArr.length > 0) {
+    if (roleArr?.length > 0) {
       setState((prevState) => {
         return { ...prevState, roleId: roleArr[0].keyMap };
       });
@@ -206,7 +211,7 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
         image: dataUserEdit.image ?? "",
         positionId: dataUserEdit.positionId ?? "",
         roleId: dataUserEdit.roleId ?? "",
-        action: "editing",
+        action: "edit",
         previewImgUrl: dataUserEdit.image ?? "",
       });
     }

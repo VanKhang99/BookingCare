@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Carousel } from "antd";
 import { BsFillCameraVideoFill } from "react-icons/bs";
-import { getAllSpecialtiesRemote } from "../../slices/specialtySlice";
+import { getAllSpecialties } from "../../slices/specialtySlice";
 import { path } from "../../utils/constants";
 import "../../styles/Carousel.scss";
 
@@ -14,7 +14,7 @@ const CarouselRemoteDoctor = ({ onChange, settings, doctorRemote }) => {
 
   const handleGetSpecialtiesRemote = async () => {
     try {
-      const res = await dispatch(getAllSpecialtiesRemote());
+      const res = await dispatch(getAllSpecialties("remote"));
       if (res?.payload?.specialties) {
         return setSpecialtiesRemote(res.payload.specialties);
       }
@@ -32,12 +32,9 @@ const CarouselRemoteDoctor = ({ onChange, settings, doctorRemote }) => {
     <Carousel className="slides" afterChange={onChange} {...settings}>
       {specialtiesRemote?.length > 0 &&
         specialtiesRemote.map((specialty) => {
+          const { imageRemoteUrl, id: specialtyId } = specialty;
           return (
-            <Link
-              to={`/${path.SPECIALTY}/${path.REMOTE}/${specialty.specialtyId}`}
-              key={specialty.specialtyId}
-              className="slide"
-            >
+            <Link to={`/${path.SPECIALTY}/${path.REMOTE}/${specialtyId}`} key={specialtyId} className="slide">
               <div className="slide-content">
                 {doctorRemote && (
                   <div className="slide-content__icon">
@@ -45,15 +42,10 @@ const CarouselRemoteDoctor = ({ onChange, settings, doctorRemote }) => {
                   </div>
                 )}
                 <div className="slide-content__img">
-                  <img
-                    src={specialty.imageRemote}
-                    alt={language === "vi" ? specialty.nameData.valueVi : specialty.nameData.valueEn}
-                  />
+                  <img src={imageRemoteUrl} alt={language === "vi" ? specialty.nameVi : specialty.nameEn} />
                 </div>
                 <span className="slide-content--name-specialty">
-                  {language === "vi"
-                    ? `${specialty.nameData.valueVi} từ xa`
-                    : `Remote ${specialty.nameData.valueEn}`}
+                  {language === "vi" ? `${specialty.nameVi} từ xa` : `Remote ${specialty.nameEn}`}
                 </span>
               </div>
             </Link>

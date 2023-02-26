@@ -1,13 +1,10 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState } from "react";
 import HtmlReactParser from "html-react-parser";
 import _ from "lodash";
-import moment from "moment";
 import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+// import { useDispatch, useSelector } from "react-redux";
 import { useFetchDataBaseId } from "../utils/CustomHook";
 import { getDetailDoctor } from "../slices/doctorSlice";
-import { getSchedules } from "../slices/scheduleSlice";
-import { getToday, formatDate } from "../utils/helpers";
 import {
   Header,
   Footer,

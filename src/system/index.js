@@ -1,11 +1,11 @@
 import HeaderSystem from "./HeaderSystem";
 import MenuSystem from "./MenuSystem";
-import UserManage from "./UserRedux/UserManage";
-import FormUser from "./UserRedux/FormUser";
-import ListUser from "./UserRedux/ListUser";
-import TableList from "./UserRedux/TableList";
+import UserManage from "./User/UserManage";
+import FormUser from "./User/FormUser";
+import ListUser from "./User/ListUser";
+import TableList from "./User/TableList";
 import DoctorManage from "./DoctorManage";
-import DoctorSchedule from "./UserRedux/DoctorSchedule";
+import ScheduleWrapper from "./ScheduleWrapper";
 import ScheduleManage from "./ScheduleManage";
 import PatientBooking from "./PatientBooking";
 import ClinicManage from "./ClinicManage";
@@ -14,6 +14,7 @@ import SpecialtyManage from "./SpecialtyManage";
 import PackageTypeManage from "./PackageTypeManage";
 import PackageManage from "./PackageManage";
 import PackageSchedule from "./PackageSchedule";
+import HandBookManage from "./HandBookManage";
 import AllcodeManage from "./AllcodeManage";
 
 // import ModalAddUser from "./UserNormal/ModalAddUser";
@@ -26,7 +27,7 @@ export {
   FormUser,
   ListUser,
   DoctorManage,
-  DoctorSchedule,
+  ScheduleWrapper,
   ScheduleManage,
   PatientBooking,
   ClinicManage,
@@ -35,6 +36,7 @@ export {
   PackageTypeManage,
   PackageManage,
   PackageSchedule,
+  HandBookManage,
   AllcodeManage,
   TableList,
   // ModalAddUser,

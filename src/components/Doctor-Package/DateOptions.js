@@ -21,6 +21,8 @@ const DateOptions = ({ small, id, onUpdateSchedules, keyMapFetchPackage }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
 
+  console.log(initDateSelected);
+
   const handleGetScheduleNextDay = async () => {
     try {
       let newDateSelected = new Date();
@@ -116,17 +118,20 @@ const DateOptions = ({ small, id, onUpdateSchedules, keyMapFetchPackage }) => {
     }
 
     //When change language prevent dateSelected come back fistDay of the list
-    const dateSelectedCopy = initDateSelected.split(" - ")[1];
-    const dateSelectedCopyReverse = initDateSelected.split(" - ")[1].split("/").reverse().join("/");
+    let findDateSelected;
+    if (state.dateSelected) {
+      const dateSelectedSplit = state.dateSelected.split(" - ")[1];
+      const dateSelectedSplitReverse = state.dateSelected.split(" - ")[1].split("/").reverse().join("/");
 
-    const findDateSelected = dates.find(
-      (date) => date.includes(dateSelectedCopy) || date.includes(dateSelectedCopyReverse)
-    );
+      findDateSelected = dates.find(
+        (date) => date.includes(dateSelectedSplit) || date.includes(dateSelectedSplitReverse)
+      );
+    }
 
     return setState({
       ...state,
       optionsDate: [...dates],
-      dateSelected: findDateSelected,
+      dateSelected: findDateSelected || initDateSelected,
     });
   };
 

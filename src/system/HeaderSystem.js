@@ -5,18 +5,23 @@ import { useNavigate } from "react-router-dom";
 import { Select } from "antd";
 import { languages } from "../utils/constants";
 import { TbLogout } from "react-icons/tb";
-import { Button, Dropdown, Space } from "antd";
+import { Button, Dropdown, Menu, Space } from "antd";
 import { handleCurrentKey } from "../slices/appSlice";
 import { logout } from "../slices/userSlice";
 import { handleChangeLanguage, handleChangePathSystem } from "../slices/appSlice";
 import "./styles/HeaderSystem.scss";
 
-const Header = ({ menuSystemList }) => {
+const Header = ({ menuSystemList, packageMenu }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { userInfo } = useSelector((store) => store.user);
   const { currentKeyMenu } = useSelector((store) => store.app);
+  const userFromLocalStorage = localStorage.getItem("userInfo")
+    ? JSON.parse(localStorage.getItem("userInfo"))
+    : null;
+
+  console.log(menuSystemList);
 
   const handleChange = (value) => {
     dispatch(handleChangeLanguage(value));
@@ -31,14 +36,11 @@ const Header = ({ menuSystemList }) => {
     }
   };
 
-  const handleMenuClick = ({ item, key }) => {
-    dispatch(handleCurrentKey(key));
-    dispatch(handleChangePathSystem(item.props.url));
+  const handleMenuClick = (e) => {
+    // console.log(e);
+    return dispatch(handleCurrentKey(e.key));
+    // dispatch(handleChangePathSystem(item.props.url));
   };
-
-  const userFromLocalStorage = localStorage.getItem("userInfo")
-    ? JSON.parse(localStorage.getItem("userInfo"))
-    : null;
 
   return (
     <header className="system-header-container">
@@ -77,6 +79,7 @@ const Header = ({ menuSystemList }) => {
               menu={{
                 items: menuSystemList["clinic"],
                 onClick: handleMenuClick,
+                selectedKeys: currentKeyMenu,
               }}
             >
               <Button className="system-button">
@@ -90,6 +93,7 @@ const Header = ({ menuSystemList }) => {
               menu={{
                 items: menuSystemList["specialty"],
                 onClick: handleMenuClick,
+                selectedKeys: currentKeyMenu,
               }}
             >
               <Button className="system-button">
@@ -103,6 +107,7 @@ const Header = ({ menuSystemList }) => {
               menu={{
                 items: menuSystemList["handbook"],
                 onClick: handleMenuClick,
+                selectedKeys: currentKeyMenu,
               }}
             >
               <Button className="system-button">
@@ -116,6 +121,7 @@ const Header = ({ menuSystemList }) => {
               menu={{
                 items: menuSystemList["package"],
                 onClick: handleMenuClick,
+                selectedKeys: currentKeyMenu,
               }}
             >
               <Button className="system-button">
@@ -129,6 +135,7 @@ const Header = ({ menuSystemList }) => {
               menu={{
                 items: menuSystemList["allcode"],
                 onClick: handleMenuClick,
+                selectedKeys: currentKeyMenu,
               }}
             >
               <Button className="system-button">

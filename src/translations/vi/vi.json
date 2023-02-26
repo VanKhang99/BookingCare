@@ -120,7 +120,10 @@
     "placeholder-clinic": "Chọn bệnh viện hoặc phòng khám",
 
     "outstanding": "Phổ biến tuần vừa qua",
-    "consultant-remote": "Tư vấn từ xa"
+    "consultant-remote": "Tư vấn từ xa",
+
+    "name-vi": "Tên (vi)",
+    "name-en": "Tên (en)"
   },
 
   "user-manage": {
@@ -147,13 +150,13 @@
     "note": "Ghi chú",
 
     "summary": "Thông tin tóm tắt",
-    "more-info": "Thông tin thêm về bác sĩ",
-    "button-save": "Lưu thông tin",
-    "button-update": "Lưu thay đổi"
+    "more-info": "Thông tin thêm về bác sĩ"
   },
 
   "clinic-manage": {
     "title": "QUẢN LÝ THÔNG TIN BỆNH VIỆN - PHÒNG KHÁM",
+    "clinic-created": "Các bệnh viện đã có",
+
     "choose-hospital": "Bệnh viện - Phòng khám",
     "placeholder-hospital": "Chọn bệnh viện - phòng khám",
     "address": "Địa chỉ",
@@ -167,10 +170,7 @@
     "markdown-equipment": "Trang thiết bị",
     "markdown-location": "Vị trí",
     "markdown-process": "Quá trình khám",
-    "markdown-price": "Gía khám bệnh",
-    "button-upload": "Tải ảnh",
-    "button-save": "Lưu thông tin",
-    "button-update": "Lưu thay đổi"
+    "markdown-price": "Gía khám bệnh"
   },
 
   "clinic-specialty-manage": {
@@ -184,10 +184,7 @@
     "markdown-booking": "Đặt lịch khám",
     "markdown-introduction": "Giới thiệu",
     "markdown-examAndTreatment": "Khám và điều trị",
-    "markdown-strengths": "Thế mạnh cạnh tranh",
-    "button-upload": "Tải ảnh",
-    "button-save": "Lưu thông tin",
-    "button-update": "Lưu thay đổi"
+    "markdown-strengths": "Thế mạnh cạnh tranh"
   },
 
   "schedule-manage": {
@@ -201,15 +198,13 @@
 
   "specialty-manage": {
     "title": "Quản lý thông tin chuyên khoa khám bệnh",
+    "specialty-created": "Các chuyên khoa đã có",
     "choose-specialty": "Chọn chuyên khoa",
     "placeholder": "...",
     "image-specialty": "Ảnh chuyên khoa",
     "image-specialty-remote": "Ảnh chuyên khoa từ xa",
     "popular": "Phổ biến tuần vừa qua",
-    "introduction-specialty": "Giới thiệu về chuyên khoa",
-    "button-upload": "Tải ảnh",
-    "button-save": "Lưu thông tin",
-    "button-update": "Lưu thay đổi"
+    "introduction-specialty": "Giới thiệu về chuyên khoa"
   },
 
   "patients-booking-manage": {
@@ -265,6 +260,7 @@
     "post": "Bài viết",
     "cooperate": "Hợp tác",
     "contact": "Liên hệ",
+    "add": "Thêm mới",
     "create": "Tạo mới",
     "update": "Cập nhật",
     "upload": "Tải ảnh",

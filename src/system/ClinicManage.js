@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
-import _ from "lodash";
+import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import MarkdownIt from "markdown-it";
 import MdEditor from "react-markdown-editor-lite";
@@ -11,11 +10,10 @@ import { Radio } from "antd";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllCodes } from "../slices/allcodeSlice";
-import { getInfoClinic, saveInfoClinic, deleteClinic } from "../slices/clinicSlice";
+import { getAllClinics, getClinic, saveDataClinic, deleteClinic } from "../slices/clinicSlice";
 import { FaUpload } from "react-icons/fa";
 import { IoReload } from "react-icons/io5";
-import { toBase64, checkData } from "../utils/helpers";
+import { checkData, postImageToS3, deleteImageOnS3 } from "../utils/helpers";
 
 import "./styles/ClinicManage.scss";
 
@@ -24,12 +22,16 @@ const mdParser = new MarkdownIt(/* Markdown-it options */);
 const initialState = {
   selectedClinic: "",
 
+  nameVi: "",
+  nameEn: "",
   address: "",
   keyWord: "",
   haveSpecialtyPage: false,
   popular: false,
   image: "",
   logo: "",
+  fileImage: "",
+  fileLogo: "",
   previewImageUrl: "",
   previewLogoUrl: "",
   isOpenImagePreview: false,
@@ -61,8 +63,7 @@ const ClinicManage = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
-  const { clinicArr } = useSelector((store) => store.allcode);
-  const saveOldClinic = useRef(null);
+  const { clinics } = useSelector((store) => store.clinic);
 
   const handleInfos = (e, type) => {
     const stateCopy = JSON.parse(JSON.stringify({ ...state }));
@@ -74,81 +75,15 @@ const ClinicManage = () => {
     setState({ ...stateCopy });
   };
 
-  const handleOptionClinic = (data) => {
+  const handleInfoOptions = (data) => {
     if (!data) return;
     const objectOptions = data.map((item) => {
-      const label = language === "vi" ? `${item.valueVi}` : `${item.valueEn}`;
-      const value = item.keyMap;
+      const label = language === "vi" ? `${item.nameVi}` : `${item.nameEn}`;
+      const value = item.id;
       return { value, label };
     });
 
     return objectOptions;
-  };
-
-  const handleStateSelectClinic = async (selectedOption) => {
-    try {
-      const clinic = await dispatch(getInfoClinic(selectedOption?.value || state.oldSelectedClinic));
-
-      const findClinicSelected = (id) => {
-        return handleOptionClinic(clinicArr).find((item) => item.value === id);
-      };
-
-      if (clinic?.payload?.data && !_.isEmpty(clinic.payload.data)) {
-        const clinicData = clinic.payload.data;
-        const propsCheckArr = ["clinicId", "address", "haveSpecialtyPage", "popular", "image", "logo"];
-        const checkClinicData = checkData(clinicData, propsCheckArr);
-        const clinicSelected = findClinicSelected(clinicData.clinicId);
-
-        if (!checkClinicData) {
-          return toast.error(
-            "Your data return from the server in not enough. Please check your data and try again!"
-          );
-        }
-
-        return setState({
-          ...state,
-          selectedClinic: clinicSelected,
-          address: clinicData.address,
-          keyWord: clinicData.keyWord,
-          haveSpecialtyPage: clinicData.haveSpecialtyPage,
-          popular: clinicData.popular,
-          image: clinicData.image,
-          previewImageUrl: clinicData.image,
-          logo: clinicData.logo,
-          previewLogoUrl: clinicData.logo,
-          isHaveInfo: true,
-          action: "edit",
-          oldSelectedClinic: clinicData.clinicId,
-
-          noteHTML: clinicData?.noteHTML,
-          noteMarkdown: clinicData?.noteMarkdown,
-          bookingHTML: clinicData?.bookingHTML,
-          bookingMarkdown: clinicData?.bookingMarkdown,
-          introductionHTML: clinicData?.introductionHTML,
-          introductionMarkdown: clinicData?.introductionMarkdown,
-          strengthsHTML: clinicData?.strengthsHTML,
-          strengthsMarkdown: clinicData?.strengthsMarkdown,
-          equipmentHTML: clinicData?.equipmentHTML,
-          equipmentMarkdown: clinicData?.equipmentMarkdown,
-          locationHTML: clinicData?.locationHTML,
-          locationMarkdown: clinicData?.locationMarkdown,
-          processHTML: clinicData?.processHTML,
-          processMarkdown: clinicData?.processMarkdown,
-          priceHTML: clinicData?.priceHTML,
-          priceMarkdown: clinicData?.priceMarkdown,
-        });
-      }
-
-      const selectedClinic = findClinicSelected(state.selectedClinic.value);
-
-      return setState({
-        ...initialState,
-        selectedClinic: selectedOption || selectedClinic,
-        oldSelectedClinic: selectedOption?.value || selectedClinic.value,
-      });
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   const handleCheckRadio = (e, type) => {
@@ -160,45 +95,63 @@ const ClinicManage = () => {
     const file = e.target.files[0];
     if (file) {
       const objectURL = URL.createObjectURL(file);
-      const fileCovert = await toBase64(file);
+      // const fileCovert = await toBase64(file);
+      const nameImage = (type === "Image" ? state.image : state.logo) || file.name;
 
       return setState({
         ...state,
-        [`${type === "Image" ? "image" : "logo"}`]: fileCovert,
-        [`preview${type === "Image" ? "Image" : "Logo"}Url`]: objectURL,
+        [`file${type}`]: file,
+        [`${type === "Image" ? "image" : "logo"}`]: nameImage,
+        [`preview${type}Url`]: objectURL,
       });
     }
   };
 
   const handleOpenImagePreview = (type) => {
-    if (!state[`preview${type === "Image" ? "Image" : "Logo"}Url`]) return;
+    if (!state[`preview${type}Url`]) return;
 
-    setState({ ...state, [`isOpen${type === "Image" ? "Image" : "Logo"}Preview`]: true });
+    setState({ ...state, [`isOpen${type}Preview`]: true });
   };
 
   const handleMarkdownChange = ({ html, text }, type) => {
-    const stateCopy = JSON.parse(JSON.stringify({ ...state }));
-    stateCopy[`${type}HTML`] = html;
-    stateCopy[`${type}Markdown`] = text;
-    return setState({ ...stateCopy });
+    return setState({ ...state, [`${type}HTML`]: html, [`${type}Markdown`]: text });
   };
 
-  const handleSaveDataClinic = async () => {
+  const handleSaveDataClinic = async (e) => {
     try {
-      const propsCheckArr = ["selectedClinic", "address", "haveSpecialtyPage", "popular", "image", "logo"];
+      const propsCheckArr = ["nameVi", "nameEn", "address", "haveSpecialtyPage", "popular", "image", "logo"];
       const validate = checkData(state, propsCheckArr);
-      if (!validate) throw new Error("Input data not enough");
+      if (!validate) return toast.error("Please fill in all information before saving");
+
+      let imageCoverUploadToS3, logoUploadToS3;
+      if (state.action === "edit") {
+        if (typeof state.fileImage !== "string") {
+          // Delete old image before update new image
+          await deleteImageOnS3(state.image);
+          imageCoverUploadToS3 = await postImageToS3(state.fileImage);
+        }
+        if (typeof state.fileLogo !== "string") {
+          // Delete old image before update new image
+          await deleteImageOnS3(state.logo);
+          logoUploadToS3 = await postImageToS3(state.fileLogo);
+        }
+      } else {
+        imageCoverUploadToS3 = await postImageToS3(state.fileImage);
+        logoUploadToS3 = await postImageToS3(state.fileLogo);
+      }
 
       const clinicInfo = {
         ...state,
-        clinicId: state.selectedClinic.value,
+        image: imageCoverUploadToS3?.data?.data?.image,
+        logo: logoUploadToS3?.data?.data?.image,
+        id: state.selectedClinic.value,
         action: state.action || "create",
       };
 
-      const info = await dispatch(saveInfoClinic(clinicInfo));
-
+      const info = await dispatch(saveDataClinic(clinicInfo));
       if (info?.payload?.status === "success") {
-        toast.success("Doctor's info is saved successfully!");
+        toast.success("Hospital (Clinic) data is saved successfully!");
+        await dispatch(getAllClinics("both"));
         setState({ ...initialState });
       }
     } catch (error) {
@@ -207,17 +160,39 @@ const ClinicManage = () => {
     }
   };
 
+  const handleUpdateClinic = async (selectedOption) => {
+    try {
+      const clinic = await dispatch(getClinic(selectedOption?.value || +state.oldSelectedClinic));
+      const { id, ...restClinicData } = clinic.payload.data;
+      const clinicSelected = handleInfoOptions(clinics).find((item) => item.value === id);
+
+      return setState({
+        ...state,
+        selectedClinic: clinicSelected,
+        previewImageUrl: restClinicData.imageUrl,
+        previewLogoUrl: restClinicData.logoUrl,
+        isHaveInfo: true,
+        action: "edit",
+        oldSelectedClinic: id,
+        ...restClinicData,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleDeleteClinic = async () => {
     try {
-      if (!state.selectedClinic) throw new Error("Doctor is not selected");
+      if (!state.selectedClinic) return toast.error("Hospital (clinic) is not selected");
       alert("Are you sure you want to delete?");
 
-      console.log(state.selectedClinic);
+      await deleteImageOnS3(state.image);
+      await deleteImageOnS3(state.logo);
 
       const res = await dispatch(deleteClinic(state.selectedClinic.value));
       if (res.payload === "") {
-        toast.success("Clinic information is deleted successfully!");
-        await dispatch(getAllCodes("CLINIC"));
+        toast.success("Hospital (Clinic) is deleted successfully!");
+        await dispatch(getAllClinics("both"));
         return setState({ ...initialState });
       }
     } catch (error) {
@@ -226,7 +201,8 @@ const ClinicManage = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllCodes("CLINIC"));
+    // dispatch(getAllCodes("CLINIC"));
+    dispatch(getAllClinics("both"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -241,14 +217,9 @@ const ClinicManage = () => {
   }, [state.image, state.logo]);
 
   useEffect(() => {
-    if (clinicArr?.length > 0) {
-      handleOptionClinic(clinicArr);
-    }
-
     if (state.oldSelectedClinic) {
-      handleStateSelectClinic();
+      handleUpdateClinic();
     }
-    saveOldClinic.current = state.oldSelectedClinic;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
 
@@ -256,34 +227,59 @@ const ClinicManage = () => {
     <div className="clinic-manage container">
       <div className="u-main-title text-center mt-4">{t("clinic-manage.title")}</div>
 
-      <div className="clinic-manage-inputs mt-5">
-        <h2 className="u-sub-title d-flex justify-content-between">
-          INPUTS
-          <button className="u-system-button--refresh-data" onClick={() => setState({ ...initialState })}>
-            <IoReload />
-          </button>
-        </h2>
-
+      <div className="package-type-created">
         <div className="row">
-          <div className="col-4">
-            <h4 className="u-input-label">{t("clinic-manage.choose-hospital")}</h4>
-
+          <div className="col-12">
+            <h2 className="u-sub-title mt-5 mb-3 d-flex justify-content-between align-items-center">
+              {t("clinic-manage.clinic-created").toUpperCase()}
+              <button className="u-system-button--refresh-data" onClick={() => setState({ ...initialState })}>
+                <IoReload />
+              </button>
+            </h2>
             <div className="select-clinics mt-2">
-              {clinicArr?.length > 0 && (
+              {clinics?.length > 0 && (
                 <Select
                   value={state.selectedClinic}
                   onChange={(option) => {
                     handleInfos(option, "selectedClinic");
-                    handleStateSelectClinic(option);
+                    handleUpdateClinic(option);
                   }}
-                  options={handleOptionClinic(clinicArr)}
+                  options={handleInfoOptions(clinics)}
                   placeholder={t("clinic-manage.placeholder-hospital")}
                 />
               )}
             </div>
           </div>
+        </div>
+      </div>
 
-          <Form.Group className="col-4" controlId="formClinicAddress">
+      <div className="clinic-manage-inputs mt-5">
+        <h2 className="u-sub-title d-flex justify-content-between">INPUTS</h2>
+
+        <div className="row">
+          <Form.Group className="col-3" controlId="formNameVi">
+            <h4 className="u-input-label">{t("common.name-vi")}</h4>
+
+            <Form.Control
+              type="text"
+              value={state.nameVi}
+              className="u-input"
+              onChange={(e, id) => handleInfos(e, "nameVi")}
+            />
+          </Form.Group>
+
+          <Form.Group className="col-3" controlId="formNameEn">
+            <h4 className="u-input-label">{t("common.name-en")}</h4>
+
+            <Form.Control
+              type="text"
+              value={state.nameEn}
+              className="u-input"
+              onChange={(e, id) => handleInfos(e, "nameEn")}
+            />
+          </Form.Group>
+
+          <Form.Group className="col-3" controlId="formClinicAddress">
             <h4 className="u-input-label">{t("clinic-manage.address")}</h4>
 
             <Form.Control
@@ -294,7 +290,7 @@ const ClinicManage = () => {
             />
           </Form.Group>
 
-          <Form.Group className="col-4" controlId="formKeyWord">
+          <Form.Group className="col-3" controlId="formKeyWord">
             <h4 className="u-input-label">Keyword (abbreviations)</h4>
 
             <Form.Control
@@ -322,7 +318,7 @@ const ClinicManage = () => {
 
               <div className="col-12 input-image-customize">
                 <label htmlFor="image">
-                  <FaUpload /> {t("clinic-manage.button-upload")}
+                  <FaUpload /> {t("button.upload")}
                 </label>
               </div>
 
@@ -351,7 +347,7 @@ const ClinicManage = () => {
 
               <div className="col-12 input-logo-customize">
                 <label htmlFor="logo">
-                  <FaUpload /> {t("clinic-manage.button-upload")}
+                  <FaUpload /> {t("button.upload")}
                 </label>
               </div>
 
@@ -489,7 +485,7 @@ const ClinicManage = () => {
         <Button variant="danger" onClick={() => handleDeleteClinic()}>
           {t("button.delete")}
         </Button>
-        <Button variant="primary" onClick={() => handleSaveDataClinic()}>
+        <Button variant="primary" onClick={handleSaveDataClinic}>
           {state.isHaveInfo ? `${t("button.update")}` : `${t("button.create")}`}
         </Button>
       </div>

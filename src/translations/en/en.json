@@ -135,7 +135,10 @@
     "placeholder-clinic": "Choose a clinic (hospital)",
 
     "outstanding": "Popular last week",
-    "consultant-remote": "Remote consultant"
+    "consultant-remote": "Remote consultant",
+
+    "name-vi": "Name (vi)",
+    "name-en": "Name (en)"
   },
 
   "doctor-manage": {
@@ -147,9 +150,7 @@
     "note": "Note",
 
     "summary": "Summary information",
-    "more-info": "More information about the doctor",
-    "button-save": "Save information",
-    "button-update": "Save changes"
+    "more-info": "More information about the doctor"
   },
 
   "schedule-manage": {
@@ -163,6 +164,8 @@
 
   "clinic-manage": {
     "title": "HOSPITAL - CLINIC INFORMATION MANAGEMENT",
+    "clinic-created": "Clinics created",
+
     "choose-hospital": "Hospital - clinic",
     "placeholder-hospital": "Choose a hospital-clinic",
     "address": "Address",
@@ -176,10 +179,7 @@
     "markdown-equipment": "Equipment",
     "markdown-location": "Location",
     "markdown-process": "Process",
-    "markdown-price": "Price",
-    "button-upload": "Upload",
-    "button-save": "Save information",
-    "button-update": "Save changes"
+    "markdown-price": "Price"
   },
 
   "clinic-specialty-manage": {
@@ -193,23 +193,18 @@
     "markdown-booking": "Booking",
     "markdown-introduction": "Introduction",
     "markdown-examAndTreatment": "Examination and treatment",
-    "markdown-strengths": "Strengths",
-    "button-upload": "Upload",
-    "button-save": "Save information",
-    "button-update": "Save changes"
+    "markdown-strengths": "Strengths"
   },
 
   "specialty-manage": {
     "title": "Management of medical examination specialist information",
+    "specialty-created": "Specialties created",
     "choose-specialty": "Choose a specialty",
     "placeholder": "Choose a specialty",
     "image-specialty": "Specialty image",
     "image-specialty-remote": "Remote specialty image",
     "popular": "Popular last week",
-    "introduction-specialty": "Introduction to the specialty",
-    "button-upload": "Upload",
-    "button-save": "Save information",
-    "button-update": "Save changes"
+    "introduction-specialty": "Introduction to the specialty"
   },
 
   "package-manage": {
@@ -265,6 +260,7 @@
     "post": "Post",
     "cooperate": "Cooperate",
     "contact": "Contact",
+    "add": "Add",
     "create": "Create",
     "update": "Update",
     "upload": "Upload",

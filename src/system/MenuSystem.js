@@ -15,7 +15,7 @@ const MenuSystem = ({ roleId }) => {
     user: [
       {
         label: <Link to="user-manage">{t("menu-system.user-management")}</Link>,
-        key: "1",
+        key: "user-manage",
         icon: <AiOutlineUser />,
       },
     ],
@@ -23,12 +23,12 @@ const MenuSystem = ({ roleId }) => {
     doctor: [
       {
         label: <Link to="doctor-manage">{t("menu-system.doctor-manage")}</Link>,
-        key: "1",
+        key: "doctor-manage",
         icon: <AiOutlineUser />,
       },
       {
         label: <Link to="doctor-schedule-manage">{t("menu-system.doctor-schedule-management")}</Link>,
-        key: "2",
+        key: "doctor-schedule-manage",
         icon: <AiOutlineUser />,
       },
     ],
@@ -36,50 +36,53 @@ const MenuSystem = ({ roleId }) => {
     clinic: [
       {
         label: <Link to="clinic-manage">{t("menu-system.clinic-management")}</Link>,
-        key: "1",
+        key: "clinic-manage",
         icon: <BiClinic />,
       },
       {
         label: <Link to="clinic-specialty-manage">{t("menu-system.clinic-specialty-manage")}</Link>,
-        key: "2",
+        key: "clinic-specialty-manage",
         icon: <BiClinic />,
       },
     ],
+
     specialty: [
       {
         label: <Link to="specialty-manage">{t("menu-system.specialty-management")}</Link>,
-        key: "1",
+        key: "specialty-manage",
         icon: <MdOutlineWorkOutline />,
       },
     ],
     handbook: [
       {
         label: <Link to="handbook-manage">{t("menu-system.handbook-management")}</Link>,
-        key: "1",
+        key: "handbook-manage",
         icon: <BiBook />,
       },
     ],
+
     package: [
       {
         label: <Link to="package-type">{t("menu-system.package-type")}</Link>,
-        key: "1",
+        key: "package-type",
         icon: <GoPackage />,
       },
       {
         label: <Link to="package-manage">{t("menu-system.package-management")}</Link>,
-        key: "2",
+        key: "package-manage",
         icon: <GoPackage />,
       },
       {
         label: <Link to="package-schedule">{t("menu-system.package-schedule")}</Link>,
-        key: "3",
+        key: "package-schedule",
         icon: <GoPackage />,
       },
     ],
+
     allcode: [
       {
         label: <Link to="allcode-manage">{t("menu-system.allcode")}</Link>,
-        key: "1",
+        key: "allcode-manage",
         icon: <BsFolderPlus />,
       },
     ],
@@ -89,20 +92,22 @@ const MenuSystem = ({ roleId }) => {
     user: [
       {
         label: <Link to="patient-booking-manage">{t("menu-system.patient-booking-manage")}</Link>,
-        key: "1",
+        key: "patient-booking-manage",
         icon: <AiOutlineUser />,
       },
       {
         label: <Link to="schedule-manage">{t("menu-system.doctor-schedule-management")}</Link>,
-        key: "2",
+        key: "schedule-manage",
         icon: <AiOutlineUser />,
       },
     ],
   };
 
+  console.log(adminMenuList);
+
   return (
     <div className="menu">
-      <HeaderSystem menuSystemList={roleId && roleId === "R1" ? adminMenuList : doctorMenuList} />
+      <HeaderSystem menuSystemList={roleId === "R1" ? adminMenuList : doctorMenuList} />
     </div>
   );
 };

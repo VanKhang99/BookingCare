@@ -22,7 +22,7 @@ const SharedLayout = () => {
 
   return (
     <>
-      <MenuSystem roleId={userData && userData.roleId ? userData.roleId : ""} />
+      <MenuSystem roleId={userData?.roleId ? userData.roleId : ""} />
       <Outlet />
     </>
   );

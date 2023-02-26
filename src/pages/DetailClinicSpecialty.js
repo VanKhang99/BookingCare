@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import { useFetchDataBaseId } from "../utils/CustomHook";
-import { getInfoClinic } from "../slices/clinicSlice";
+import { getClinic } from "../slices/clinicSlice";
 import { getSpecialtyOfClinic } from "../slices/clinicSpecialtySlice";
 import { useInView, InView } from "react-intersection-observer";
 import { Link as LinkScroll } from "react-scroll";
@@ -42,7 +42,7 @@ const DetailClinicSpecialty = () => {
       let specialty, clinicData;
       specialty = await dispatch(getSpecialtyOfClinic({ clinicId, specialtyId }));
       if (!_.isEmpty(specialty.payload.data)) {
-        clinicData = await dispatch(getInfoClinic(clinicId));
+        clinicData = await dispatch(getClinic(clinicId));
         if (!_.isEmpty(clinicData.payload.data)) {
           handleNavigator(specialty.payload.data, clinicData.payload.data);
         }

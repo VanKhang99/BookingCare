@@ -3,12 +3,13 @@ import _ from "lodash";
 import Select from "react-select";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { getAllCodes, getOneAllCode, createAllCode } from "../slices/allcodeSlice";
+import { getAllCodes, getOneAllCode, createAllCode, deleteAllCode } from "../slices/allcodeSlice";
 import { checkData } from "../utils/helpers";
 import { IoReload } from "react-icons/io5";
-import "./styles/AllcodeManage.scss";
+// import "./styles/AllcodeManage.scss";
 
 const initialState = {
   selectedType: "",
@@ -30,6 +31,7 @@ const initialState = {
 const AllcodeManage = () => {
   const [state, setState] = useState({ ...initialState });
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
   const keyMapRef = useRef(null);
 
@@ -86,22 +88,24 @@ const AllcodeManage = () => {
 
   const handleSaveDataAllCode = async () => {
     try {
-      const propsKeyArr = Object.keys(state);
-      const validateInputs = checkData(state, propsKeyArr);
+      let propsCheckArr = ["keyMap", "type", "valueEn", "valueVi"];
+      const validate = checkData(state, propsCheckArr);
+      if (!validate) throw new Error("Input data not enough");
 
-      if (!validateInputs) throw new Error("Please fill out all fields!");
+      const allCodeData = {
+        keyMap: state.keyMap,
+        type: state.type,
+        valueEn: state.valueEn,
+        valueVi: state.valueVi,
+        action: state.action || "create",
+      };
+      console.log(allCodeData);
 
-      const res = await dispatch(createAllCode(state));
+      const info = await dispatch(createAllCode(allCodeData));
 
-      console.log(res);
-
-      if (res?.payload?.status === "success") {
-        setState({ ...initialState });
-        keyMapRef.current.focus();
+      if (info?.payload?.status === "success") {
         toast.success("All-code data has been created into all-code table successfully!");
-        return;
-      } else if (res?.payload?.status === "error") {
-        throw new Error(res.payload.message);
+        return setState({ ...initialState, typesUnique: state.typesUnique });
       }
     } catch (error) {
       toast.error(error.message);
@@ -122,10 +126,10 @@ const AllcodeManage = () => {
 
       return setState({
         ...state,
-        // selectedType: typeSelected,
+        selectedType: typeSelected,
         selectedAllcode: allCodeSelected,
         oldSelectedAllcode: allCodeData.keyMap,
-        // oldSelectedType: typeSelected.value,
+        oldSelectedType: typeSelected.value,
         keyMap: allCodeData.keyMap,
         type: allCodeData.type,
         valueEn: allCodeData.valueEn,
@@ -138,6 +142,31 @@ const AllcodeManage = () => {
     }
   };
 
+  const handleDeleteAllCode = async () => {
+    try {
+      if (!state.selectedAllcode) return toast.error("Please select allCode before delete!");
+      alert("Are you sure you want to delete?");
+
+      console.log(state.selectedAllcode);
+      const res = await dispatch(deleteAllCode(state.selectedAllcode.value));
+      if (res.payload === "") {
+        toast.success("AllCode is deleted successfully!");
+        return setState({ ...initialState, typesUnique: state.typesUnique });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    handleOptions();
+    if (state.oldSelectedAllcode) {
+      handleUpdateAllcode();
+    }
+    keyMapRef.current = state.oldSelectedAllcode;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language]);
+
   useEffect(() => {
     if (!_.isEmpty(state.selectedType)) {
       handleFetchAllcode(state.selectedType.value);
@@ -145,111 +174,101 @@ const AllcodeManage = () => {
       handleFetchAllcode("all");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.selectedType]);
-
-  console.log(state);
+  }, [_.isEmpty(state.selectedType), state.selectedType?.label]);
 
   return (
     <div className="allcode-manage container">
       <div className="u-main-title mt-3 text-center">Quản lý bảng Allcode</div>
 
-      <div className="allcode-manage-content">
-        <div className="package-type-created">
-          <div className="row justify-content-between">
-            <h2 className="u-sub-title mt-5 mb-3 d-flex justify-content-between align-items-center">
-              ALLCODES CREATED
-              <button
-                className="u-system-button--refresh-data"
-                onClick={() => setState({ ...initialState, typesUnique: state.typesUnique })}
-              >
-                <IoReload />
-              </button>
-            </h2>
+      <div className="allcode-manage-created">
+        <div className="row justify-content-between">
+          <h2 className="u-sub-title mt-5 mb-3 d-flex justify-content-between align-items-center">
+            ALLCODES CREATED
+            <button
+              className="u-system-button--refresh-data"
+              onClick={() => setState({ ...initialState, typesUnique: state.typesUnique })}
+            >
+              <IoReload />
+            </button>
+          </h2>
 
-            <div className="col-6">
-              <Select
-                value={state.selectedType}
-                onChange={(option) => {
-                  handleInputsChange(option, "selectedType");
-                }}
-                options={handleOptions(state.typesUnique, "type")}
-                placeholder="Chọn loại Allcode"
-              />
-            </div>
+          <div className="col-6">
+            <Select
+              value={state.selectedType}
+              onChange={(option) => {
+                handleInputsChange(option, "selectedType");
+              }}
+              options={handleOptions(state.typesUnique, "type")}
+              placeholder={language === "vi" ? "Chọn type" : "Choose type"}
+            />
+          </div>
 
-            <div className="col-6">
-              <Select
-                value={state.selectedAllcode}
-                onChange={(option) => {
-                  handleInputsChange(option, "selectedAllcode");
-                  handleUpdateAllcode(option);
-                }}
-                options={handleOptions(state.allCodes, "all")}
-                placeholder="Chọn giá trị allcode"
-              />
-            </div>
-
-            {/* {packagesType.length > 0 ? (
-                <Select
-                  value={state.selectedType}
-                  onChange={(option) => {
-                    handleInputs(option, "selectedType");
-                    handleUpdatePackageType(option);
-                  }}
-                  options={handleInfoOptions(packagesType)}
-                  placeholder={t("package-type-manage.place-holder")}
-                />
-              ) : (
-                <p>Chưa có giá trị allcode nào được tạo</p>
-              )} */}
+          <div className="col-6">
+            <Select
+              value={state.selectedAllcode}
+              onChange={(option) => {
+                handleInputsChange(option, "selectedAllcode");
+                handleUpdateAllcode(option);
+              }}
+              options={handleOptions(state.allCodes, "all")}
+              placeholder={language === "vi" ? "Chọn giá trị allCode" : "Choose a allCode"}
+            />
           </div>
         </div>
       </div>
 
-      <div className="allcode-inputs">
+      <div className="allcode-manage-inputs">
+        <h2 className="u-sub-title mt-5 mb-3">INPUTS</h2>
         <div className="row">
-          <Form.Group className="mt-5 col-6" controlId="formKeyMap">
-            <Form.Label className="allcode-inputs__label">Key Map</Form.Label>
+          <Form.Group className="col-6" controlId="formKeyMap">
+            <h4 className="u-input-label">KeyMap</h4>
             <Form.Control
               type="text"
               value={state.keyMap}
+              className="u-input"
               onChange={(e, id) => handleInputsChange(e, "keyMap")}
             />
           </Form.Group>
 
-          <Form.Group className="mt-5 col-6" controlId="formType">
-            <Form.Label className="allcode-inputs__label">Type</Form.Label>
+          <Form.Group className="col-6" controlId="formType">
+            <h4 className="u-input-label">Type</h4>
             <Form.Control
               type="text"
               value={state.type}
+              className="u-input"
               onChange={(e, id) => handleInputsChange(e, "type")}
             />
           </Form.Group>
 
           <Form.Group className="mt-5 col-6" controlId="formValueEn">
-            <Form.Label className="allcode-inputs__label">Value Vi</Form.Label>
+            <h4 className="u-input-label">Value (EN)</h4>
             <Form.Control
               type="text"
               value={state.valueEn}
+              className="u-input"
               onChange={(e, id) => handleInputsChange(e, "valueEn")}
             />
           </Form.Group>
 
           <Form.Group className="mt-5 col-6" controlId="formValueVi">
-            <Form.Label className="allcode-inputs__label">Value Vi</Form.Label>
+            <h4 className="u-input-label">Value (VI)</h4>
             <Form.Control
               type="text"
               value={state.valueVi}
+              className="u-input"
               onChange={(e, id) => handleInputsChange(e, "valueVi")}
             />
           </Form.Group>
         </div>
+      </div>
 
-        <div className="allcode-inputs__button mt-5 text-end">
-          <Button variant="primary" onClick={() => handleSaveDataAllCode()}>
-            Create
-          </Button>
-        </div>
+      <div className="u-system-button d-flex justify-content-end gap-3 mt-4">
+        <Button variant="danger" onClick={() => handleDeleteAllCode()}>
+          {t("button.delete")}
+        </Button>
+        <Button variant="primary" onClick={() => handleSaveDataAllCode()}>
+          {state.isHaveInfo ? `${t("button.update")}` : `${t("button.create")}`}
+        </Button>
       </div>
     </div>
   );

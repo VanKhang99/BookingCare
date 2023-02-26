@@ -1,6 +1,8 @@
 import axios from "axios";
 import _ from "lodash";
 import unorm from "unorm";
+import { toast } from "react-toastify";
+import { API_APP_BACKEND_URL } from "./constants";
 
 export const isValidEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
@@ -134,4 +136,38 @@ export const helperFilterSearch = (input, targetName) => {
   const inputPassedLowerCase = inputPassed.toLowerCase();
 
   return { targetCompareLowerCase, inputPassedLowerCase };
+};
+
+export const postImageToS3 = async (fileImage) => {
+  try {
+    const formData = new FormData();
+    formData.append("uploaded_file", fileImage);
+
+    const res = await axios.post(`${API_APP_BACKEND_URL}/api/awsS3/post-image`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    if (res.status !== 201) return toast.error("Something went wrong when post image to S3 bucket!");
+    return res;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deleteImageOnS3 = async (imageName) => {
+  try {
+    const deleteImageFromS3 = await axios.delete(
+      `${API_APP_BACKEND_URL}/api/awsS3/delete-image/${imageName}`
+    );
+
+    if (deleteImageFromS3.status !== 204) {
+      return toast.error("Delete image in s3 bucket failed. Please check and try again!");
+    }
+
+    return;
+  } catch (error) {
+    console.log(error);
+  }
 };

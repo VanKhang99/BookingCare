@@ -3,9 +3,11 @@ import axios from "../axios";
 import { toast } from "react-toastify";
 
 const initialState = {
+  isLoadingClinics: false,
   isLoadingClinicData: false,
   isDeletingClinic: false,
   clinicData: {},
+  clinics: [],
 };
 
 export const getAllClinics = createAsyncThunk("clinic/getAllClinics", async (type, thunkAPI) => {
@@ -17,7 +19,7 @@ export const getAllClinics = createAsyncThunk("clinic/getAllClinics", async (typ
   }
 });
 
-export const getInfoClinic = createAsyncThunk("clinic/getInfoClinic", async (clinicId, thunkAPI) => {
+export const getClinic = createAsyncThunk("clinic/getClinic", async (clinicId, thunkAPI) => {
   try {
     const res = await axios.get(`/api/clinics/${clinicId}`);
     return res.data;
@@ -26,12 +28,12 @@ export const getInfoClinic = createAsyncThunk("clinic/getInfoClinic", async (cli
   }
 });
 
-export const saveInfoClinic = createAsyncThunk("clinic/saveInfoClinic", async (data, thunkAPI) => {
+export const saveDataClinic = createAsyncThunk("clinic/saveDataClinic", async (data, thunkAPI) => {
   try {
     const res = await axios.post("/api/clinics", { data });
     return res;
   } catch (error) {
-    toast.error("Save info clinic failed. Please check your data and try again!");
+    toast.error("Save data clinic failed. Please check your data and try again!");
     return error.response.data;
   }
 });
@@ -52,14 +54,26 @@ const clinicSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getInfoClinic.pending, (state) => {
+      .addCase(getAllClinics.pending, (state) => {
+        state.isLoadingClinics = true;
+      })
+      .addCase(getAllClinics.fulfilled, (state, { payload }) => {
+        state.isLoadingClinics = false;
+        state.clinics = payload.clinics;
+      })
+      .addCase(getAllClinics.rejected, (state) => {
+        state.isLoadingClinics = false;
+        state.clinics = [];
+      })
+
+      .addCase(getClinic.pending, (state) => {
         state.isLoadingClinicData = true;
       })
-      .addCase(getInfoClinic.fulfilled, (state, { payload }) => {
+      .addCase(getClinic.fulfilled, (state, { payload }) => {
         state.isLoadingClinicData = false;
         state.clinicData = payload.data;
       })
-      .addCase(getInfoClinic.rejected, (state) => {
+      .addCase(getClinic.rejected, (state) => {
         state.isLoadingClinicData = false;
         state.clinicData = {};
       });

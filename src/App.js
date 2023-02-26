@@ -29,7 +29,7 @@ import {
   // UserManage,
   UserManage,
   DoctorManage,
-  DoctorSchedule,
+  ScheduleWrapper,
   PatientBooking,
   ClinicManage,
   ClinicSpecialtyManage,
@@ -37,6 +37,7 @@ import {
   PackageTypeManage,
   PackageManage,
   PackageSchedule,
+  HandBookManage,
   AllcodeManage,
 } from "./system";
 import { path } from "./utils/constants";
@@ -107,13 +108,15 @@ function App() {
             <Route path="user-manage" element={<UserManage />} />
 
             <Route path="doctor-manage" element={<DoctorManage />} />
-            <Route path="doctor-schedule-manage" element={<DoctorSchedule />} />
+            <Route path="doctor-schedule-manage" element={<ScheduleWrapper />} />
             <Route path="patient-booking-manage" element={<PatientBooking />} />
 
             <Route path="clinic-manage" element={<ClinicManage />} />
             <Route path="clinic-specialty-manage" element={<ClinicSpecialtyManage />} />
 
             <Route path="specialty-manage" element={<SpecialtyManage />} />
+
+            <Route path="handbook-manage" element={<HandBookManage />} />
 
             <Route path="package-type" element={<PackageTypeManage />} />
             <Route path="package-manage" element={<PackageManage />} />
@@ -132,7 +135,7 @@ function App() {
           >
             <Route index element={<System />} />
             <Route path="patient-booking-manage" element={<PatientBooking />} />
-            <Route path="schedule-manage" element={<DoctorSchedule isDoctorAccount={true} />} />
+            <Route path="schedule-manage" element={<ScheduleWrapper isDoctorAccount={true} />} />
           </Route>
 
           {/* BANNER */}

@@ -1,8 +1,9 @@
 import axios from "axios";
 import _ from "lodash";
+import { API_APP_BACKEND_URL } from "./utils/constants";
 
 const instance = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: API_APP_BACKEND_URL,
   timeout: 10000,
   // withCredentials: true
 });

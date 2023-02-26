@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
-import _ from "lodash";
+import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -9,14 +8,15 @@ import Lightbox from "react-image-lightbox";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllCodes } from "../slices/allcodeSlice";
+import { getAllSpecialties } from "../slices/specialtySlice";
+import { getAllClinics } from "../slices/clinicSlice";
 import {
   getSpecialtyOfClinic,
   addSpecialtyForClinic,
   deleteSpecialtyForClinic,
 } from "../slices/clinicSpecialtySlice";
 
-import { toBase64, checkData } from "../utils/helpers";
+import { checkData, postImageToS3, deleteImageOnS3 } from "../utils/helpers";
 import { FaUpload } from "react-icons/fa";
 import { IoReload } from "react-icons/io5";
 import "./styles/ClinicSpecialtyManage.scss";
@@ -24,12 +24,15 @@ import "./styles/ClinicSpecialtyManage.scss";
 const initialState = {
   selectedClinic: "",
   selectedSpecialty: "",
+
   address: "",
   image: "",
+  fileImage: "",
   previewImageUrl: "",
   isOpenImagePreview: false,
-  action: "",
+  action: "create",
   oldSelectedClinic: "",
+  oldSelectedSpecialty: "",
   isHaveInfo: false,
 
   bookingHTML: "",
@@ -44,13 +47,13 @@ const initialState = {
 
 const mdParser = new MarkdownIt(/* Markdown-it options */);
 
-const ClinicAddSpecialty = () => {
+const ClinicSpecialtyManage = () => {
   const [state, setState] = useState({ ...initialState });
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
-  const { clinicArr, specialtyArr } = useSelector((store) => store.allcode);
-  const saveOldClinic = useRef(null);
+  const { specialties } = useSelector((store) => store.specialty);
+  const { clinics } = useSelector((store) => store.clinic);
 
   const handleInfos = (e, type) => {
     const stateCopy = JSON.parse(JSON.stringify({ ...state }));
@@ -62,97 +65,32 @@ const ClinicAddSpecialty = () => {
     return setState({ ...stateCopy });
   };
 
-  const handleOptionClinic = (data) => {
+  const handleOption = (data) => {
     if (!data) return;
     const objectOptions = data.map((item) => {
-      const label = language === "vi" ? `${item.valueVi}` : `${item.valueEn}`;
-      const value = item.keyMap;
+      const label = language === "vi" ? `${item.nameVi}` : `${item.nameEn}`;
+      const value = item.id;
       return { value, label };
     });
 
     return objectOptions;
   };
 
-  const handleStateSelectClinic = async (selectedOption) => {
-    try {
-      // selectedOption?.value || state.oldSelectedClinic
-      const specialtyClinic = await dispatch(
-        getSpecialtyOfClinic({
-          clinicId: selectedOption?.value || state.oldSelectedClinic,
-          specialtyId: state.selectedSpecialty.value,
-        })
-      );
-
-      const findItemSelectedById = (arr, id) => {
-        return handleOptionClinic(arr).find((item) => item.value === id);
-      };
-
-      if (specialtyClinic?.payload?.data && !_.isEmpty(specialtyClinic.payload.data)) {
-        const specialtyClinicData = specialtyClinic.payload.data;
-        const clinicSelected = findItemSelectedById(clinicArr, specialtyClinicData.clinicId);
-        const specialtySelected = findItemSelectedById(specialtyArr, specialtyClinicData.specialtyId);
-        const propsCheckArr = ["clinicId", "specialtyId", "address", "image"];
-        const checkSpecialtyClinicData = checkData(specialtyClinicData, propsCheckArr);
-
-        if (!checkSpecialtyClinicData) {
-          return toast.error(
-            "Your data return from the server in not enough. Please check your data and try again!"
-          );
-        }
-
-        return setState({
-          ...state,
-          selectedClinic: clinicSelected,
-          selectedSpecialty: specialtySelected,
-          address: specialtyClinicData.address,
-          image: specialtyClinicData.image,
-          previewImageUrl: specialtyClinicData.image,
-          isHaveInfo: true,
-          action: "edit",
-          oldSelectedClinic: specialtyClinicData.clinicId,
-
-          bookingHTML: specialtyClinicData?.bookingHTML,
-          bookingMarkdown: specialtyClinicData?.bookingMarkdown,
-          introductionHTML: specialtyClinicData?.introductionHTML,
-          introductionMarkdown: specialtyClinicData?.introductionMarkdown,
-          examAndTreatmentHTML: specialtyClinicData?.examAndTreatmentHTML,
-          examAndTreatmentMarkdown: specialtyClinicData?.examAndTreatmentMarkdown,
-          strengthsHTML: specialtyClinicData?.strengthsHTML,
-          strengthsMarkdown: specialtyClinicData?.strengthsMarkdown,
-        });
-      }
-
-      const clinicSelected = findItemSelectedById(clinicArr, state.selectedClinic.value);
-      const specialtySelected = findItemSelectedById(specialtyArr, state.selectedSpecialty.value);
-
-      return setState({
-        ...initialState,
-        selectedClinic: selectedOption || clinicSelected,
-        selectedSpecialty: specialtySelected,
-        oldSelectedClinic: selectedOption?.value || clinicSelected.value,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handleMarkdownChange = ({ html, text }, type) => {
-    const stateCopy = JSON.parse(JSON.stringify({ ...state }));
-    stateCopy[`${type}HTML`] = html;
-    stateCopy[`${type}Markdown`] = text;
-    return setState({ ...stateCopy });
+    return setState({ ...state, [`${type}HTML`]: html, [`${type}Markdown`]: text });
   };
 
-  const handleOnChangeImage = async (e) => {
+  const handleOnChangeImage = (e, type) => {
     if (!e.target.files || !e.target.files.length) return;
     const file = e.target.files[0];
     if (file) {
       const objectURL = URL.createObjectURL(file);
-      const fileCovert = await toBase64(file);
+      // const fileCovert = await toBase64(file);
 
       return setState({
         ...state,
-        image: fileCovert,
+        fileImage: file,
+        image: state.image || file.name,
         previewImageUrl: objectURL,
       });
     }
@@ -164,20 +102,38 @@ const ClinicAddSpecialty = () => {
     setState({ ...state, isOpenImagePreview: true });
   };
 
+  const findItemSelectedById = (arr, id) => {
+    return handleOption(arr).find((item) => item.value === +id);
+  };
+
   const handleSaveDataClinic = async () => {
     try {
       const propsCheckArr = ["selectedClinic", "selectedSpecialty", "address"];
       const validate = checkData(state, propsCheckArr);
-      if (!validate) throw new Error("Input data not enough");
+      if (!validate) return toast.error("Please fill in all information before saving");
+
+      let imageUploadToS3;
+      if (typeof state.fileImage !== "string") {
+        if (state.action === "edit") {
+          // Delete old image before update new image
+          await deleteImageOnS3(state.image);
+        }
+
+        // update new image
+        imageUploadToS3 = await postImageToS3(state.fileImage);
+      }
+
       const dataSpecialty = {
         ...state,
+        image: imageUploadToS3?.data?.data?.image || state.image,
         clinicId: state.selectedClinic.value,
         specialtyId: state.selectedSpecialty.value,
-        action: state.action || "create",
+        action: state.action,
       };
+
       const info = await dispatch(addSpecialtyForClinic(dataSpecialty));
       if (info?.payload?.status === "success") {
-        toast.success("Specialty is added successfully!");
+        toast.success("Specialty data of clinic is saved successfully!");
         setState({ ...initialState });
       }
     } catch (error) {
@@ -186,11 +142,65 @@ const ClinicAddSpecialty = () => {
     }
   };
 
+  const handleUpdateSpecialtyClinic = async (selectedOption, selectOf = null) => {
+    try {
+      console.log(state);
+      const res = await dispatch(
+        getSpecialtyOfClinic({
+          clinicId: selectOf === "Clinic" ? +selectedOption?.value : state.oldSelectedClinic,
+          specialtyId: selectOf === "Specialty" ? +selectedOption?.value : state.oldSelectedSpecialty,
+        })
+      );
+
+      if (res.payload.data) {
+        const { clinicId, specialtyId, ...resSpecClinicData } = res.payload.data;
+        const clinicSelected = findItemSelectedById(clinics, clinicId);
+        const specialtySelected = findItemSelectedById(specialties, specialtyId);
+
+        return setState({
+          ...state,
+          selectedClinic: clinicSelected,
+          selectedSpecialty: specialtySelected,
+          previewImageUrl: resSpecClinicData.imageUrl,
+          isHaveInfo: true,
+          action: "edit",
+          oldSelectedClinic: clinicId,
+          oldSelectedSpecialty: specialtyId,
+          ...resSpecClinicData,
+        });
+      }
+
+      if (selectOf) {
+        const optionSelected = findItemSelectedById(
+          selectOf === "Clinic" ? clinics : specialties,
+          selectedOption.value
+        );
+        return setState({
+          ...state,
+          [`selected${selectOf}`]: optionSelected || "",
+          [`oldSelected${selectOf}`]: optionSelected?.value,
+        });
+      } else {
+        const specialtySelected = findItemSelectedById(specialties, state.selectedSpecialty?.value);
+        const clinicSelected = findItemSelectedById(clinics, state.selectedClinic?.value);
+        return setState({
+          ...state,
+          selectedClinic: clinicSelected || "",
+          selectedSpecialty: specialtySelected || "",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleDeleteSpecialOfClinic = async () => {
     try {
-      if (!state.selectedSpecialty) throw new Error("Specialty is not selected");
       if (!state.selectedClinic) throw new Error("Clinic is not selected");
+      if (!state.selectedSpecialty) throw new Error("Specialty is not selected");
       alert("Are you sure you want to delete?");
+
+      await deleteImageOnS3(state.image);
 
       const res = await dispatch(
         deleteSpecialtyForClinic({
@@ -199,9 +209,7 @@ const ClinicAddSpecialty = () => {
         })
       );
       if (res.payload === "") {
-        toast.success("Delete specialty of clinic is deleted successfully!");
-        await dispatch(getAllCodes("CLINIC"));
-        await dispatch(getAllCodes("SPECIALTY"));
+        toast.success("Specialty of clinic is deleted successfully!");
         return setState({ ...initialState });
       }
     } catch (error) {
@@ -210,20 +218,20 @@ const ClinicAddSpecialty = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllCodes("CLINIC"));
-    dispatch(getAllCodes("SPECIALTY"));
+    dispatch(getAllSpecialties("all"));
+    dispatch(getAllClinics("both"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (clinicArr?.length > 0) {
-      handleOptionClinic(clinicArr);
+    // if (clinics?.length > 0) {
+    //   handleOption(clinics);
+    // }
+
+    if (state.oldSelectedClinic || state.oldSelectedSpecialty) {
+      handleUpdateSpecialtyClinic();
     }
 
-    if (state.oldSelectedClinic) {
-      handleStateSelectClinic();
-    }
-    saveOldClinic.current = state.oldSelectedClinic;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
 
@@ -248,36 +256,36 @@ const ClinicAddSpecialty = () => {
         </h2>
         <div className="row mt-3">
           <div className="col-4">
-            <h4 className="u-input-label">{t("clinic-specialty-manage.add-specialty")}</h4>
+            <h4 className="u-input-label">{t("clinic-specialty-manage.clinic")}</h4>
 
-            <div className="select-specialties mt-2">
-              {specialtyArr?.length > 0 && (
+            <div className="select-clinics mt-2">
+              {clinics?.length > 0 && (
                 <Select
-                  value={state.selectedSpecialty}
+                  value={state.selectedClinic}
                   onChange={(option) => {
-                    handleInfos(option, "selectedSpecialty");
-                    // handleStateSelectClinic(option);
+                    handleInfos(option, "selectedClinic");
+                    handleUpdateSpecialtyClinic(option, "Clinic");
                   }}
-                  options={handleOptionClinic(specialtyArr)}
-                  placeholder={t("clinic-specialty-manage.placeholder-specialty")}
+                  options={handleOption(clinics)}
+                  placeholder={t("clinic-specialty-manage.placeholder-clinic")}
                 />
               )}
             </div>
           </div>
 
           <div className="col-4">
-            <h4 className="u-input-label">{t("clinic-specialty-manage.clinic")}</h4>
+            <h4 className="u-input-label">{t("clinic-specialty-manage.add-specialty")}</h4>
 
-            <div className="select-clinics mt-2">
-              {clinicArr?.length > 0 && (
+            <div className="select-specialties mt-2">
+              {specialties?.length > 0 && (
                 <Select
-                  value={state.selectedClinic}
+                  value={state.selectedSpecialty}
                   onChange={(option) => {
-                    handleInfos(option, "selectedClinic");
-                    handleStateSelectClinic(option);
+                    handleInfos(option, "selectedSpecialty");
+                    handleUpdateSpecialtyClinic(option, "Specialty");
                   }}
-                  options={handleOptionClinic(clinicArr)}
-                  placeholder={t("clinic-specialty-manage.placeholder-clinic")}
+                  options={handleOption(specialties)}
+                  placeholder={t("clinic-specialty-manage.placeholder-specialty")}
                 />
               )}
             </div>
@@ -311,7 +319,7 @@ const ClinicAddSpecialty = () => {
 
               <div className="col-12 input-image-customize">
                 <label htmlFor="image">
-                  <FaUpload /> {t("clinic-specialty-manage.button-upload")}
+                  <FaUpload /> {t("button.upload")}
                 </label>
               </div>
 
@@ -380,7 +388,7 @@ const ClinicAddSpecialty = () => {
           {t("button.delete")}
         </Button>
         <Button variant="primary" onClick={() => handleSaveDataClinic()}>
-          {state.isHaveInfo ? `${t("button.update")}` : `${t("button.create")}`}
+          {state.isHaveInfo ? `${t("button.update")}` : `${t("button.add")}`}
         </Button>
       </div>
 
@@ -394,4 +402,4 @@ const ClinicAddSpecialty = () => {
   );
 };
 
-export default ClinicAddSpecialty;
+export default ClinicSpecialtyManage;

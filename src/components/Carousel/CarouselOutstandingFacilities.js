@@ -31,15 +31,15 @@ const CarouselOutstandingFacilities = ({ onChange, settings }) => {
     <Carousel className="slides" afterChange={onChange} {...settings}>
       {clinics?.length > 0 &&
         clinics.map((clinic) => {
-          const { clinicId, logo, nameClinicData } = clinic;
+          const { id: clinicId, logoUrl } = clinic;
           return (
             <Link to={`/${path.CLINIC}/${clinicId}`} key={clinicId} className="slide">
               <div className="slide-content">
                 <div className="slide-content__img">
-                  <img src={logo} alt={language === "vi" ? nameClinicData.valueVi : nameClinicData.valueEn} />
+                  <img src={logoUrl} alt={language === "vi" ? clinic.nameVi : clinic.nameEn} />
                 </div>
                 <span className="slide-content--name-clinic">
-                  {language === "vi" ? nameClinicData.valueVi : nameClinicData.valueEn}
+                  {language === "vi" ? clinic.nameVi : clinic.nameEn}
                 </span>
               </div>
             </Link>

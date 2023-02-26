@@ -50,9 +50,11 @@ const UserManage = () => {
   };
 
   const handleEditDataUser = (isEdit, user) => {
-    setState((prevState) => {
-      return { ...state, dataUserEdit: { ...prevState.dataUserEdit, ...user } };
-    });
+    console.log(user);
+    return setState({ ...state, dataUserEdit: user });
+    // setState((prevState) => {
+    //   return { ...state, dataUserEdit: { ...prevState.dataUserEdit, ...user } };
+    // });
   };
 
   const handleDeleteUser = async (id) => {

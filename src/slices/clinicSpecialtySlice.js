@@ -11,7 +11,7 @@ export const getSpecialtyOfClinic = createAsyncThunk(
   "clinic-specialty/getSpecialtyOfClinic",
   async (data, thunkAPI) => {
     try {
-      const res = await axios.get(`/api/clinics-specialties/${data.specialtyId}/${data.clinicId}`);
+      const res = await axios.get(`/api/clinics-specialties/${data.clinicId}/${data.specialtyId}`);
       return res.data;
     } catch (error) {
       // toast.error("Update data specialty of clinic failed. Please check your data and try again!");

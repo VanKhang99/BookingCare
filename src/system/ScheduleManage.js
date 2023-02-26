@@ -255,7 +255,7 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
         })
       );
 
-      console.log(res);
+      // console.log(res);
 
       toast.success("Schedule is deleted successfully!");
       return setState({
@@ -289,8 +289,6 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
-
-  console.log(state);
 
   return (
     <div className="schedule-manage container">

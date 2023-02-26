@@ -13,7 +13,7 @@ const CarouselPopularSpecialty = ({ onChange, settings }) => {
 
   const handleGetSpecialties = async () => {
     try {
-      const res = await dispatch(getAllSpecialties());
+      const res = await dispatch(getAllSpecialties("popular"));
       if (res && res.payload && res.payload.specialties) {
         return setSpecialties(res.payload.specialties);
       }
@@ -27,20 +27,22 @@ const CarouselPopularSpecialty = ({ onChange, settings }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  console.log(specialties);
+
   return (
     <Carousel className="slides" afterChange={onChange} {...settings}>
       {specialties &&
         specialties.length > 0 &&
         specialties.map((specialty) => {
-          const { nameData, image, specialtyId } = specialty;
+          const { imageUrl, id: specialtyId } = specialty;
           return (
             <Link to={`/${path.SPECIALTY}/${specialtyId}`} key={specialtyId} className="slide">
               <div className="slide-content">
                 <div className="slide-content__img">
-                  <img src={image} alt={language === "vi" ? nameData.valueVi : nameData.valueEn} />
+                  <img src={imageUrl} alt={language === "vi" ? specialty.nameVi : specialty.nameEn} />
                 </div>
                 <span className="slide-content--name-specialty">
-                  {language === "vi" ? nameData.valueVi : nameData.valueEn}
+                  {language === "vi" ? specialty.nameVi : specialty.nameEn}
                 </span>
               </div>
             </Link>

@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useFetchDataBaseId } from "../utils/CustomHook";
-import { getInfoClinic } from "../slices/clinicSlice";
+import { getClinic } from "../slices/clinicSlice";
 import { useInView, InView } from "react-intersection-observer";
 import { Link as LinkScroll } from "react-scroll";
 import { MdLocationOn } from "react-icons/md";
@@ -33,7 +33,7 @@ const DetailClinic = () => {
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
   const { clinicId } = useParams();
-  const dataClinic = useFetchDataBaseId(clinicId ? clinicId : "", "clinic", getInfoClinic);
+  const dataClinic = useFetchDataBaseId(clinicId ? clinicId : "", "clinic", getClinic);
 
   const handleNavigator = (data) => {
     const entries = Object.entries(data).filter((entry) => entry[0].endsWith("HTML"));
@@ -77,12 +77,15 @@ const DetailClinic = () => {
 
       <div className="clinic-content">
         <div className="clinic-top u-wrapper">
-          <div className="clinic-top__image" style={{ backgroundImage: `url(${dataClinic?.image})` }}></div>
+          <div
+            className="clinic-top__image"
+            style={{ backgroundImage: `url(${dataClinic?.imageUrl})` }}
+          ></div>
 
           <InView>
             <div className="top-info" ref={ref}>
               <div className="top-info-left">
-                <img src={dataClinic?.logo} alt={dataClinic.nameClinicData?.valueVi} />
+                <img src={dataClinic?.logoUrl} alt={dataClinic.nameClinicData?.valueVi} />
                 <div className="more-info">
                   <span className="more-info__name">
                     {language === "vi"

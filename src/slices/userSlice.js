@@ -18,7 +18,7 @@ export const login = createAsyncThunk("user/login", async ({ email, password }, 
     localStorage.setItem("token", token);
     setAuthToken(token);
 
-    thunkAPI.dispatch(handleChangePathSystem("/system"));
+    // thunkAPI.dispatch(handleChangePathSystem("/system"));
     return res;
   } catch (error) {
     throw error.response.data;

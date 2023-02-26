@@ -29,6 +29,8 @@ export const languages = {
   EN: "en",
 };
 
+export const API_APP_BACKEND_URL = "http://localhost:8000";
+
 export const DATE_FORMAT = ["DD/MM/YYYY", "DD/MM/YY"];
 
 export const TIMEOUT_NAVIGATE_SYSTEM = 300;

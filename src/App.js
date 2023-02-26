@@ -104,7 +104,7 @@ function App() {
             }
           >
             <Route index element={<System />} />
-            {/* <Route path="user-manage" element={<UserManage />} /> */}
+
             <Route path="user-manage" element={<UserManage />} />
 
             <Route path="doctor-manage" element={<DoctorManage />} />

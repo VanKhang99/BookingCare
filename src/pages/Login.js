@@ -40,18 +40,15 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (localStorage.getItem("token")) {
-      if (!userInfo) return;
-      console.log(userInfo);
-      setTimeout(() => {
-        if (userInfo.roleId === "R1") {
-          navigate("/admin-system");
-          dispatch(handleChangePathSystem("/admin-system"));
-        } else {
-          navigate("/doctor-system");
-          dispatch(handleChangePathSystem("/doctor-system"));
-        }
-      }, TIMEOUT_NAVIGATE_SYSTEM);
+    const token = localStorage.getItem("token");
+    if (token) {
+      if (userInfo.roleId === "R1") {
+        navigate("/admin-system");
+        dispatch(handleChangePathSystem("/admin-system"));
+      } else {
+        navigate("/doctor-system");
+        dispatch(handleChangePathSystem("/doctor-system"));
+      }
     }
   }, [isLoggedIn, navigate]);
 

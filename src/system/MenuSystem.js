@@ -103,8 +103,6 @@ const MenuSystem = ({ roleId }) => {
     ],
   };
 
-  console.log(adminMenuList);
-
   return (
     <div className="menu">
       <HeaderSystem menuSystemList={roleId === "R1" ? adminMenuList : doctorMenuList} />

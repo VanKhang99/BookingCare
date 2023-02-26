@@ -5,10 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { Select } from "antd";
 import { languages } from "../utils/constants";
 import { TbLogout } from "react-icons/tb";
-import { Button, Dropdown, Menu, Space } from "antd";
+import { Button, Dropdown, Space } from "antd";
 import { handleCurrentKey } from "../slices/appSlice";
 import { logout } from "../slices/userSlice";
-import { handleChangeLanguage, handleChangePathSystem } from "../slices/appSlice";
+import { handleChangeLanguage } from "../slices/appSlice";
 import "./styles/HeaderSystem.scss";
 
 const Header = ({ menuSystemList, packageMenu }) => {
@@ -17,11 +17,6 @@ const Header = ({ menuSystemList, packageMenu }) => {
   const { t } = useTranslation();
   const { userInfo } = useSelector((store) => store.user);
   const { currentKeyMenu } = useSelector((store) => store.app);
-  const userFromLocalStorage = localStorage.getItem("userInfo")
-    ? JSON.parse(localStorage.getItem("userInfo"))
-    : null;
-
-  console.log(menuSystemList);
 
   const handleChange = (value) => {
     dispatch(handleChangeLanguage(value));
@@ -37,9 +32,7 @@ const Header = ({ menuSystemList, packageMenu }) => {
   };
 
   const handleMenuClick = (e) => {
-    // console.log(e);
     return dispatch(handleCurrentKey(e.key));
-    // dispatch(handleChangePathSystem(item.props.url));
   };
 
   return (
@@ -147,9 +140,7 @@ const Header = ({ menuSystemList, packageMenu }) => {
 
         <div className="system-header-right">
           <div className="welcome">
-            <div>{`${t("menu-system.welcome")} ${
-              userInfo && userInfo.firstName ? userInfo.firstName : userFromLocalStorage?.firstName
-            }`}</div>
+            <div>{`${t("menu-system.welcome")} ${userInfo?.firstName && userInfo.firstName}`}</div>
           </div>
 
           <div className="language">

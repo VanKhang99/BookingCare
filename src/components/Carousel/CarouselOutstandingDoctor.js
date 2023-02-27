@@ -11,6 +11,7 @@ const CarouselOutstandingDoctors = ({ onChange, settings }) => {
   const dispatch = useDispatch();
   const { language } = useSelector((store) => store.app);
   const { outstandingDoctors } = useSelector((store) => store.doctor);
+  console.log(outstandingDoctors);
 
   useEffect(() => {
     dispatch(getOutstandingDoctors());

@@ -1,11 +1,11 @@
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+
 import "../system/styles/System.scss";
 
 const System = () => {
   const { t } = useTranslation();
   const { pathSystem } = useSelector((store) => store.app);
-  // const { isLoggedIn, userInfo } = useSelector((store) => store.user);
 
   return (
     <>

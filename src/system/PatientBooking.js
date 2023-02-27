@@ -43,7 +43,7 @@ const PatientBooking = () => {
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
   const { isLoadingConfirmExamComplete } = useSelector((store) => store.booking);
-  const { id: doctorId } = JSON.parse(localStorage.getItem("userInfo"));
+  const { userInfo } = useSelector((store) => store.user);
 
   const disabledDate = useCallback((current) => {
     // Can not select days before today
@@ -63,7 +63,9 @@ const PatientBooking = () => {
           ? `${splitDateBooked[2]}-${splitDateBooked[1]}-${splitDateBooked[0]}`
           : `${splitDateBooked[2]}-${splitDateBooked[0]}-${splitDateBooked[1]}`;
 
-      const res = await dispatch(getAllPatientsForDoctor({ doctorId, dateBooked: formatDateBooked }));
+      const res = await dispatch(
+        getAllPatientsForDoctor({ doctorId: userInfo.id, dateBooked: formatDateBooked })
+      );
       if (res?.payload?.status === "error") {
         return setState({ ...state, patients: [], isModalOpen: false });
         // return toast.error(res.payload.message);
@@ -133,7 +135,7 @@ const PatientBooking = () => {
       const result = await dispatch(confirmExaminationComplete(dataSendToServer));
 
       if (result?.payload?.status === "success") {
-        console.log(state);
+        // console.log(state);
         setState({ ...state, isModalOpen: false });
         toast.success(
           language === "vi" ? "Gửi kết quả và hóa đơn thành công" : "Send result and invoice successfully!"

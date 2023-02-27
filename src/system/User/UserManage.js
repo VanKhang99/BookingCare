@@ -3,7 +3,8 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { FormUser, ListUser } from "../index";
-import { getAllUsers, deleteUser } from "../../slices/userSlice";
+import { getAllUsers, getUser, deleteUser } from "../../slices/userSlice";
+import { deleteImageOnS3 } from "../../utils/helpers";
 
 const initialState = {
   usersFromServer: [],
@@ -49,26 +50,40 @@ const UserManage = () => {
     return setState({ ...state, page });
   };
 
-  const handleEditDataUser = (isEdit, user) => {
-    console.log(user);
-    return setState({ ...state, dataUserEdit: user });
-    // setState((prevState) => {
-    //   return { ...state, dataUserEdit: { ...prevState.dataUserEdit, ...user } };
-    // });
+  const handleFilterUsers = (totalUsers, newUsersArr, roleToFilter) => {
+    return setState({ ...state, totalUsers, users: [...newUsersArr], roleToFilter, page: 1 });
   };
 
-  const handleDeleteUser = async (id) => {
+  const handleEditDataUser = async (isEdit, id) => {
     try {
-      await dispatch(deleteUser(id));
-      toast.success("Delete user successfully!");
-      await handleGetAllUsers(state.roleToFilter, state.totalUsers - 1, "delete");
+      const res = await dispatch(getUser(+id));
+      const userData = res.payload.data;
+      return setState({ ...state, dataUserEdit: userData });
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleFilterUsers = (totalUsers, newUsersArr, roleToFilter) => {
-    return setState({ ...state, totalUsers, users: [...newUsersArr], roleToFilter, page: 1 });
+  const handleDeleteUser = async (user) => {
+    try {
+      alert("Are you sure you want to delete?");
+      if (user.image) {
+        await deleteImageOnS3(user.image);
+      }
+
+      const res = await dispatch(deleteUser(user.id));
+
+      if (res.payload === "") {
+        toast.success("User is deleted successfully!");
+        await handleGetAllUsers(state.roleToFilter, state.totalUsers - 1, "delete");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleResetState = () => {
+    return setState({ ...state, dataUserEdit: null });
   };
 
   useEffect(() => {
@@ -85,6 +100,7 @@ const UserManage = () => {
         handleGetAllUsers={handleGetAllUsers}
         total={state.totalUsers ? state.totalUsers : ""}
         roleToFilter={state.roleToFilter}
+        onResetState={handleResetState}
       />
       <ListUser
         users={state.usersFromServer.length ? state.usersFromServer : []}

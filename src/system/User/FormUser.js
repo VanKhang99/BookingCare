@@ -8,7 +8,7 @@ import { createUser, updateDataUser } from "../../slices/userSlice";
 import { getAllCodes } from "../../slices/allcodeSlice";
 import { FaUpload } from "react-icons/fa";
 import { IoReload } from "react-icons/io5";
-import { isValidEmail, isValidPhone, toBase64, checkData } from "../../utils/helpers";
+import { isValidEmail, isValidPhone, checkData, postImageToS3, deleteImageOnS3 } from "../../utils/helpers";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
 import "../styles/FormUser.scss";
@@ -26,7 +26,7 @@ const initialState = {
 
   image: "",
   fileImage: "",
-  previewImgUrl: "",
+  previewImageUrl: "",
   isOpenImagePreview: false,
 
   errorInput: {
@@ -37,7 +37,7 @@ const initialState = {
   action: "create",
 };
 
-const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
+const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total, onResetState }) => {
   const [state, setState] = useState({ ...initialState });
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -67,12 +67,49 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
   };
 
   const handleOpenImagePreview = () => {
-    if (!state.previewImgUrl) return;
+    if (!state.previewImageUrl) return;
 
     setState({ ...state, isOpenImagePreview: true });
   };
 
-  const handleCreateOrUpdateUser = async () => {
+  const checkInput = (dataInput, propsCheck) => {
+    const validateInput = checkData(dataInput, propsCheck);
+    if (!validateInput) {
+      return setState({
+        ...state,
+        errorInput: {
+          show: true,
+          message: `Input field cannot be empty. Please fill out the form!`,
+        },
+      });
+    }
+  };
+
+  const checkEmail = (email) => {
+    if (!isValidEmail(email)) {
+      return setState({
+        ...state,
+        errorInput: {
+          show: true,
+          message: "Invalid Email. Please try another email!",
+        },
+      });
+    }
+  };
+
+  const checkPhone = (phone) => {
+    if (!isValidPhone(phone)) {
+      return setState({
+        ...state,
+        errorInput: {
+          show: true,
+          message: "Phone must have 10 numbers. Please try again!",
+        },
+      });
+    }
+  };
+
+  const handleSaveDataUser = async () => {
     setState({ ...state, errorInput: { show: false, message: "" } });
 
     const propsCheckKey =
@@ -80,87 +117,74 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
         ? ["email", "password", "firstName", "lastName", "address", "phoneNumber"]
         : ["firstName", "lastName", "address", "phoneNumber"];
 
-    const validateInput = checkData(state, propsCheckKey);
-    if (!validateInput) {
-      setState({
-        ...state,
-        errorInput: {
-          show: true,
-          message: `Input field cannot be empty. Please fill out the form!`,
-        },
-      });
-      return;
-    }
-
-    if (!isValidEmail(state.email)) {
-      setState({
-        ...state,
-        errorInput: {
-          show: true,
-          message: "Invalid Email. Please try another email!",
-        },
-      });
-      return;
-    }
-
-    if (!isValidPhone(state.phoneNumber)) {
-      setState({
-        ...state,
-        errorInput: {
-          show: true,
-          message: "Phone must have 10 numbers. Please try again!",
-        },
-      });
-      return;
-    }
+    checkInput(state, propsCheckKey);
+    checkEmail(state.email);
+    checkPhone(state.phoneNumber);
 
     try {
-      let res;
-      if (state.action && state.action === "edit") {
-        res = await dispatch(
-          updateDataUser({
-            id: dataUserEdit.id,
-            user: {
-              email: state.email,
-              firstName: state.firstName,
-              lastName: state.lastName,
-              address: state.address,
-              phoneNumber: state.phoneNumber,
-              image: state.image,
-              gender: state.gender,
-              positionId: state.positionId,
-              roleId: state.roleId,
-            },
-          })
-        );
-        toast.success("Successfully updated!");
-      } else {
-        res = await dispatch(createUser(state));
-        if (res.payload?.status === "error") {
-          toast.error("User creation failed!");
+      let res, imageUploadToS3;
+      if (typeof state.fileImage !== "string") {
+        if (state.action === "edit") {
+          // Delete old image before update new image
+          res = await handleUpdateUser(imageUploadToS3);
+          if (res.payload.status !== "success")
+            return toast.error("User data is updated fail. Please try again!");
 
-          return setState({
-            ...state,
-            errorInput: {
-              show: true,
-              message: `${res.payload.message}`,
-            },
-          });
+          toast.success("User data is updated successfully!");
+          return handleResetState();
         }
 
-        toast.success("Create user successfully!");
+        imageUploadToS3 = await postImageToS3(state.fileImage);
       }
 
+      res = await dispatch(
+        createUser({ ...state, image: imageUploadToS3?.data?.data?.image || state.image })
+      );
+      if (res.payload.status === "error") {
+        toast.error("User creation failed!");
+
+        return setState({
+          ...state,
+          errorInput: {
+            show: true,
+            message: `${res.payload.message}`,
+          },
+        });
+      }
+
+      toast.success("User created successfully!");
       await handleGetAllUsers(roleToFilter, total + 1);
-      setState({
-        ...initialState,
-        gender: genderArr[0].keyMap,
-        positionId: positionArr[0].keyMap,
-        roleId: roleArr[0].keyMap,
-      });
+      return handleResetState();
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleUpdateUser = async (imageUploadToS3) => {
+    try {
+      await deleteImageOnS3(state.image);
+      imageUploadToS3 = await postImageToS3(state.fileImage);
+      const userDataSendServer = {
+        ...state,
+        id: +dataUserEdit?.id,
+        image: imageUploadToS3?.data?.data?.image || state.image,
+      };
+
+      const res = await dispatch(updateDataUser(userDataSendServer));
+      return res;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleResetState = () => {
+    onResetState();
+    return setState({
+      ...initialState,
+      gender: genderArr[0].keyMap,
+      positionId: positionArr[0].keyMap,
+      roleId: roleArr[0].keyMap,
+    });
   };
 
   useEffect(() => {
@@ -169,34 +193,6 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
     dispatch(getAllCodes("ROLE"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    if (genderArr?.length > 0) {
-      setState((prevState) => {
-        return { ...prevState, gender: genderArr[0].keyMap };
-      });
-    }
-
-    if (positionArr?.length > 0) {
-      setState((prevState) => {
-        return { ...prevState, positionId: positionArr[0].keyMap };
-      });
-    }
-
-    if (roleArr?.length > 0) {
-      setState((prevState) => {
-        return { ...prevState, roleId: roleArr[0].keyMap };
-      });
-    }
-  }, [genderArr, positionArr, roleArr]);
-
-  useEffect(() => {
-    if (!state.previewImgUrl) return;
-    return () => {
-      URL.revokeObjectURL(state.previewImgUrl);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.image]);
 
   useEffect(() => {
     if (dataUserEdit) {
@@ -211,18 +207,41 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
         image: dataUserEdit.image ?? "",
         positionId: dataUserEdit.positionId ?? "",
         roleId: dataUserEdit.roleId ?? "",
+        previewImageUrl: dataUserEdit.imageUrl ?? "",
         action: "edit",
-        previewImgUrl: dataUserEdit.image ?? "",
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataUserEdit]);
 
+  useEffect(() => {
+    if (!state.previewImageUrl) return;
+    return () => {
+      URL.revokeObjectURL(state.previewImageUrl);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.image]);
+
+  useEffect(() => {
+    if (genderArr?.length > 0) {
+      setState({ ...state, gender: genderArr[0].keyMap });
+    }
+
+    if (positionArr?.length > 0) {
+      setState({ ...state, positionId: positionArr[0].keyMap });
+    }
+
+    if (roleArr?.length > 0) {
+      setState({ ...state, roleId: roleArr[0].keyMap });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [genderArr, positionArr, roleArr]);
+
   return (
     <div className="form-user container">
       <h3 className="u-sub-title my-4 d-flex justify-content-between">
         {state.action ? t("user-manage.update-user") : t("user-manage.create-user")}
-        <button className="u-system-button--refresh-data" onClick={() => setState({ ...initialState })}>
+        <button className="u-system-button--refresh-data" onClick={handleResetState}>
           <IoReload />
         </button>
       </h3>
@@ -235,7 +254,7 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
               type="email"
               autoFocus
               value={state.email}
-              disabled={state.action ? true : false}
+              disabled={state.action === "edit" ? true : false}
               onChange={(e, id) => handleInputChange(e, "email")}
             />
           </Form.Group>
@@ -245,7 +264,7 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
             <Form.Control
               type="password"
               value={state.password}
-              disabled={state.action ? true : false}
+              disabled={state.action === "edit" ? true : false}
               onChange={(e, id) => handleInputChange(e, "password")}
             />
           </Form.Group>
@@ -355,11 +374,11 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
 
               <div
                 className={`col-12  ${
-                  state.previewImgUrl ? "image-preview large open" : "image-preview large"
+                  state.previewImageUrl ? "image-preview large open" : "image-preview large"
                 }`}
                 onClick={handleOpenImagePreview}
                 style={{
-                  backgroundImage: `url(${state.previewImgUrl ? state.previewImgUrl : ""})`,
+                  backgroundImage: `url(${state.previewImageUrl ? state.previewImageUrl : ""})`,
                 }}
               ></div>
             </Form.Group>
@@ -374,8 +393,8 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
 
         <div className="row">
           <div className="u-system-button mt-4 text-end">
-            <Button variant="primary" onClick={handleCreateOrUpdateUser}>
-              {state.action ? t("button.update") : t("button.create")}
+            <Button variant="primary" onClick={handleSaveDataUser}>
+              {state.action === "edit" ? t("button.update") : t("button.create")}
             </Button>
           </div>
         </div>
@@ -383,7 +402,7 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total }) => {
 
       {state.isOpenImagePreview && (
         <Lightbox
-          mainSrc={state.previewImgUrl}
+          mainSrc={state.previewImageUrl}
           onCloseRequest={() => setState({ ...state, isOpenImagePreview: false })}
         />
       )}

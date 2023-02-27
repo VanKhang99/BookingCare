@@ -27,8 +27,6 @@ const CarouselPopularSpecialty = ({ onChange, settings }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log(specialties);
-
   return (
     <Carousel className="slides" afterChange={onChange} {...settings}>
       {specialties &&

@@ -6,8 +6,6 @@ import { setAuthToken } from "../utils/helpers";
 
 const initialState = {
   isLoggedIn: false,
-  email: "",
-  password: "",
   userInfo: null,
 };
 
@@ -17,8 +15,6 @@ export const login = createAsyncThunk("user/login", async ({ email, password }, 
     const token = res.token;
     localStorage.setItem("token", token);
     setAuthToken(token);
-
-    // thunkAPI.dispatch(handleChangePathSystem("/system"));
     return res;
   } catch (error) {
     throw error.response.data;
@@ -33,20 +29,20 @@ export const logout = createAsyncThunk("user/logout", async (_, thunkAPI) => {
 
     return res;
   } catch (error) {
-    return thunkAPI.rejectWithValue("Something went very wrong. Please check your API!");
+    return error.response.data;
   }
 });
 
-export const getAllUsers = createAsyncThunk("systemRedux/getAllUsers", async (data, thunkAPI) => {
+export const getAllUsers = createAsyncThunk("user/getAllUsers", async (data, thunkAPI) => {
   try {
     const res = await axios.get(`/api/users?page=${data.page}&limit=${data.limit}&role=${data.role}`);
     return res.data;
   } catch (error) {
-    return thunkAPI.rejectWithValue("Something went very wrong. Please check your API!");
+    return error.response.data;
   }
 });
 
-export const getUser = createAsyncThunk("systemRedux/getUser", async (id, thunkAPI) => {
+export const getUser = createAsyncThunk("user/getUser", async (id, thunkAPI) => {
   try {
     const user = await axios.get(`/api/users/${id}`);
     return user.data;
@@ -55,7 +51,7 @@ export const getUser = createAsyncThunk("systemRedux/getUser", async (id, thunkA
   }
 });
 
-export const createUser = createAsyncThunk("systemRedux/createUser", async (data, thunkAPI) => {
+export const createUser = createAsyncThunk("user/createUser", async (data, thunkAPI) => {
   try {
     const res = await axios.post("/api/users", { ...data });
     return res;
@@ -64,25 +60,25 @@ export const createUser = createAsyncThunk("systemRedux/createUser", async (data
   }
 });
 
-export const updateDataUser = createAsyncThunk("systemRedux/updateDataUser", async (data, thunkAPI) => {
+export const updateDataUser = createAsyncThunk("user/updateDataUser", async (data, thunkAPI) => {
   try {
-    const res = await axios.patch(`/api/users/${data.id}`, { ...data.user });
+    const res = await axios.patch(`/api/users/${data.id}`, data);
     return res;
   } catch (error) {
     return error.response.data;
   }
 });
 
-export const deleteUser = createAsyncThunk("systemRedux/deleteUser", async (id, thunkAPI) => {
+export const deleteUser = createAsyncThunk("user/deleteUser", async (id, thunkAPI) => {
   try {
     const res = await axios.delete(`/api/users/${id}`);
     return res;
   } catch (error) {
-    return thunkAPI.rejectWithValue("Something went very wrong. Please check your API!");
+    return error.response.data;
   }
 });
 
-export const getAllUsersByRole = createAsyncThunk("systemRedux/getAllUsersByRole", async (role, thunkAPI) => {
+export const getAllUsersByRole = createAsyncThunk("user/getAllUsersByRole", async (role, thunkAPI) => {
   try {
     const res = await axios.get(`/api/users/filter/${role}`);
     return res.data;
@@ -94,23 +90,7 @@ export const getAllUsersByRole = createAsyncThunk("systemRedux/getAllUsersByRole
 export const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {
-    inputChange: (state, { payload }) => {
-      state.email = payload.email;
-      state.password = payload.password ? payload.password : "";
-    },
-
-    userLogin: (state) => {
-      state.isLoggedIn = true;
-    },
-
-    userLogout: (state) => {
-      state.isLoggedIn = false;
-      state.userInfo = null;
-      state.email = "";
-      state.password = "";
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(login.pending, (state) => {
@@ -118,25 +98,18 @@ export const userSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, { payload }) => {
         const { user } = payload.data;
-        const userInRedux = { ...user };
-        delete userInRedux.image;
-        state.isLoggedIn = true;
-        state.userInfo = userInRedux;
-
-        const userInLocalStorage = { ...user };
-        for (const prop of Object.keys(userInLocalStorage)) {
-          if (
-            prop === "address" ||
-            prop === "email" ||
-            prop === "roleId" ||
-            prop === "phoneNumber" ||
-            prop === "image"
-          ) {
-            delete userInLocalStorage[prop];
+        const userCopy = { ...user };
+        for (const prop of Object.keys(userCopy)) {
+          if (prop === "firstName" || prop === "lastName" || prop === "roleId" || prop === "id") {
+            continue;
+          } else {
+            delete userCopy[prop];
           }
         }
 
-        localStorage.setItem("userInfo", JSON.stringify(userInLocalStorage));
+        state.isLoggedIn = true;
+        state.userInfo = userCopy;
+        localStorage.setItem("userInfo", JSON.stringify(userCopy));
       })
       .addCase(login.rejected, (state) => {
         state.isLoggedIn = false;
@@ -158,6 +131,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { inputChange, userLogout } = userSlice.actions;
+// export const {} = userSlice.actions;
 
 export default userSlice.reducer;

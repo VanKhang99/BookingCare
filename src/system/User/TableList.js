@@ -36,14 +36,14 @@ const TableList = ({ users, redux, onEditDataUser, onDeleteUser }) => {
                     <button
                       type="button"
                       className="table-button table-button-edit me-4"
-                      onClick={() => onEditDataUser(true, user)}
+                      onClick={() => onEditDataUser(true, id)}
                     >
                       <MdModeEdit />
                     </button>
                     <button
                       type="button"
                       className="table-button table-button-delete"
-                      onClick={() => onDeleteUser(id)}
+                      onClick={() => onDeleteUser(user)}
                     >
                       <HiOutlineTrash />
                     </button>

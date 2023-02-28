@@ -26,9 +26,7 @@ const initialState = {
 
 const DetailDoctor = ({ remote }) => {
   const [state, setState] = useState({ ...initialState });
-  // const dispatch = useDispatch();
   const { id } = useParams();
-  // const { language } = useSelector((store) => store.app);
   const doctor = useFetchDataBaseId(id, "doctor", getDetailDoctor);
 
   const handleModal = (hourClicked, action = "") => {
@@ -57,7 +55,7 @@ const DetailDoctor = ({ remote }) => {
         <Header />
 
         <div>
-          <Introduce id={id ? id : ""} remote={remote} />
+          <Introduce id={id ? id : ""} remote={remote} doctorData={!_.isEmpty(doctor) && doctor} />
 
           <div className="schedule u-wrapper">
             <DateOptions inSpecialty id={id ? id : ""} onUpdateSchedules={handleUpdateSchedules} />
@@ -67,13 +65,19 @@ const DetailDoctor = ({ remote }) => {
                 schedules={state.schedules.length > 0 ? state.schedules : []}
                 onToggleModal={handleModal}
               />
-              <ClinicInfo id={id} needAddress={true} remote={remote} assurance={true} />
+              <ClinicInfo
+                id={id}
+                needAddress={true}
+                remote={remote}
+                assurance={true}
+                doctorData={!_.isEmpty(doctor) && doctor}
+              />
             </div>
           </div>
 
           <div className="outstanding-doctor">
             <div className="outstanding-doctor__background  u-wrapper">
-              {doctor?.anotherInfo?.aboutHTML && HtmlReactParser(doctor.anotherInfo.aboutHTML)}
+              {doctor?.moreData?.aboutHTML && HtmlReactParser(doctor.moreData.aboutHTML)}
             </div>
           </div>
           <div className="outstanding-doctor-feedback u-wrapper">Feedback</div>
@@ -86,7 +90,7 @@ const DetailDoctor = ({ remote }) => {
         <ModalBooking
           show={state.isOpenModalBooking}
           onHide={handleModal}
-          doctor={doctor}
+          doctorData={!_.isEmpty(doctor) && doctor}
           action={state.action}
           hourClicked={state.hourClicked && !_.isEmpty(state.hourClicked) && state.hourClicked}
         />

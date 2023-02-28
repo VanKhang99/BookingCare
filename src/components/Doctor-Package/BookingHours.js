@@ -11,7 +11,7 @@ const BookingHours = ({ schedules, doctorId, packageId, onToggleModal, small, re
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
 
-  const handleClick = (hourClicked, doctorId = undefined, packageId = undefined) => {
+  const handleClick = (hourClicked, doctorId = null, packageId = null) => {
     if (doctorId) {
       onToggleModal(hourClicked, doctorId);
     } else {

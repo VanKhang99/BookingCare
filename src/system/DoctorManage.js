@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import _ from "lodash";
 import Select from "react-select";
 import MarkdownIt from "markdown-it";
@@ -11,8 +11,10 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { getAllCodes } from "../slices/allcodeSlice";
+import { getAllClinics } from "../slices/clinicSlice";
+import { getAllSpecialties } from "../slices/specialtySlice";
 import { getAllDoctors, postInfoDoctor, getDetailDoctor, deleteDoctor } from "../slices/doctorSlice";
-import { checkData } from "../utils/helpers";
+import { checkData, formatterPrice } from "../utils/helpers";
 import "react-markdown-editor-lite/lib/index.css";
 
 const mdParser = new MarkdownIt(/* Markdown-it options */);
@@ -36,7 +38,7 @@ const initialState = {
   popular: false,
   remote: false,
   isHaveInfo: false,
-  action: "",
+  action: "create",
   oldIdDoctor: "",
 };
 
@@ -46,10 +48,9 @@ const AddInfoDoctor = () => {
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
   const { doctors } = useSelector((store) => store.doctor);
-  const { priceArr, paymentArr, provinceArr, specialtyArr, clinicArr } = useSelector(
-    (store) => store.allcode
-  );
-  const saveOldIdDoctor = useRef(null);
+  const { priceArr, paymentArr, provinceArr } = useSelector((store) => store.allcode);
+  const { clinics } = useSelector((store) => store.clinic);
+  const { specialties } = useSelector((store) => store.specialty);
 
   const handleInfos = (e, type) => {
     const stateCopy = JSON.parse(JSON.stringify({ ...state }));
@@ -61,100 +62,49 @@ const AddInfoDoctor = () => {
     setState({ ...stateCopy });
   };
 
-  const handleInfoOptions = (typeInfo, data) => {
+  const handleOptions = (typeInfo, data) => {
     if (!data) return;
 
-    const formatterPrice = new Intl.NumberFormat(`${language === "vi" ? "vi-VN" : "en-US"}`, {
-      style: "currency",
-      currency: `${language === "vi" ? "VND" : "USD"}`,
-    });
+    const objectOptions = data.map(
+      ({ id, firstName, lastName, nameVi, nameEn, valueVi, valueEn, keyMap, moreData }) => {
+        let label;
+        let value;
+        if (typeInfo === "doctor") {
+          label =
+            language === "vi"
+              ? `${moreData.lastName} ${moreData.firstName}`
+              : `${moreData.firstName} ${moreData.lastName}`;
+          value = moreData.id;
+        } else if (typeInfo === "specialty" || typeInfo === "clinic") {
+          label = language === "vi" ? `${nameVi}` : `${nameEn}`;
+          value = id;
+        } else if (typeInfo === "province" || typeInfo === "payment") {
+          label = language === "vi" ? `${valueVi}` : `${valueEn}`;
+          value = keyMap;
+        } else if (typeInfo === "price") {
+          label =
+            language === "vi"
+              ? `${formatterPrice(language).format(valueVi)}`
+              : `${formatterPrice(language).format(valueEn)}`;
+          value = keyMap;
+        }
 
-    const objectOptions = data.map((item) => {
-      let label;
-      let value;
-      if (typeInfo === "doctor") {
-        label =
-          language === "vi" ? `${item.lastName} ${item.firstName}` : `${item.firstName} ${item.lastName}`;
-        value = item.id;
-      } else if (
-        typeInfo === "province" ||
-        typeInfo === "payment" ||
-        typeInfo === "specialty" ||
-        typeInfo === "clinic"
-      ) {
-        label = language === "vi" ? `${item.valueVi}` : `${item.valueEn}`;
-        value = item.keyMap;
-      } else if (typeInfo === "price") {
-        label =
-          language === "vi"
-            ? `${formatterPrice.format(item.valueVi)}`
-            : `${formatterPrice.format(item.valueEn)}`;
-        value = item.keyMap;
+        return { value, label };
       }
-
-      return { value, label };
-    });
+    );
     return objectOptions;
   };
 
-  const handleStateSelectDoctor = async (selectedOption) => {
-    try {
-      const doctor = await dispatch(getDetailDoctor(+selectedOption?.value || +state.oldIdDoctor));
-      const findInfoBaseId = (typeInfo, array, typeInfoId) => {
-        return handleInfoOptions(typeInfo, array).find((item) => item.value === typeInfoId);
-      };
-
-      const anotherInfoDoctor = doctor.payload.data.anotherInfo;
-      const propsCheck = ["priceId", "paymentId", "provinceId", "specialtyId", "popular", "remote"];
-      const checkAnotherInfoDoctor = checkData(anotherInfoDoctor, propsCheck);
-      const doctorSelected = findInfoBaseId("doctor", doctors, doctor.payload.data.id);
-
-      if (doctor?.payload?.data && !_.isEmpty(doctor.payload.data) && checkAnotherInfoDoctor) {
-        const doctorData = doctor.payload.data;
-        const price = findInfoBaseId("price", priceArr, doctorData.anotherInfo.priceId);
-        const payment = findInfoBaseId("payment", paymentArr, doctorData.anotherInfo.paymentId);
-        const province = findInfoBaseId("province", provinceArr, doctorData.anotherInfo.provinceId);
-        const specialty = findInfoBaseId("specialty", specialtyArr, doctorData.anotherInfo.specialtyId);
-        const clinic = findInfoBaseId("clinic", clinicArr, doctorData.anotherInfo.clinicId);
-
-        return setState({
-          ...state,
-          introductionHTML: doctorData.anotherInfo.introductionHTML,
-          introductionMarkdown: doctorData.anotherInfo.introductionMarkdown,
-          aboutHTML: doctorData.anotherInfo.aboutHTML,
-          aboutMarkdown: doctorData.anotherInfo.aboutMarkdown,
-
-          selectedDoctor: doctorSelected,
-          selectedPrice: price,
-          selectedPayment: payment,
-          selectedProvince: province,
-          selectedSpecialty: specialty,
-          selectedClinic: clinic,
-          addressClinic: doctorData.anotherInfo.addressClinic ?? "",
-          popular: doctorData.anotherInfo.popular ?? 0,
-          remote: doctorData.anotherInfo.remote ?? 0,
-          note: doctorData.anotherInfo.note ?? "",
-          isHaveInfo: true,
-          action: "EDIT",
-          oldIdDoctor: doctorData.id,
-        });
-      }
-
-      return setState({
-        ...initialState,
-        selectedDoctor: selectedOption || doctorSelected,
-        oldIdDoctor: selectedOption?.value || doctorSelected.value,
-      });
-    } catch (error) {
-      console.log(error);
-    }
+  const handleCheckRadio = (e, type) => {
+    return setState({ ...state, [type]: e.target.value });
   };
 
   const handleMarkdownChange = ({ html, text }, type) => {
-    const stateCopy = JSON.parse(JSON.stringify({ ...state }));
-    stateCopy[`${type}HTML`] = html;
-    stateCopy[`${type}Markdown`] = text;
-    return setState({ ...stateCopy });
+    return setState({ ...state, [`${type}HTML`]: html, [`${type}Markdown`]: text });
+  };
+
+  const findItemSelectedById = (type, arr, id) => {
+    return handleOptions(type, arr).find((item) => item.value === id);
   };
 
   const handleSaveInfoDoctor = async () => {
@@ -201,6 +151,47 @@ const AddInfoDoctor = () => {
     }
   };
 
+  const handleUpdateDoctor = async (selectedOption) => {
+    try {
+      const res = await dispatch(getDetailDoctor(+selectedOption?.value || +state.oldIdDoctor));
+
+      if (!res.payload.data) return toast.error("Get data doctor failed. Please check and try again!");
+      const doctor = res.payload.data;
+      const { moreData } = doctor;
+
+      const doctorSelected = findItemSelectedById("doctor", doctors, doctor.id);
+      const priceInDB = findItemSelectedById("price", priceArr, moreData.priceData.keyMap);
+      const paymentInDB = findItemSelectedById("payment", paymentArr, moreData.paymentData.keyMap);
+      const provinceInDB = findItemSelectedById("province", provinceArr, moreData.provinceData.keyMap);
+      const specialtyInDB = findItemSelectedById("specialty", specialties, moreData.specialtyData.id);
+      const clinicInDB = findItemSelectedById("clinic", clinics, moreData.clinic.id);
+
+      return setState({
+        ...state,
+        introductionHTML: moreData.introductionHTML,
+        introductionMarkdown: moreData.introductionMarkdown,
+        aboutHTML: moreData.aboutHTML,
+        aboutMarkdown: moreData.aboutMarkdown,
+
+        selectedDoctor: doctorSelected,
+        selectedPrice: priceInDB,
+        selectedPayment: paymentInDB,
+        selectedProvince: provinceInDB,
+        selectedSpecialty: specialtyInDB,
+        selectedClinic: clinicInDB,
+        addressClinic: moreData.addressClinic ?? "",
+        popular: moreData.popular ?? 0,
+        remote: moreData.remote ?? 0,
+        note: moreData.note ?? "",
+        isHaveInfo: true,
+        action: "edit",
+        oldIdDoctor: doctor.id,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleDeleteInfoDoctor = async () => {
     try {
       if (!state.selectedDoctor) throw new Error("Doctor is not selected");
@@ -211,7 +202,7 @@ const AddInfoDoctor = () => {
       const res = await dispatch(deleteDoctor(state.selectedDoctor.value));
       if (res.payload === "") {
         toast.success("Doctor is deleted successfully!");
-        await dispatch(getAllDoctors());
+        await dispatch(getAllDoctors("all"));
         return setState({ ...initialState });
       }
     } catch (error) {
@@ -219,26 +210,21 @@ const AddInfoDoctor = () => {
     }
   };
 
-  const handleCheckRadio = (e, type) => {
-    return setState({ ...state, [type]: e.target.value });
-  };
-
   useEffect(() => {
-    dispatch(getAllDoctors());
+    dispatch(getAllDoctors("all"));
     dispatch(getAllCodes("PRICE"));
     dispatch(getAllCodes("PAYMENT"));
     dispatch(getAllCodes("PROVINCE"));
-    dispatch(getAllCodes("SPECIALTY"));
-    dispatch(getAllCodes("CLINIC"));
+    dispatch(getAllSpecialties("all"));
+    dispatch(getAllClinics("both"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    handleInfoOptions();
+    handleOptions();
     if (state.oldIdDoctor) {
-      handleStateSelectDoctor();
+      handleUpdateDoctor();
     }
-    saveOldIdDoctor.current = state.oldIdDoctor;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
 
@@ -258,14 +244,14 @@ const AddInfoDoctor = () => {
             <label className="u-input-label">{t("doctor-manage.choose-doctor")}</label>
 
             <div className="mt-3">
-              {doctors && doctors.length > 0 && (
+              {doctors?.length > 0 && (
                 <Select
                   value={state.selectedDoctor}
                   onChange={(option) => {
                     handleInfos(option, "selectedDoctor");
-                    handleStateSelectDoctor(option);
+                    handleUpdateDoctor(option);
                   }}
-                  options={handleInfoOptions("doctor", doctors)}
+                  options={handleOptions("doctor", doctors)}
                   placeholder={t("doctor-manage.placeholder-doctor")}
                 />
               )}
@@ -276,11 +262,11 @@ const AddInfoDoctor = () => {
             <label className="u-input-label">{t("common.choose-price")}</label>
 
             <div className="mt-3">
-              {priceArr && priceArr.length > 0 && (
+              {priceArr?.length > 0 && (
                 <Select
                   value={state.selectedPrice}
                   onChange={(option) => handleInfos(option, "selectedPrice")}
-                  options={handleInfoOptions("price", priceArr)}
+                  options={handleOptions("price", priceArr)}
                   placeholder={t("common.placeholder-price")}
                 />
               )}
@@ -291,11 +277,11 @@ const AddInfoDoctor = () => {
             <label className="u-input-label">{t("common.choose-clinic")}</label>
 
             <div className="mt-3">
-              {clinicArr?.length > 0 && (
+              {clinics?.length > 0 && (
                 <Select
                   value={state.selectedClinic}
                   onChange={(option) => handleInfos(option, "selectedClinic")}
-                  options={handleInfoOptions("clinic", clinicArr)}
+                  options={handleOptions("clinic", clinics)}
                   placeholder={t("common.placeholder-clinic")}
                 />
               )}
@@ -306,11 +292,11 @@ const AddInfoDoctor = () => {
             <label className="u-input-label">{t("common.choose-method-payment")}</label>
 
             <div className="mt-3">
-              {paymentArr && paymentArr.length > 0 && (
+              {paymentArr?.length > 0 && (
                 <Select
                   value={state.selectedPayment}
                   onChange={(option) => handleInfos(option, "selectedPayment")}
-                  options={handleInfoOptions("payment", paymentArr)}
+                  options={handleOptions("payment", paymentArr)}
                   placeholder={t("common.placeholder-payment")}
                 />
               )}
@@ -321,11 +307,11 @@ const AddInfoDoctor = () => {
             <label className="u-input-label">{t("common.choose-province")}</label>
 
             <div className="mt-3">
-              {provinceArr && provinceArr.length > 0 && (
+              {provinceArr?.length > 0 && (
                 <Select
                   value={state.selectedProvince}
                   onChange={(option) => handleInfos(option, "selectedProvince")}
-                  options={handleInfoOptions("province", provinceArr)}
+                  options={handleOptions("province", provinceArr)}
                   placeholder={t("common.placeholder-province")}
                 />
               )}
@@ -336,11 +322,11 @@ const AddInfoDoctor = () => {
             <label className="u-input-label">{t("common.choose-specialty")}</label>
 
             <div className="select-specialty mt-3">
-              {specialtyArr && specialtyArr.length > 0 && (
+              {specialties?.length > 0 && (
                 <Select
                   value={state.selectedSpecialty}
                   onChange={(option) => handleInfos(option, "selectedSpecialty")}
-                  options={handleInfoOptions("specialty", specialtyArr)}
+                  options={handleOptions("specialty", specialties)}
                   placeholder={t("common.placeholder-specialty")}
                 />
               )}

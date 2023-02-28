@@ -21,8 +21,6 @@ const DateOptions = ({ small, id, onUpdateSchedules, keyMapFetchPackage }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
 
-  console.log(initDateSelected);
-
   const handleGetScheduleNextDay = async () => {
     try {
       let newDateSelected = new Date();

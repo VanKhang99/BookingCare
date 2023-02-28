@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Header, InputSearch, Footer } from "../components";
-import { getOutstandingDoctors } from "../slices/doctorSlice";
+import { getAllDoctors } from "../slices/doctorSlice";
 import { helperFilterSearch } from "../utils/helpers";
 import "../styles/Doctors.scss";
 
@@ -14,7 +14,7 @@ const Doctors = () => {
 
   const handleFetchSpecialties = async () => {
     try {
-      const res = await dispatch(getOutstandingDoctors());
+      const res = await dispatch(getAllDoctors("popular"));
       if (res?.payload?.data?.doctors.length > 0) {
         setDoctors([...res.payload.data.doctors]);
         setFilterDoctors([...res.payload.data.doctors]);
@@ -32,7 +32,8 @@ const Doctors = () => {
         e.target.value,
         targetCompare
       );
-
+      console.log(targetCompareLowerCase);
+      console.log(inputPassedLowerCase);
       return targetCompareLowerCase.includes(inputPassedLowerCase);
     });
 
@@ -42,7 +43,7 @@ const Doctors = () => {
   const handleDisplayNameDoctor = (data) => {
     let finalName;
     const {
-      anotherInfo: { positionData, roleData, firstName, lastName, positionId, roleId },
+      moreData: { positionData, roleData, firstName, lastName, positionId, roleId },
     } = data;
 
     if (language === "vi") {
@@ -84,17 +85,17 @@ const Doctors = () => {
         <div className="doctors-popular-list">
           {filterDoctors.length > 0 &&
             filterDoctors.map((doctor) => {
-              const { anotherInfo } = doctor;
+              const {
+                doctorId,
+                specialtyData,
+                moreData: { firstName, lastName, imageUrl },
+              } = doctor;
               return (
-                <Link to={`/doctor/${doctor.id}`} key={doctor.id} className="doctors-popular-item">
+                <Link to={`/doctor/${doctorId}`} key={doctorId} className="doctors-popular-item">
                   <div className="doctors-popular-item__image">
                     <img
-                      src={anotherInfo.image}
-                      alt={
-                        language === "vi"
-                          ? `${anotherInfo.firstName} ${anotherInfo.lastName}`
-                          : `${anotherInfo.lastName} ${anotherInfo.firstName}`
-                      }
+                      src={imageUrl}
+                      alt={language === "vi" ? `${firstName} ${lastName}` : `${lastName} ${firstName}`}
                     />
                   </div>
 
@@ -102,9 +103,7 @@ const Doctors = () => {
                     <span className="doctors-popular-info__name">{handleDisplayNameDoctor(doctor)}</span>
 
                     <div className="doctors-popular-info__specialty">
-                      <span>
-                        {language === "vi" ? doctor.specialtyData.valueVi : doctor.specialtyData.valueEn}
-                      </span>
+                      <span>{language === "vi" ? specialtyData.nameVi : specialtyData.nameEn}</span>
                     </div>
                   </div>
                 </Link>

@@ -4,27 +4,13 @@ import axios from "../axios";
 
 const initialState = {
   isLoadingDoctors: false,
-  isFetchDoctor: false,
-  outstandingDoctors: [],
   doctors: [],
 };
 
-export const getOutstandingDoctors = createAsyncThunk(
-  "doctor/getOutstandingDoctors",
-  async (limit, thunkAPI) => {
-    try {
-      const res = await axios.get(`/api/doctor/outstanding-doctor`);
-      return res;
-    } catch (error) {
-      return error.response.data;
-    }
-  }
-);
-
-export const getAllDoctors = createAsyncThunk("doctor/getAllDoctors", async (_, thunkAPI) => {
+export const getAllDoctors = createAsyncThunk("doctor/getAllDoctors", async (type, thunkAPI) => {
   try {
-    const res = await axios.get("/api/doctor/all-doctors");
-    return res.data;
+    const res = await axios.get(`/api/doctors/${type}`);
+    return res;
   } catch (error) {
     return error.response.data;
   }
@@ -32,8 +18,7 @@ export const getAllDoctors = createAsyncThunk("doctor/getAllDoctors", async (_, 
 
 export const postInfoDoctor = createAsyncThunk("doctor/postInfoDoctor", async (data, thunkAPI) => {
   try {
-    console.log(data);
-    const res = await axios.post("/api/doctor/save-info-doctors", data);
+    const res = await axios.post("/api/doctors", data);
     return res;
   } catch (error) {
     return error.response.data;
@@ -42,30 +27,30 @@ export const postInfoDoctor = createAsyncThunk("doctor/postInfoDoctor", async (d
 
 export const getDetailDoctor = createAsyncThunk("doctor/getDetailDoctor", async (doctorId, thunkAPI) => {
   try {
-    const res = await axios.get(`/api/doctor/detail/${doctorId}`);
+    const res = await axios.get(`/api/doctors/detail/${doctorId}`);
     return res.data;
   } catch (error) {
     return error.response.data;
   }
 });
 
-export const getInfoAddressPriceClinic = createAsyncThunk(
-  "doctor/getInfoAddressPriceClinic",
-  async (doctorId, thunkAPI) => {
-    try {
-      const res = await axios.get(`/api/doctor/address-price-assurance/${doctorId}`);
-      return res.data;
-    } catch (error) {
-      return error.response;
-    }
-  }
-);
+// export const getInfoAddressPriceClinic = createAsyncThunk(
+//   "doctor/getInfoAddressPriceClinic",
+//   async (doctorId, thunkAPI) => {
+//     try {
+//       const res = await axios.get(`/api/doctors/address-price-assurance/${doctorId}`);
+//       return res.data;
+//     } catch (error) {
+//       return error.response;
+//     }
+//   }
+// );
 
 export const getDoctorsBaseKeyMap = createAsyncThunk(
   "doctor/getDoctorsBaseKeyMap",
   async (data, thunkAPI) => {
     try {
-      const res = await axios.get(`/api/doctor/${data.keyMapId}&${data.remote}`);
+      const res = await axios.get(`/api/doctors/${data.keyMapId}&${data.remote}`);
       return res.data;
     } catch (error) {
       return error.response.data;
@@ -75,7 +60,7 @@ export const getDoctorsBaseKeyMap = createAsyncThunk(
 
 export const deleteDoctor = createAsyncThunk("doctor/deleteDoctor", async (doctorId, thunkAPI) => {
   try {
-    const res = await axios.delete(`api/doctor/${doctorId}`);
+    const res = await axios.delete(`api/doctors/${doctorId}`);
     return res;
   } catch (error) {
     return error.response.data;
@@ -88,24 +73,13 @@ export const doctorSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      //GET OUTSTANDING DOCTORS
-      .addCase(getOutstandingDoctors.pending, (state) => {
-        state.isLoadingDoctors = true;
-      })
-      .addCase(getOutstandingDoctors.fulfilled, (state, { payload }) => {
-        state.isLoadingDoctors = false;
-        state.outstandingDoctors = payload.data.doctors;
-      })
-      .addCase(getOutstandingDoctors.rejected, (state) => {
-        state.isLoadingDoctors = false;
-      })
       //GET ALL DOCTORS
       .addCase(getAllDoctors.pending, (state) => {
         state.isLoadingDoctors = true;
       })
       .addCase(getAllDoctors.fulfilled, (state, { payload }) => {
         state.isLoadingDoctors = false;
-        state.doctors = payload.doctors;
+        state.doctors = payload.data.doctors;
       })
       .addCase(getAllDoctors.rejected, (state) => {
         state.isLoadingDoctors = false;

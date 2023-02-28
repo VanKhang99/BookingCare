@@ -144,7 +144,6 @@ const ClinicSpecialtyManage = () => {
 
   const handleUpdateSpecialtyClinic = async (selectedOption, selectOf = null) => {
     try {
-      console.log(state);
       const res = await dispatch(
         getSpecialtyOfClinic({
           clinicId: selectOf === "Clinic" ? +selectedOption?.value : state.oldSelectedClinic,

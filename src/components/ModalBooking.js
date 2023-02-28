@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import _ from "lodash";
 import HtmlReactParser from "html-react-parser";
 import Button from "react-bootstrap/Button";
@@ -13,8 +13,6 @@ import { getAllCodes } from "../slices/allcodeSlice";
 import { createBooking } from "../slices/bookingSlice";
 import { IoClose } from "react-icons/io5";
 import { DatePicker, Space } from "antd";
-import { useFetchDataBaseId } from "../utils/CustomHook";
-import { getInfoAddressPriceClinic } from "../slices/doctorSlice";
 import { isValidEmail, isValidPhone, formatDate, formatterPrice, checkData } from "../utils/helpers";
 import "../styles/ModalBooking.scss";
 
@@ -37,14 +35,22 @@ const initialState = {
   },
 };
 
-const ModalBooking = ({ show, onHide, doctorId, packageId, doctor, packageData, hourClicked, remote }) => {
+const ModalBooking = ({
+  show,
+  onHide,
+  doctorId,
+  packageId,
+  doctorData,
+  packageData,
+  hourClicked,
+  remote,
+}) => {
   const [state, setState] = useState({ ...initialState });
   const { t } = useTranslation();
   const { id } = useParams();
   const { language } = useSelector((store) => store.app);
   const { genderArr } = useSelector((store) => store.allcode);
   const dispatch = useDispatch();
-  const moreInfo = useFetchDataBaseId(doctor?.id || id, "moreInfoDoctor", getInfoAddressPriceClinic);
 
   const handleHideModal = () => {
     onHide();
@@ -111,18 +117,19 @@ const ModalBooking = ({ show, onHide, doctorId, packageId, doctor, packageData, 
     }
 
     try {
+      const { moreData } = doctorData;
+      const { clinic, priceData } = moreData;
       let clinicName;
       let doctorName;
       let packageName;
       let dateBooked = hourClicked && `${formatDate(new Date(+hourClicked.date), language).split(" - ")[1]}`;
       let birthday = state.birthday.split("/");
       if (id || doctorId) {
-        clinicName =
-          language === "vi" ? doctor.anotherInfo.clinicData.valueVi : doctor.anotherInfo.clinicData.valueEn;
+        clinicName = language === "vi" ? clinic.nameVi : clinic.nameEn;
         doctorName =
           language === "vi"
-            ? `${doctor.lastName} ${doctor.firstName}`
-            : `${doctor.firstName} ${doctor.lastName}`;
+            ? `${doctorData.lastName} ${doctorData.firstName}`
+            : `${doctorData.firstName} ${doctorData.lastName}`;
       } else {
         clinicName = language === "vi" ? packageData?.clinicName?.valueVi : packageData?.clinicName?.valueEn;
         packageName = language === "vi" ? packageData?.nameVi : packageData?.nameEn;
@@ -153,7 +160,7 @@ const ModalBooking = ({ show, onHide, doctorId, packageId, doctor, packageData, 
         clinicName,
         packageName,
         packageId: +packageId,
-        priceId: moreInfo.priceId || packageData.priceId,
+        priceId: priceData.keyMap || packageData.priceId,
         remote: remote ?? false,
       };
       delete dataSendServer["errorInput"];
@@ -189,22 +196,24 @@ const ModalBooking = ({ show, onHide, doctorId, packageId, doctor, packageData, 
     let date;
     let image;
 
-    if (!_.isEmpty(doctor)) {
-      image = doctor.image;
+    if (!_.isEmpty(doctorData)) {
+      const { imageUrl, firstName, lastName, positionId, positionData, roleData, moreData } = doctorData;
+      const { clinic, priceData } = moreData;
+      image = imageUrl;
       if (language === "vi") {
         name =
-          doctor.positionId !== "P0"
-            ? `${doctor.positionData.valueVi} - ${doctor.roleData.valueVi} - ${doctor.lastName} ${doctor.firstName}`
-            : `${doctor.roleData.valueVi} - ${doctor.lastName} ${doctor.firstName}`;
+          positionId !== "P0"
+            ? `${positionData.valueVi} - ${roleData.valueVi} - ${lastName} ${firstName}`
+            : `${roleData.valueVi} - ${lastName} ${firstName}`;
         timeFrame = hourClicked?.timeTypeData?.valueVi;
-        price = formatterPrice(language).format(moreInfo?.priceData?.valueVi);
+        price = formatterPrice(language).format(priceData?.valueVi);
       } else {
         name =
-          doctor.positionId !== "P0"
-            ? `${doctor.positionData.valueEn} - ${doctor.roleData.valueEn} - ${doctor.firstName} ${doctor.lastName}`
-            : `${doctor.roleData.valueEn} - ${doctor.firstName} ${doctor.lastName}`;
+          positionId !== "P0"
+            ? `${positionData.valueEn} - ${roleData.valueEn} - ${firstName} ${lastName}`
+            : `${roleData.valueEn} - ${firstName} ${lastName}`;
         timeFrame = hourClicked?.timeTypeData?.valueEn;
-        price = formatterPrice(language).format(moreInfo?.priceData?.valueEn);
+        price = formatterPrice(language).format(priceData?.valueEn);
       }
     }
 

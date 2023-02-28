@@ -237,6 +237,8 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total, onRese
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [genderArr, positionArr, roleArr]);
 
+  // console.log(state);
+
   return (
     <div className="form-user container">
       <h3 className="u-sub-title my-4 d-flex justify-content-between">
@@ -355,7 +357,7 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total, onRese
 
           <div className="col-6">
             <Form.Group className="col-12  image-preview-container" controlId="formImage">
-              <label htmlFor="image" className="form-label">
+              <label htmlFor="image" className="u-input-label">
                 {t("user-manage.image")}
               </label>
               <input
@@ -376,7 +378,7 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total, onRese
                 className={`col-12  ${
                   state.previewImageUrl ? "image-preview large open" : "image-preview large"
                 }`}
-                onClick={handleOpenImagePreview}
+                onClick={() => handleOpenImagePreview()}
                 style={{
                   backgroundImage: `url(${state.previewImageUrl ? state.previewImageUrl : ""})`,
                 }}

@@ -45,7 +45,7 @@ const Login = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      if (userInfo.roleId === "R1") {
+      if (userInfo?.roleId === "R1") {
         navigate("/admin-system");
         dispatch(handleChangePathSystem("/admin-system"));
       } else {

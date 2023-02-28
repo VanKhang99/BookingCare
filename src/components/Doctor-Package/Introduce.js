@@ -5,14 +5,11 @@ import HtmlReactParser from "html-react-parser";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { useFetchDataBaseId } from "../../utils/CustomHook";
-import { getDetailDoctor } from "../../slices/doctorSlice";
 import "../../styles/Introduce.scss";
 
-const Introduce = ({ id, small, buttonSeeMore, packageData, packageClinicSpecialty, remote }) => {
+const Introduce = ({ doctorData, id, small, buttonSeeMore, packageData, packageClinicSpecialty, remote }) => {
   const { language } = useSelector((store) => store.app);
   const { t } = useTranslation();
-  const doctor = useFetchDataBaseId(id, "doctor", getDetailDoctor);
 
   const handleDisplayNameRolePosition = (doctor) => {
     if (doctor.positionId === "P0") {
@@ -95,7 +92,7 @@ const Introduce = ({ id, small, buttonSeeMore, packageData, packageClinicSpecial
           <div
             className="introduction-left__image"
             style={{
-              backgroundImage: `url(${doctor?.image ? doctor?.image : ""})`,
+              backgroundImage: `url(${doctorData?.imageUrl ? doctorData?.imageUrl : ""})`,
             }}
           ></div>
           {buttonSeeMore && (
@@ -114,10 +111,10 @@ const Introduce = ({ id, small, buttonSeeMore, packageData, packageClinicSpecial
         </div>
         <div className="introduction-right">
           <h2 className="introduction-right__name">
-            {doctor?.positionData && doctor?.roleData && handleDisplayNameRolePosition(doctor)}
+            {doctorData?.positionData && doctorData?.roleData && handleDisplayNameRolePosition(doctorData)}
           </h2>
           <div className="introduction-right__summary">
-            {doctor?.anotherInfo?.introductionHTML && HtmlReactParser(doctor.anotherInfo.introductionHTML)}
+            {doctorData?.moreData?.introductionHTML && HtmlReactParser(doctorData.moreData.introductionHTML)}
           </div>
         </div>
       </div>

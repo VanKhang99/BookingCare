@@ -2,34 +2,24 @@ import React, { useState, memo } from "react";
 import _ from "lodash";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-// import { MdLocationOn } from "react-icons/md";
 import { FaMapMarkedAlt } from "react-icons/fa";
 import { IoMdPricetag } from "react-icons/io";
 import { GiMedicalPack } from "react-icons/gi";
 import { AiOutlineCaretUp, AiOutlineCaretDown } from "react-icons/ai";
-import { useFetchDataBaseId } from "../../utils/CustomHook";
-import { getInfoAddressPriceClinic } from "../../slices/doctorSlice";
 import { formatterPrice } from "../../utils/helpers";
 
 import "../../styles/ClinicInfo.scss";
 
-const ClinicInfo = ({ id, small, packageData, needAddress, assurance, remote }) => {
+const ClinicInfo = ({ doctorData, id, small, packageData, needAddress, assurance, remote }) => {
   const [state, setState] = useState({
     showPrice: false,
     showInsurance: false,
   });
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
-  const moreInfo = useFetchDataBaseId(id, "moreInfoDoctor", getInfoAddressPriceClinic);
 
   const handleDisplayMoreInfo = (type) => {
-    if (type === "price") {
-      return setState({ ...state, showPrice: !state.showPrice });
-    }
-
-    if (type === "insurance") {
-      return setState({ ...state, showInsurance: !state.showInsurance });
-    }
+    return setState({ ...state, [`show${type}`]: !state[`show${type}`] });
   };
 
   const handleDisplayInterface = () => {
@@ -47,15 +37,20 @@ const ClinicInfo = ({ id, small, packageData, needAddress, assurance, remote }) 
           : formatterPrice(language).format(packageData.pricePackage.valueEn);
       priceEn = packageData.pricePackage.valueEn;
       payment = language === "vi" ? packageData.paymentPackage?.valueVi : packageData.paymentPackage?.valueEn;
-    } else {
-      name = language === "vi" ? moreInfo.clinicData?.valueVi : moreInfo.clinicData?.valueEn;
-      address = moreInfo?.addressClinic;
+    }
+
+    if (!_.isEmpty(doctorData)) {
+      const {
+        moreData: { clinic, paymentData, priceData },
+      } = doctorData;
+      name = language === "vi" ? clinic.nameVi : clinic.nameViEn;
+      address = clinic.address;
       price =
         language === "vi"
-          ? formatterPrice(language).format(moreInfo.priceData?.valueVi)
-          : formatterPrice(language).format(moreInfo.priceData?.valueEn);
-      priceEn = moreInfo?.priceData?.valueEn;
-      payment = language === "vi" ? moreInfo.paymentData?.valueVi : moreInfo.paymentData?.valueEn;
+          ? formatterPrice(language).format(priceData.valueVi)
+          : formatterPrice(language).format(priceData.valueEn);
+      priceEn = priceData.valueEn;
+      payment = language === "vi" ? paymentData.valueVi : paymentData.valueEn;
     }
     return {
       name,
@@ -92,7 +87,7 @@ const ClinicInfo = ({ id, small, packageData, needAddress, assurance, remote }) 
                   {state.showPrice ? "" : handleDisplayInterface().price}
                 </span>
               </div>
-              <button className="clinic-info-price__button" onClick={() => handleDisplayMoreInfo("price")}>
+              <button className="clinic-info-price__button" onClick={() => handleDisplayMoreInfo("Price")}>
                 {state.showPrice ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
               </button>
             </div>
@@ -132,7 +127,7 @@ const ClinicInfo = ({ id, small, packageData, needAddress, assurance, remote }) 
                 </div>
                 <button
                   className="clinic-info-insurance__button"
-                  onClick={() => handleDisplayMoreInfo("insurance")}
+                  onClick={() => handleDisplayMoreInfo("Insurance")}
                 >
                   {state.showInsurance ? <AiOutlineCaretDown /> : <AiOutlineCaretUp />}
                 </button>

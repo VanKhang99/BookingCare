@@ -4,43 +4,35 @@ import { Link } from "react-router-dom";
 import { Carousel } from "antd";
 import { IoPersonCircle } from "react-icons/io5";
 import { MdWork } from "react-icons/md";
-import { getOutstandingDoctors } from "../../slices/doctorSlice";
+import { getAllDoctors } from "../../slices/doctorSlice";
 import "../../styles/Carousel.scss";
 
 const CarouselOutstandingDoctors = ({ onChange, settings }) => {
   const dispatch = useDispatch();
   const { language } = useSelector((store) => store.app);
-  const { outstandingDoctors } = useSelector((store) => store.doctor);
-  console.log(outstandingDoctors);
+  const { doctors } = useSelector((store) => store.doctor);
 
   useEffect(() => {
-    dispatch(getOutstandingDoctors());
+    dispatch(getAllDoctors("popular"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <Carousel className="slides" afterChange={onChange} {...settings}>
-      {outstandingDoctors &&
-        outstandingDoctors.length > 0 &&
-        outstandingDoctors.map((doctor) => {
-          const { doctorId, anotherInfo, specialtyData } = doctor;
-          const { positionData, roleData, firstName, lastName, image } = anotherInfo;
+      {doctors?.length > 0 &&
+        doctors.map((doctor) => {
+          const { doctorId, moreData, specialtyData } = doctor;
+          const { positionData, roleData, firstName, lastName, imageUrl } = moreData;
           const position = language === "vi" ? positionData.valueVi : positionData.valueEn;
           const role = language === "vi" ? roleData.valueVi : roleData.valueEn;
-          const specialty = language === "vi" ? specialtyData.valueVi : specialtyData.valueEn;
+          const specialty = language === "vi" ? specialtyData.nameVi : specialtyData.nameEn;
           const fullName = language === "vi" ? `${lastName} ${firstName}` : `${firstName} ${lastName}`;
 
           return (
             <Link to={`/doctor/${doctorId}`} key={doctorId} className="slide">
-              {/* <div>Doctor</div> */}
               <div className="slide-content">
-                <div
-                  className="slide-content__img"
-                  // style={{
-                  //   backgroundImage: `url(${image})`,
-                  // }}
-                >
-                  <img src={image} alt="" />
+                <div className="slide-content__img">
+                  <img src={imageUrl} alt="" />
                 </div>
 
                 <div className="slide-info">

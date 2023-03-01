@@ -11,7 +11,7 @@ export const getSpecialtyOfClinic = createAsyncThunk(
   "clinic-specialty/getSpecialtyOfClinic",
   async (data, thunkAPI) => {
     try {
-      const res = await axios.get(`/api/clinics-specialties/${data.clinicId}/${data.specialtyId}`);
+      const res = await axios.get(`/api/clinic/specialties/${data.clinicId}/${data.specialtyId}`);
       return res.data;
     } catch (error) {
       // toast.error("Update data specialty of clinic failed. Please check your data and try again!");
@@ -24,7 +24,7 @@ export const getAllSpecialtiesByClinicId = createAsyncThunk(
   "clinic-specialty/getAllSpecialtiesByClinicId",
   async (clinicId, thunkAPI) => {
     try {
-      const res = await axios.get(`/api/clinics-specialties/${clinicId}`);
+      const res = await axios.get(`/api/clinic/specialties/${clinicId}`);
       return res.data;
     } catch (error) {
       return error.response.data;
@@ -36,7 +36,7 @@ export const addSpecialtyForClinic = createAsyncThunk(
   "clinic-specialty/addSpecialtyForClinic",
   async (data, thunkAPI) => {
     try {
-      const res = await axios.post("/api/clinics-specialties/add-specialty", { data });
+      const res = await axios.post("/api/clinic/specialties", { data });
       return res;
     } catch (error) {
       toast.error("Add specialty for clinic failed. Please check your data and try again!");
@@ -49,7 +49,7 @@ export const deleteSpecialtyForClinic = createAsyncThunk(
   "clinic-specialty/deleteSpecialtyForClinic",
   async (data, thunkAPI) => {
     try {
-      const res = await axios.delete(`/api/clinics-specialties/${data.specialtyId}/${data.doctorId}`);
+      const res = await axios.delete(`/api/clinic/specialties/${data.clinicId}/${data.specialtyId}`);
       return res;
     } catch (error) {
       return error.response.data;
@@ -77,6 +77,6 @@ const clinicSpecialtySlice = createSlice({
   },
 });
 
-export const {} = clinicSpecialtySlice.actions;
+// export const {} = clinicSpecialtySlice.actions;
 
 export default clinicSpecialtySlice.reducer;

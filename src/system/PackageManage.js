@@ -6,13 +6,19 @@ import MdEditor from "react-markdown-editor-lite";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
+import { Radio } from "antd";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { getAllCodes } from "../slices/allcodeSlice";
 import { getAllPackages, saveInfoPackage, getPackage, deletePackage } from "../slices/packageSlice";
-import { checkData } from "../utils/helpers";
+import { getAllPackagesType } from "../slices/packageTypeSlice";
+import { getAllClinics } from "../slices/clinicSlice";
+import { getAllSpecialties } from "../slices/specialtySlice";
+import { checkData, formatterPrice, postImageToS3, deleteImageOnS3 } from "../utils/helpers";
 import { IoReload } from "react-icons/io5";
+import { FaUpload } from "react-icons/fa";
+import "./styles/PackageManage.scss";
 import "react-markdown-editor-lite/lib/index.css";
 
 const initialState = {
@@ -29,13 +35,19 @@ const initialState = {
   selectedPrice: "",
   selectedProvince: "",
   selectedPayment: "",
+  selectedPackageType: "",
 
   address: "",
   nameEn: "",
   nameVi: "",
+  popular: false,
+  image: "",
+  fileImage: "",
+  previewImageUrl: "",
+  isOpenImagePreview: false,
 
   isHaveInfo: false,
-  action: "",
+  action: "create",
   oldSelectedPackage: "",
 };
 
@@ -47,9 +59,10 @@ const PackageManage = () => {
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
   const { packageArr } = useSelector((store) => store.package);
-  const { priceArr, paymentArr, provinceArr, specialtyArr, clinicArr } = useSelector(
-    (store) => store.allcode
-  );
+  const { priceArr, paymentArr, provinceArr } = useSelector((store) => store.allcode);
+  const { clinics } = useSelector((store) => store.clinic);
+  const { specialties } = useSelector((store) => store.specialty);
+  const { packagesType } = useSelector((store) => store.packageType);
   const nameEnRef = useRef(null);
 
   const handleInputs = (e, type) => {
@@ -62,33 +75,28 @@ const PackageManage = () => {
     setState({ ...stateCopy });
   };
 
-  const handleInfoOptions = (typeInfo, data) => {
+  const handleOption = (typeInfo, data) => {
     if (!data) return;
-
-    const formatterPrice = new Intl.NumberFormat(`${language === "vi" ? "vi-VN" : "en-US"}`, {
-      style: "currency",
-      currency: `${language === "vi" ? "VND" : "USD"}`,
-    });
 
     const objectOptions = data.map((item) => {
       let label;
       let value;
-      if (typeInfo === "package") {
+      if (
+        typeInfo === "package" ||
+        typeInfo === "specialty" ||
+        typeInfo === "clinic" ||
+        typeInfo === "packageType"
+      ) {
         label = language === "vi" ? `${item.nameVi}` : `${item.nameEn}`;
         value = item.id;
-      } else if (
-        typeInfo === "province" ||
-        typeInfo === "payment" ||
-        typeInfo === "specialty" ||
-        typeInfo === "clinic"
-      ) {
+      } else if (typeInfo === "province" || typeInfo === "payment") {
         label = language === "vi" ? `${item.valueVi}` : `${item.valueEn}`;
         value = item.keyMap;
       } else if (typeInfo === "price") {
         label =
           language === "vi"
-            ? `${formatterPrice.format(item.valueVi)}`
-            : `${formatterPrice.format(item.valueEn)}`;
+            ? `${formatterPrice(language).format(item.valueVi)}`
+            : `${formatterPrice(language).format(item.valueEn)}`;
         value = item.keyMap;
       }
 
@@ -97,80 +105,65 @@ const PackageManage = () => {
     return objectOptions;
   };
 
-  const handleMarkdownChange = ({ html, text }, type) => {
-    const stateCopy = JSON.parse(JSON.stringify({ ...state }));
-    stateCopy[`${type}HTML`] = html;
-    stateCopy[`${type}Markdown`] = text;
-    return setState({ ...stateCopy });
-  };
-
-  const handleStateSelectPackage = async (selectedOption) => {
-    try {
-      const res = await dispatch(getPackage(selectedOption?.value || state.oldSelectedClinic));
-      const findInfoBaseId = (typeInfo, array, typeInfoId) => {
-        return handleInfoOptions(typeInfo, array).find((item) => item.value === typeInfoId);
-      };
-      const packageData = res.payload.data;
-      const price = findInfoBaseId("price", priceArr, packageData?.priceId);
-      const payment = findInfoBaseId("payment", paymentArr, packageData?.paymentId);
-      const province = findInfoBaseId("province", provinceArr, packageData?.provinceId);
-      const specialty = findInfoBaseId("specialty", specialtyArr, packageData?.specialtyId);
-      const clinic = findInfoBaseId("clinic", clinicArr, packageData?.clinicId);
-      const packageSelected = findInfoBaseId("package", packageArr, packageData?.id);
+  const handleOnChangeImage = async (e) => {
+    if (!e.target.files || !e.target.files.length) return;
+    const file = e.target.files[0];
+    if (file) {
+      const objectURL = URL.createObjectURL(file);
+      // const fileCovert = await toBase64(file);
 
       return setState({
         ...state,
-        contentHTML: packageData.contentHTML,
-        contentMarkdown: packageData.contentMarkdown,
-        introductionHTML: packageData.introductionHTML,
-        introductionMarkdown: packageData.introductionMarkdown,
-        listExaminationHTML: packageData?.listExaminationHTML,
-        listExaminationMarkdown: packageData?.listExaminationMarkdown,
-
-        selectedPackage: packageSelected,
-        selectedClinic: clinic,
-        selectedSpecialty: specialty,
-        selectedPrice: price,
-        selectedProvince: province,
-        selectedPayment: payment,
-        address: packageData.address ?? "",
-        nameEn: packageData.nameEn ?? "",
-        nameVi: packageData.nameVi ?? "",
-        isHaveInfo: true,
-        action: "edit",
-        oldSelectedPackage: packageData.id,
+        fileImage: file,
+        image: state.image || file.name,
+        previewImageUrl: objectURL,
       });
-    } catch (error) {
-      console.log(error);
     }
+  };
+
+  const handleOpenImagePreview = (type) => {
+    if (!state[`preview${type}Url`]) return;
+
+    setState({ ...state, [`isOpen${type}Preview`]: true });
+  };
+
+  const handleMarkdownChange = ({ html, text }, type) => {
+    return setState({ ...state, [`${type}HTML`]: html, [`${type}Markdown`]: text });
+  };
+
+  const handleCheckRadio = (e, type) => {
+    return setState({ ...state, [type]: e.target.value });
+  };
+
+  const findItemSelectedById = (type, arr, id) => {
+    return handleOption(type, arr).find((item) => item.value === id);
   };
 
   const handleSaveDataPackage = async () => {
     try {
-      let propsCheckArr = [];
-      let info;
-      if (!state.selectedPackage) {
-        propsCheckArr = Object.keys(state).filter(
-          (key) =>
-            key !== "selectedPackage" &&
-            key !== "selectedSpecialty" &&
-            key !== "listExaminationHTML" &&
-            key !== "listExaminationMarkdown" &&
-            key !== "isHaveInfo" &&
-            key !== "action" &&
-            key !== "oldSelectedPackage"
-        );
-      } else {
-        propsCheckArr = Object.keys(state).filter(
-          (key) =>
-            key !== "selectedSpecialty" &&
-            key !== "listExaminationHTML" &&
-            key !== "listExaminationMarkdown" &&
-            key !== "oldSelectedPackage"
-        );
-      }
+      const propsCheckArr = [
+        "nameEn",
+        "nameVi",
+        "popular",
+        "address",
+        "selectedPrice",
+        "selectedProvince",
+        "selectedPayment",
+        "selectedClinic",
+      ];
       const validate = checkData(state, propsCheckArr);
       if (!validate) throw new Error("Input data not enough");
+
+      let imageUploadToS3;
+      if (typeof state.fileImage !== "string") {
+        if (state.action === "edit") {
+          // Delete old image before update new image
+          await deleteImageOnS3(state.image);
+        }
+
+        // update new image
+        imageUploadToS3 = await postImageToS3(state.fileImage);
+      }
 
       const packageInfo = {
         ...state,
@@ -179,22 +172,55 @@ const PackageManage = () => {
         priceId: state.selectedPrice.value,
         provinceId: state.selectedProvince.value,
         paymentId: state.selectedPayment.value,
+        packageTypeId: state.selectedPackageType.value,
+        image: imageUploadToS3?.data?.data?.image,
+        ...(state.action === "edit" && { id: state.selectedPackage?.value }),
         action: state.action || "create",
       };
 
-      if (state.selectedPackage) {
-        info = await dispatch(saveInfoPackage({ ...packageInfo, id: state.selectedPackage.value }));
-      } else {
-        info = await dispatch(saveInfoPackage(packageInfo));
-        await dispatch(getAllPackages());
-      }
+      const res = await dispatch(saveInfoPackage(packageInfo));
 
-      if (info?.payload?.status === "success") {
+      if (res?.payload?.status === "success") {
         toast.success("Package's info is saved successfully!");
+        await dispatch(getAllPackages());
         setState({ ...initialState });
       }
     } catch (error) {
       toast.error(error.message);
+      console.log(error);
+    }
+  };
+
+  const handleUpdatePackage = async (selectedOption) => {
+    try {
+      const res = await dispatch(getPackage(selectedOption?.value || state.oldSelectedClinic));
+      if (_.isEmpty(res.payload.data)) return toast.error("Get data package failed!!!");
+      const packageData = res.payload.data;
+      console.log(packageData);
+      const packageSelected = findItemSelectedById("package", packageArr, +packageData.id);
+      const packageTypeInDB = findItemSelectedById("packageType", packagesType, +packageData?.packageTypeId);
+      const specialtyInDB = findItemSelectedById("specialty", specialties, +packageData?.specialtyId);
+      const clinicInDB = findItemSelectedById("clinic", clinics, packageData.clinicId);
+      const priceInDB = findItemSelectedById("price", priceArr, packageData?.priceId);
+      const paymentInDB = findItemSelectedById("payment", paymentArr, packageData?.paymentId);
+      const provinceInDB = findItemSelectedById("province", provinceArr, packageData?.provinceId);
+
+      return setState({
+        ...state,
+        selectedPackage: packageSelected,
+        selectedPackageType: packageTypeInDB,
+        selectedSpecialty: specialtyInDB,
+        selectedClinic: clinicInDB,
+        selectedPrice: priceInDB,
+        selectedPayment: paymentInDB,
+        selectedProvince: provinceInDB,
+        previewImageUrl: packageData.imageUrl,
+        isHaveInfo: true,
+        action: "edit",
+        oldSelectedPackage: packageData.id,
+        ...packageData,
+      });
+    } catch (error) {
       console.log(error);
     }
   };
@@ -204,9 +230,11 @@ const PackageManage = () => {
       if (!state.selectedPackage) throw new Error("Package is not selected");
       alert("Are you sure you want to delete?");
 
+      await deleteImageOnS3(state.image);
+
       const res = await dispatch(deletePackage(state.selectedPackage.value));
       if (res.payload === "") {
-        toast.success("Doctor is deleted successfully!");
+        toast.success("Package is deleted successfully!");
         await dispatch(getAllPackages());
         return setState({ ...initialState });
       }
@@ -219,8 +247,9 @@ const PackageManage = () => {
     dispatch(getAllCodes("PRICE"));
     dispatch(getAllCodes("PAYMENT"));
     dispatch(getAllCodes("PROVINCE"));
-    dispatch(getAllCodes("SPECIALTY"));
-    dispatch(getAllCodes("CLINIC"));
+    dispatch(getAllSpecialties("all"));
+    dispatch(getAllClinics("all"));
+    dispatch(getAllPackagesType());
     dispatch(getAllPackages());
     nameEnRef.current.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -246,9 +275,9 @@ const PackageManage = () => {
                   value={state.selectedPackage}
                   onChange={(option) => {
                     handleInputs(option, "selectedClinic");
-                    handleStateSelectPackage(option);
+                    handleUpdatePackage(option);
                   }}
-                  options={handleInfoOptions("package", packageArr)}
+                  options={handleOption("package", packageArr)}
                   placeholder={t("package-manage.place-holder")}
                 />
               ) : (
@@ -259,7 +288,7 @@ const PackageManage = () => {
         </div>
       </div>
 
-      <div className="package-inputs mt-5">
+      <div className="package-manage-inputs mt-5">
         <h2 className="u-sub-title">INPUTS</h2>
         <div className="row mt-4">
           <Form.Group className="col-4" controlId="formNameEn">
@@ -302,11 +331,11 @@ const PackageManage = () => {
             <h4 className="u-input-label">{t("common.choose-price")}</h4>
 
             <div className="select-price mt-3">
-              {priceArr && priceArr.length > 0 && (
+              {priceArr?.length > 0 && (
                 <Select
                   value={state.selectedPrice}
                   onChange={(option) => handleInputs(option, "selectedPrice")}
-                  options={handleInfoOptions("price", priceArr)}
+                  options={handleOption("price", priceArr)}
                   placeholder={t("common.placeholder-price")}
                 />
               )}
@@ -317,11 +346,11 @@ const PackageManage = () => {
             <h4 className="u-input-label">{t("common.choose-province")}</h4>
 
             <div className="select-province mt-3">
-              {provinceArr && provinceArr.length > 0 && (
+              {provinceArr?.length > 0 && (
                 <Select
                   value={state.selectedProvince}
                   onChange={(option) => handleInputs(option, "selectedProvince")}
-                  options={handleInfoOptions("province", provinceArr)}
+                  options={handleOption("province", provinceArr)}
                   placeholder={t("common.placeholder-province")}
                 />
               )}
@@ -332,11 +361,11 @@ const PackageManage = () => {
             <h4 className="u-input-label">{t("common.choose-method-payment")}</h4>
 
             <div className="select-payment mt-3">
-              {paymentArr && paymentArr.length > 0 && (
+              {paymentArr?.length > 0 && (
                 <Select
                   value={state.selectedPayment}
                   onChange={(option) => handleInputs(option, "selectedPayment")}
-                  options={handleInfoOptions("payment", paymentArr)}
+                  options={handleOption("payment", paymentArr)}
                   placeholder={t("common.placeholder-payment")}
                 />
               )}
@@ -345,39 +374,93 @@ const PackageManage = () => {
         </div>
 
         <div className="row mt-5">
-          <div className="col-6">
+          <div className="col-4">
             <h4 className="u-input-label">{t("common.choose-clinic")}</h4>
 
             <div className="select-clinic mt-3">
-              {clinicArr && clinicArr.length > 0 && (
+              {clinics?.length > 0 && (
                 <Select
                   value={state.selectedClinic}
                   onChange={(option) => handleInputs(option, "selectedClinic")}
-                  options={handleInfoOptions("clinic", clinicArr)}
+                  options={handleOption("clinic", clinics)}
                   placeholder={t("common.placeholder-clinic")}
                 />
               )}
             </div>
           </div>
 
-          <div className="col-6">
+          <div className="col-4">
             <h4 className="u-input-label">{t("common.choose-specialty")}</h4>
 
             <div className="select-specialty mt-3">
-              {specialtyArr && specialtyArr.length > 0 && (
+              {specialties?.length > 0 && (
                 <Select
                   value={state.selectedSpecialty}
                   onChange={(option) => handleInputs(option, "selectedSpecialty")}
-                  options={handleInfoOptions("specialty", specialtyArr)}
+                  options={handleOption("specialty", specialties)}
                   placeholder={t("common.placeholder-specialty")}
                 />
               )}
             </div>
           </div>
+
+          <div className="col-4">
+            <h4 className="u-input-label">{t("package-manage.package-type")}</h4>
+
+            <div className="select-specialty mt-3">
+              {packagesType?.length > 0 && (
+                <Select
+                  value={state.selectedPackageType}
+                  onChange={(option) => handleInputs(option, "selectedPackageType")}
+                  options={handleOption("packageType", packagesType)}
+                  placeholder={t("package-manage.place-holder-package-type")}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="row mt-5">
+          <div className="col-4">
+            <Form.Group className="form-group col-12 image-preview-container" controlId="formImage">
+              <label htmlFor="image" className="u-input-label">
+                {t("clinic-manage.image")}
+              </label>
+              <input
+                type="file"
+                id="image"
+                className="form-control"
+                onChange={(e) => handleOnChangeImage(e, "Image")}
+                hidden
+              />
+
+              <div className="col-12 input-image-customize">
+                <label htmlFor="image">
+                  <FaUpload /> {t("button.upload")}
+                </label>
+              </div>
+
+              <div
+                className={`col-12  ${state.previewImageUrl ? "image-preview open" : "image-preview"}`}
+                onClick={() => handleOpenImagePreview("Image")}
+                style={{
+                  backgroundImage: `url(${state.previewImageUrl ? state.previewImageUrl : ""})`,
+                }}
+              ></div>
+            </Form.Group>
+          </div>
+          <div className="col-4">
+            <h4 className="u-input-label">{t("common.outstanding")}</h4>
+
+            <Radio.Group onChange={(e) => handleCheckRadio(e, "popular")} value={state.popular}>
+              <Radio value={false}>{language === "vi" ? "Không phổ biến" : "Unpopular"}</Radio>
+              <Radio value={true}>{language === "vi" ? "Phổ biến" : "Popular"}</Radio>
+            </Radio.Group>
+          </div>
         </div>
       </div>
 
-      <div className="package-markdowns mt-5">
+      <div className="package-manage-markdowns mt-5">
         <h2 className="u-sub-title">MARKDOWN EDITOR</h2>
         <div className="package-markdown mt-3">
           <h4 className="u-input-label">{t("package-manage.markdown-introduction")}</h4>

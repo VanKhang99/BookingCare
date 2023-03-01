@@ -6,7 +6,6 @@ const Home = () => {
   const { t } = useTranslation();
   return (
     <div className="app">
-      <Header />
       <main>
         <div className="wrapper">
           <div className="content">
@@ -48,7 +47,6 @@ const Home = () => {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

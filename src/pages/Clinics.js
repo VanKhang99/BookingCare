@@ -32,7 +32,7 @@ const Clinics = () => {
 
   const handleFetchClinics = async () => {
     try {
-      const res = await dispatch(getAllClinics("both"));
+      const res = await dispatch(getAllClinics("all"));
       if (res.payload.clinics.length > 0) {
         // Create object alphabet {A: [], B: [], ...}
         const alphabetObject = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").reduce((acc, word) => {

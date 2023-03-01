@@ -211,6 +211,8 @@
     "main-title": "INFORMATION MANAGEMENT OF MEDICAL EXAMINATION PACKAGE",
     "package-create": "PACKAGE CREATED",
     "place-holder": "Choose a package",
+    "package-type": "Type",
+    "place-holder-package-type": "Chọn loại cho package",
     "name-en": "Name (ENG)",
     "name-vi": "Name (VN)",
     "address": "Address",

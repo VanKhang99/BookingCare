@@ -184,7 +184,6 @@ const SpecialtyManage = () => {
       if (!state.selectedSpecialty) return toast.error("Specialty is not selected");
       alert("Are you sure you want to delete?");
 
-      // console.log(state.selectedDoctor);
       await deleteImageOnS3(state.image);
       await deleteImageOnS3(state.imageRemote);
 

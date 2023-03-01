@@ -57,43 +57,52 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path={path.HOME} element={<Home />} />
-
-          <Route path={path.SPECIALTY} element={<Specialties remote={0} />} />
-          <Route path={`${path.SPECIALTY}/${path.REMOTE}`} element={<Specialties remote={1} />} />
-          <Route path={`${path.SPECIALTY}/:specialtyId`} element={<DetailSpecialty remote={0} />} />
           <Route
-            path={`${path.SPECIALTY}/${path.REMOTE}/:specialtyId`}
-            element={<DetailSpecialty remote={1} />}
-          />
+            path="/"
+            element={
+              <ProtectedRoute>
+                <SharedLayout clientInterface={1} />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Home />} />
+            <Route path={path.SPECIALTY} element={<Specialties remote={0} />} />
+            <Route path={`${path.SPECIALTY}/${path.REMOTE}`} element={<Specialties remote={1} />} />
+            <Route path={`${path.SPECIALTY}/:specialtyId`} element={<DetailSpecialty remote={0} />} />
+            <Route
+              path={`${path.SPECIALTY}/${path.REMOTE}/:specialtyId`}
+              element={<DetailSpecialty remote={1} />}
+            />
 
-          <Route path={`${path.CLINIC}s`} element={<Clinics />} />
-          <Route path={`${path.CLINIC}/:clinicId`} element={<DetailClinic />} />
-          <Route path={`${path.CLINIC}/:clinicId/specialties`} element={<ClinicSpecialties />} />
-          <Route
-            path={`${path.CLINIC}/:clinicId/specialties/:specialtyId`}
-            element={<DetailClinicSpecialty />}
-          />
+            <Route path={`${path.CLINIC}s`} element={<Clinics />} />
+            <Route path={`${path.CLINIC}/:clinicId`} element={<DetailClinic />} />
+            <Route path={`${path.CLINIC}/:clinicId/specialties`} element={<ClinicSpecialties />} />
+            <Route
+              path={`${path.CLINIC}/:clinicId/specialties/:specialtyId`}
+              element={<DetailClinicSpecialty />}
+            />
 
-          <Route path={`${path.DOCTOR}s`} element={<Doctors remote={0} />} />
-          <Route path={`${path.DOCTOR}/:id`} element={<DetailDoctor remote={0} />} />
-          <Route path={`${path.DOCTOR}/${path.REMOTE}/:id`} element={<DetailDoctor remote={1} />} />
+            <Route path={`${path.DOCTOR}s`} element={<Doctors remote={0} />} />
+            <Route path={`${path.DOCTOR}/:id`} element={<DetailDoctor remote={0} />} />
+            <Route path={`${path.DOCTOR}/${path.REMOTE}/:id`} element={<DetailDoctor remote={1} />} />
 
-          <Route path={path.PACKAGE} element={<MedicalPackage />} />
-          <Route path={`${path.PACKAGE_CLINIC}/:packageId`} element={<PackageDetail />} />
-          <Route path={`${path.PACKAGE_SPECIALTY}/:packageId`} element={<PackageDetail />} />
+            <Route path={path.PACKAGE} element={<MedicalPackage />} />
+            <Route path={`${path.PACKAGE_CLINIC}/:packageId`} element={<PackageDetail />} />
+            <Route path={`${path.PACKAGE_SPECIALTY}/:packageId`} element={<PackageDetail />} />
 
-          <Route path={path.LOGIN} element={<Login />} />
-          <Route path={path.SUPPORT} element={<Support />} />
-          <Route path={path.ERROR} element={<Navigate to="/" replace />} />
-          <Route
-            path={`${path.VERIFY_BOOKING}/token=:token&doctorId=:doctorId`}
-            element={<VerifyBooking />}
-          />
-          <Route
-            path={`${path.VERIFY_BOOKING}/token=:token&packageId=:packageId`}
-            element={<VerifyBooking />}
-          />
+            <Route path={path.LOGIN} element={<Login />} />
+            <Route path={path.SUPPORT} element={<Support />} />
+            <Route path={path.ERROR} element={<Navigate to="/" replace />} />
+            <Route
+              path={`${path.VERIFY_BOOKING}/token=:token&doctorId=:doctorId`}
+              element={<VerifyBooking />}
+            />
+            <Route
+              path={`${path.VERIFY_BOOKING}/token=:token&packageId=:packageId`}
+              element={<VerifyBooking />}
+            />
+          </Route>
+          {/* <Route path={path.HOME} element={<Home />} /> */}
 
           <Route
             path={`${path.ADMIN}-${path.SYSTEM}`}

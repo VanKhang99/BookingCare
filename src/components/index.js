@@ -21,6 +21,7 @@ import ClinicBooking from "./ClinicBooking";
 import ClinicTopic from "./ClinicTopic";
 import Pagination from "./Pagination";
 import InputSearch from "./InputSearch";
+import Loading from "./Loading";
 
 export {
   Header,
@@ -46,4 +47,5 @@ export {
   ClinicTopic,
   Pagination,
   InputSearch,
+  Loading,
 };

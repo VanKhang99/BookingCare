@@ -204,7 +204,7 @@ const ClinicSpecialtyManage = () => {
       const res = await dispatch(
         deleteSpecialtyForClinic({
           specialtyId: state.selectedSpecialty.value,
-          doctorId: state.selectedClinic.value,
+          clinicId: state.selectedClinic.value,
         })
       );
       if (res.payload === "") {
@@ -218,7 +218,7 @@ const ClinicSpecialtyManage = () => {
 
   useEffect(() => {
     dispatch(getAllSpecialties("all"));
-    dispatch(getAllClinics("both"));
+    dispatch(getAllClinics("all"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

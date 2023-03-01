@@ -235,6 +235,8 @@
     "main-title": "QUẢN LÝ THÔNG TIN GÓI KHÁM BỆNH",
     "package-create": "Các gói khám bệnh đã tạo",
     "place-holder": "Chọn gói khám bệnh",
+    "package-type": "Dành cho",
+    "place-holder-package-type": "Choose a type",
     "name-en": "Tên tiếng Anh",
     "name-vi": "Tên tiếng Việt",
     "address": "Địa chỉ",

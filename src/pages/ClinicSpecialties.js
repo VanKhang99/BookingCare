@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { Header, InputSearch, Footer } from "../components";
+import { InputSearch } from "../components";
 import { getAllSpecialtiesByClinicId } from "../slices/clinicSpecialtySlice";
 import { helperFilterSearch } from "../utils/helpers";
 import { MdLocationOn } from "react-icons/md";
@@ -29,12 +29,9 @@ const ClinicSpecialties = () => {
   const handleSearchSpecialties = (e) => {
     let specialtiesCopy = [...specialties];
     const newSpecialties = specialtiesCopy.filter((specialty) => {
-      const { targetCompareLowerCase, inputPassedLowerCase } = helperFilterSearch(
-        e.target.value,
-        specialty.nameSpecialty.valueVi
-      );
+      const { targetName, input } = helperFilterSearch(e.target.value, specialty.specialtyName.nameVi);
 
-      if (language === "vi") return targetCompareLowerCase.includes(inputPassedLowerCase);
+      if (language === "vi") return targetName.includes(input);
 
       return specialty.nameData.valueEn.toLowerCase().includes(e.target.value.toLowerCase());
     });
@@ -50,8 +47,6 @@ const ClinicSpecialties = () => {
 
   return (
     <div className="clinic-specialties-container">
-      <Header />
-
       <div className="clinic-specialties u-wrapper">
         <div className="clinic-specialties-top">
           <h2 className="clinic-specialties-top__title">
@@ -68,7 +63,13 @@ const ClinicSpecialties = () => {
 
         <div className="clinic-specialties-list">
           {filterSpecialties.length > 0 &&
-            filterSpecialties.map((specialty, index) => {
+            filterSpecialties.map((specialty) => {
+              const {
+                imageUrl,
+                specialtyName,
+                clinicInfo: { imageUrl: imageClinic, nameVi, nameEn },
+              } = specialty;
+
               return (
                 <Link
                   to={`/clinic/${specialty.clinicId}/specialties/${specialty.specialtyId}`}
@@ -77,18 +78,16 @@ const ClinicSpecialties = () => {
                 >
                   <div className="clinic-specialties-item__image">
                     <img
-                      src={specialty.image ? specialty.image : specialty.moreData.logo}
-                      alt={
-                        language === "vi" ? specialty.nameSpecialty.valueVi : specialty.nameSpecialty.valueEn
-                      }
+                      src={imageUrl ? imageUrl : imageClinic}
+                      alt={`Khám ${specialtyName.nameVi} - ${nameVi}`}
                     />
                   </div>
 
                   <div className="clinic-specialties-info">
                     <span className="clinic-specialties-info__name">
                       {language === "vi"
-                        ? `Khám ${specialty.nameSpecialty.valueVi} - ${specialty.nameClinic.valueVi}`
-                        : `${specialty.nameSpecialty.valueEn} examination - ${specialty.nameClinic.valueEn}`}
+                        ? `Khám ${specialtyName.nameVi} - ${nameVi}`
+                        : `${specialtyName.nameEn} examination - ${nameEn}`}
                     </span>
 
                     <div className="clinic-specialties-info__address">
@@ -101,8 +100,6 @@ const ClinicSpecialties = () => {
             })}
         </div>
       </div>
-
-      <Footer />
     </div>
   );
 };

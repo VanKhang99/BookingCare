@@ -62,7 +62,6 @@ const packageTypeSlice = createSlice({
       })
       .addCase(getAllPackagesType.fulfilled, (state, { payload }) => {
         state.isLoadingPackageType = false;
-        console.log(payload);
         state.packagesType = payload.data.packages;
       })
       .addCase(getAllPackagesType.rejected, (state) => {

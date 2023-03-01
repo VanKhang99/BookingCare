@@ -5,15 +5,7 @@ import { useParams } from "react-router-dom";
 // import { useDispatch, useSelector } from "react-redux";
 import { useFetchDataBaseId } from "../utils/CustomHook";
 import { getDetailDoctor } from "../slices/doctorSlice";
-import {
-  Header,
-  Footer,
-  DateOptions,
-  BookingHours,
-  ClinicInfo,
-  ModalBooking,
-  Introduce,
-} from "../components";
+import { DateOptions, BookingHours, ClinicInfo, ModalBooking, Introduce, Loading } from "../components";
 import "../styles/DetailDoctor.scss";
 
 const initialState = {
@@ -51,12 +43,9 @@ const DetailDoctor = ({ remote }) => {
 
   return (
     <div className="outstanding-doctor-container">
-      <div className="outstanding-doctor-content">
-        <Header />
-
-        <div>
+      {!_.isEmpty(doctor) ? (
+        <>
           <Introduce id={id ? id : ""} remote={remote} doctorData={!_.isEmpty(doctor) && doctor} />
-
           <div className="schedule u-wrapper">
             <DateOptions inSpecialty id={id ? id : ""} onUpdateSchedules={handleUpdateSchedules} />
 
@@ -81,20 +70,20 @@ const DetailDoctor = ({ remote }) => {
             </div>
           </div>
           <div className="outstanding-doctor-feedback u-wrapper">Feedback</div>
-        </div>
 
-        <Footer />
-      </div>
-
-      <div className="modal-booking">
-        <ModalBooking
-          show={state.isOpenModalBooking}
-          onHide={handleModal}
-          doctorData={!_.isEmpty(doctor) && doctor}
-          action={state.action}
-          hourClicked={state.hourClicked && !_.isEmpty(state.hourClicked) && state.hourClicked}
-        />
-      </div>
+          <div className="modal-booking">
+            <ModalBooking
+              show={state.isOpenModalBooking}
+              onHide={handleModal}
+              doctorData={!_.isEmpty(doctor) && doctor}
+              action={state.action}
+              hourClicked={state.hourClicked && !_.isEmpty(state.hourClicked) && state.hourClicked}
+            />
+          </div>
+        </>
+      ) : (
+        <Loading />
+      )}
     </div>
   );
 };

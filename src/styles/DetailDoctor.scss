@@ -1,10 +1,8 @@
 @import "./sass/variables";
 
 .outstanding-doctor-container {
-  .outstanding-doctor-content {
-    display: flex;
-    flex-direction: column;
-  }
+  flex: 1;
+  min-height: 100vh;
 
   .outstanding-doctor {
     background-color: $grey-7;

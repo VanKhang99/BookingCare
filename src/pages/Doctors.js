@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Header, InputSearch, Footer } from "../components";
+import { InputSearch } from "../components";
 import { getAllDoctors } from "../slices/doctorSlice";
 import { helperFilterSearch } from "../utils/helpers";
 import "../styles/Doctors.scss";
@@ -28,13 +28,9 @@ const Doctors = () => {
     let doctorsCopy = [...doctors];
     const newDoctors = doctorsCopy.filter((doctor) => {
       const targetCompare = handleDisplayNameDoctor(doctor);
-      const { targetCompareLowerCase, inputPassedLowerCase } = helperFilterSearch(
-        e.target.value,
-        targetCompare
-      );
-      console.log(targetCompareLowerCase);
-      console.log(inputPassedLowerCase);
-      return targetCompareLowerCase.includes(inputPassedLowerCase);
+      const { targetName, input } = helperFilterSearch(e.target.value, targetCompare);
+
+      return targetName.includes(input);
     });
 
     return setFilterDoctors(newDoctors);
@@ -66,8 +62,6 @@ const Doctors = () => {
 
   return (
     <div className="doctors-popular-container">
-      <Header />
-
       <div className="doctors-popular u-wrapper">
         <div className="doctors-popular-top">
           <h2 className="doctors-popular-top__title">
@@ -111,8 +105,6 @@ const Doctors = () => {
             })}
         </div>
       </div>
-
-      <Footer />
     </div>
   );
 };

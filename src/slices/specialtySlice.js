@@ -16,18 +16,6 @@ export const getAllSpecialties = createAsyncThunk("specialty/getAllSpecialties",
   }
 });
 
-// export const getAllSpecialtiesRemote = createAsyncThunk(
-//   "specialty/getAllSpecialties",
-//   async (_, thunkAPI) => {
-//     try {
-//       const res = await axios.get("/api/specialties/remote");
-//       return res.data;
-//     } catch (error) {
-//       return error.response.data;
-//     }
-//   }
-// );
-
 export const getInfoSpecialty = createAsyncThunk(
   "specialty/getInfoSpecialty",
   async (specialtyId, thunkAPI) => {

@@ -1,6 +1,5 @@
 import axios from "axios";
 import _ from "lodash";
-import unorm from "unorm";
 import { toast } from "react-toastify";
 import { API_APP_BACKEND_URL } from "./constants";
 
@@ -119,19 +118,20 @@ export const covertDateToTimestamp = (dateString) => {
 };
 
 export const helperFilterSearch = (input, targetName) => {
-  let targetCompare = unorm.nfd(targetName);
-  targetCompare = targetCompare.replace(/[đĐ]/g, "d").replace(/\s/g, "");
-  // .replace(/[\u0300-\u036f]/g, "");
+  targetName = targetName
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[đĐ]/g, "d")
+    .replace(/\s/g, "");
+  input = input
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[đĐ]/g, "d")
+    .replace(/\s/g, "");
 
-  let inputPassed = unorm.nfd(input);
-  inputPassed = inputPassed.replace(/[đĐ]/g, "d").replace(/\s/g, "");
-  // .replace(/[\u0300-\u036f]/g, "");
-
-  // 2) Transform to lower case
-  const targetCompareLowerCase = targetCompare.toLowerCase();
-  const inputPassedLowerCase = inputPassed.toLowerCase();
-
-  return { targetCompareLowerCase, inputPassedLowerCase };
+  return { targetName, input };
 };
 
 export const postImageToS3 = async (fileImage) => {

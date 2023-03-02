@@ -1,15 +1,12 @@
 @import "./sass/variables";
 
-.package-detail-container {
-  .package-detail-body {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .package-detail-content {
+.package-container {
+  min-height: 100vh;
+  flex: 1;
+  .package-content {
     border-top: 1px solid $grey-8;
     border-bottom: 1px solid $grey-8;
-    .package-include {
+    &__include {
       background-color: $grey-7;
       padding: 1.5rem 0;
       font-size: $base-size + 0.1rem;
@@ -28,7 +25,7 @@
       }
     }
 
-    .package-list-exam {
+    &__list-exam {
       border-top: 1px solid $grey-8;
       padding: 1.5rem 0;
     }

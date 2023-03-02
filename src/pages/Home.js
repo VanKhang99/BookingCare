@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Header, Banner, Slider, Media, CTA, Footer } from "../components";
+import { Banner, Slider, Media, CTA } from "../components";
 
 const Home = () => {
   const { t } = useTranslation();

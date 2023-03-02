@@ -81,6 +81,10 @@ function App() {
               path={`${path.CLINIC}/:clinicId/specialties/:specialtyId`}
               element={<DetailClinicSpecialty />}
             />
+            <Route
+              path={`${path.CLINIC}/:clinicId/specialties/:specialtyId/package/:packageId`}
+              element={<PackageDetail />}
+            />
 
             <Route path={`${path.DOCTOR}s`} element={<Doctors remote={0} />} />
             <Route path={`${path.DOCTOR}/:id`} element={<DetailDoctor remote={0} />} />
@@ -88,7 +92,7 @@ function App() {
 
             <Route path={path.PACKAGE} element={<MedicalPackage />} />
             <Route path={`${path.PACKAGE_CLINIC}/:packageId`} element={<PackageDetail />} />
-            <Route path={`${path.PACKAGE_SPECIALTY}/:packageId`} element={<PackageDetail />} />
+            {/* <Route path={`${path.PACKAGE_SPECIALTY}/:packageId`} element={<PackageDetail />} /> */}
 
             <Route path={path.LOGIN} element={<Login />} />
             <Route path={path.SUPPORT} element={<Support />} />

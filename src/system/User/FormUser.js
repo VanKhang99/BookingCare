@@ -242,7 +242,7 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total, onRese
   return (
     <div className="form-user container">
       <h3 className="u-sub-title my-4 d-flex justify-content-between">
-        {state.action ? t("user-manage.update-user") : t("user-manage.create-user")}
+        {state.action === "edit" ? t("user-manage.update-user") : t("user-manage.create-user")}
         <button className="u-system-button--refresh-data" onClick={handleResetState}>
           <IoReload />
         </button>

@@ -20,6 +20,7 @@ const DateOptions = ({ small, id, onUpdateSchedules, keyMapFetchPackage }) => {
     return getToday().value;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
+  console.log(id);
 
   const handleGetScheduleNextDay = async () => {
     try {
@@ -44,7 +45,7 @@ const DateOptions = ({ small, id, onUpdateSchedules, keyMapFetchPackage }) => {
         getSchedules({
           id: +id,
           timeStamp: `${timeStampToRequestData}`,
-          keyMap: "doctorId",
+          keyMap: keyMapFetchPackage ? "packageId" : "doctorId",
           timesFetch: "not-initial-fetch",
         })
       );
@@ -78,6 +79,8 @@ const DateOptions = ({ small, id, onUpdateSchedules, keyMapFetchPackage }) => {
           timesFetch: initFetch ? "initial-fetch" : "not-initial-fetch",
         })
       );
+
+      console.log(res);
 
       if (!res?.payload?.schedules.length) {
         if (initFetch) {

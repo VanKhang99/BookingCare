@@ -6,6 +6,7 @@ import CarouselOutstandingFacilities from "./CarouselOutstandingFacilities";
 import CarouselOutstandingDoctors from "./CarouselOutstandingDoctor";
 import CarouselHandbook from "./CarouselHandbook";
 import CarouselDoctorAndFacilities from "./CarouselDoctorAndFacilities";
+import CarouselClinicSpecialty from "./CarouselClinicSpecialty";
 
 export {
   PrevArrow,
@@ -16,4 +17,5 @@ export {
   CarouselOutstandingDoctors,
   CarouselHandbook,
   CarouselDoctorAndFacilities,
+  CarouselClinicSpecialty,
 };

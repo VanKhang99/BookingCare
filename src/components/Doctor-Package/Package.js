@@ -17,6 +17,8 @@ const Package = ({ id, packageData, onToggleModal, packageClinicSpecialty }) => 
     return setState({ ...state, schedules: schedulesArr });
   };
 
+  console.log(packageData);
+
   return (
     <>
       <li className="package">

@@ -56,12 +56,12 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
     let objectOptions;
     if (type === "doctor" && doctors.length > 0) {
       objectOptions = doctors.map((doctor) => {
-        const fullName =
-          language === "vi"
-            ? `${doctor.lastName} ${doctor.firstName}`
-            : `${doctor.firstName} ${doctor.lastName}`;
+        const {
+          moreData: { firstName, lastName },
+        } = doctor;
+        const fullName = language === "vi" ? `${lastName} ${firstName}` : `${firstName} ${lastName}`;
 
-        return { value: doctor.id, label: fullName };
+        return { value: doctor.doctorId, label: fullName };
       });
 
       return objectOptions;
@@ -118,7 +118,7 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
         })
       );
 
-      if (res.payload.schedules.length > 0) {
+      if (res.payload.schedules?.length > 0) {
         const timeFrameCreated = res.payload.schedules.map((schedule) => schedule.timeType);
         const newHourList = state.hoursList.map((hour) => {
           if (!timeFrameCreated.includes(hour.keyMap)) return { ...hour, isSelected: false };
@@ -289,6 +289,8 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
+
+  console.log(state);
 
   return (
     <div className="schedule-manage container">

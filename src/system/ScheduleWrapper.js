@@ -6,9 +6,10 @@ import { ScheduleManage } from "./index";
 const ScheduleWrapper = ({ isDoctorAccount }) => {
   const dispatch = useDispatch();
   const { doctors } = useSelector((store) => store.doctor);
+  console.log(doctors);
 
   useEffect(() => {
-    dispatch(getAllDoctors());
+    dispatch(getAllDoctors("all"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

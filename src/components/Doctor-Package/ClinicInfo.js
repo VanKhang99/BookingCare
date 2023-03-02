@@ -29,14 +29,14 @@ const ClinicInfo = ({ doctorData, id, small, packageData, needAddress, assurance
     let priceEn;
     let payment;
     if (!_.isEmpty(packageData)) {
-      address = packageData.address;
-      name = language === "vi" ? packageData.clinicName?.valueVi : packageData.clinicName?.valueEn;
+      const { address, clinicData, nameVi, nameEn, pricePackage, paymentPackage } = packageData;
+      name = language === "vi" ? clinicData?.nameVi : clinicData?.nameEn;
       price =
         language === "vi"
-          ? formatterPrice(language).format(packageData.pricePackage.valueVi)
-          : formatterPrice(language).format(packageData.pricePackage.valueEn);
-      priceEn = packageData.pricePackage.valueEn;
-      payment = language === "vi" ? packageData.paymentPackage?.valueVi : packageData.paymentPackage?.valueEn;
+          ? formatterPrice(language).format(pricePackage.valueVi)
+          : formatterPrice(language).format(pricePackage.valueEn);
+      priceEn = pricePackage.valueEn;
+      payment = language === "vi" ? paymentPackage?.valueVi : paymentPackage?.valueEn;
     }
 
     if (!_.isEmpty(doctorData)) {

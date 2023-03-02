@@ -45,7 +45,7 @@ const DetailDoctor = ({ remote }) => {
     <div className="outstanding-doctor-container">
       {!_.isEmpty(doctor) ? (
         <>
-          <Introduce id={id ? id : ""} remote={remote} doctorData={!_.isEmpty(doctor) && doctor} />
+          <Introduce id={id ? id : ""} remote={remote} doctorData={doctor} />
           <div className="schedule u-wrapper">
             <DateOptions inSpecialty id={id ? id : ""} onUpdateSchedules={handleUpdateSchedules} />
 
@@ -54,19 +54,13 @@ const DetailDoctor = ({ remote }) => {
                 schedules={state.schedules.length > 0 ? state.schedules : []}
                 onToggleModal={handleModal}
               />
-              <ClinicInfo
-                id={id}
-                needAddress={true}
-                remote={remote}
-                assurance={true}
-                doctorData={!_.isEmpty(doctor) && doctor}
-              />
+              <ClinicInfo id={id} needAddress={true} remote={remote} assurance={true} doctorData={doctor} />
             </div>
           </div>
 
           <div className="outstanding-doctor">
             <div className="outstanding-doctor__background  u-wrapper">
-              {doctor?.moreData?.aboutHTML && HtmlReactParser(doctor.moreData.aboutHTML)}
+              {doctor.moreData.aboutHTML && HtmlReactParser(doctor.moreData.aboutHTML)}
             </div>
           </div>
           <div className="outstanding-doctor-feedback u-wrapper">Feedback</div>

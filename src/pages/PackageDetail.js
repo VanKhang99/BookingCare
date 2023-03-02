@@ -6,15 +6,7 @@ import { useDispatch } from "react-redux";
 import { useFetchDataBaseId } from "../utils/CustomHook";
 import { getPackage } from "../slices/packageSlice";
 import { getSchedules } from "../slices/scheduleSlice";
-import {
-  Header,
-  Footer,
-  DateOptions,
-  BookingHours,
-  ClinicInfo,
-  ModalBooking,
-  Introduce,
-} from "../components";
+import { DateOptions, BookingHours, ClinicInfo, ModalBooking, Introduce, Loading } from "../components";
 
 import "../styles/PackageDetail.scss";
 
@@ -29,6 +21,8 @@ const PackageDetail = () => {
   const dispatch = useDispatch();
   const { packageId } = useParams();
   const packageData = useFetchDataBaseId(packageId, "package", getPackage);
+  console.log(packageData);
+  console.log(packageId);
 
   const handleModal = (hourClicked) => {
     return setState({
@@ -48,7 +42,7 @@ const PackageDetail = () => {
     const dataPackageModal = {
       nameEn: packageData.nameEn,
       nameVi: packageData.nameVi,
-      image: packageData.clinicData.logo,
+      image: packageData.imageUrl,
       price: packageData.pricePackage,
       clinicName: packageData.clinicName,
       priceId: packageData.priceId,
@@ -57,55 +51,56 @@ const PackageDetail = () => {
   }, [state.hourClicked]);
 
   return (
-    <div className="package-detail-container">
-      <Header />
-      <div className="package-detail-body">
-        <Introduce id={packageId ? packageId : ""} packageData={packageData ? packageData : {}} />
+    <div className="package-container">
+      {!_.isEmpty(packageData) ? (
+        <>
+          <Introduce id={+packageId} packageData={packageData} />
 
-        <div className="schedule u-wrapper">
-          <DateOptions
-            id={packageId ? packageId : ""}
-            inSpecialty
-            onUpdateSchedules={handleUpdateSchedules}
-            keyMapFetchPackage="packageId"
-          />
+          <div className="schedule u-wrapper">
+            <DateOptions
+              id={packageId ? packageId : ""}
+              inSpecialty
+              onUpdateSchedules={handleUpdateSchedules}
+              keyMapFetchPackage="packageId"
+            />
 
-          <div className="hours-address-price row">
-            <BookingHours schedules={state.schedules ? state.schedules : []} onToggleModal={handleModal} />
-            <ClinicInfo id={packageId} needAddress={true} packageData={packageData ? packageData : {}} />
-          </div>
-        </div>
-
-        <div className="package-detail-content">
-          <div className="package-include">
-            <div className="u-wrapper">
-              {packageData?.contentHTML && HtmlReactParser(packageData.contentHTML)}
+            <div className="hours-address-price row">
+              <BookingHours schedules={state.schedules ? state.schedules : []} onToggleModal={handleModal} />
+              <ClinicInfo id={+packageId} needAddress={true} packageData={packageData} />
             </div>
           </div>
 
-          {window.location.href.includes("package-clinic") && (
-            <div className="package-list-exam">
+          <div className="package-content">
+            <div className="package-content__include">
               <div className="u-wrapper">
-                {packageData?.listExaminationHTML && HtmlReactParser(packageData.listExaminationHTML)}
+                {packageData?.contentHTML && HtmlReactParser(packageData.contentHTML)}
               </div>
             </div>
-          )}
-        </div>
 
-        <div className="package-detail-feedback u-wrapper">Feedback</div>
-      </div>
+            {window.location.href.includes("package-clinic") && (
+              <div className="package-content__list-exam">
+                <div className="u-wrapper">
+                  {packageData?.listExaminationHTML && HtmlReactParser(packageData.listExaminationHTML)}
+                </div>
+              </div>
+            )}
+          </div>
 
-      <div className="modal-booking">
-        <ModalBooking
-          show={state.isOpenModalBooking}
-          onHide={() => handleModal()}
-          packageId={packageId ? packageId : ""}
-          packageData={handlePackageDataOnModal()}
-          hourClicked={state.hourClicked && !_.isEmpty(state.hourClicked) && state.hourClicked}
-        />
-      </div>
+          <div className="package-feedback u-wrapper">Feedback</div>
 
-      <Footer />
+          <div className="modal-booking">
+            <ModalBooking
+              show={state.isOpenModalBooking}
+              onHide={() => handleModal()}
+              packageId={packageId ? packageId : ""}
+              packageData={handlePackageDataOnModal()}
+              hourClicked={state.hourClicked && !_.isEmpty(state.hourClicked) && state.hourClicked}
+            />
+          </div>
+        </>
+      ) : (
+        <Loading />
+      )}
     </div>
   );
 };

@@ -5,6 +5,7 @@ import HtmlReactParser from "html-react-parser";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { path } from "../../utils/constants";
 import "../../styles/Introduce.scss";
 
 const Introduce = ({ doctorData, id, small, buttonSeeMore, packageData, packageClinicSpecialty, remote }) => {
@@ -55,13 +56,16 @@ const Introduce = ({ doctorData, id, small, buttonSeeMore, packageData, packageC
             <div
               className="introduction-left__image introduction-left__image--package"
               style={{
-                backgroundImage: `url(${packageData.clinicData?.logo ? packageData.clinicData?.logo : ""})`,
+                backgroundImage: `url(${packageData.imageUrl})`,
               }}
             ></div>
             {buttonSeeMore && (
               <>
                 {packageClinicSpecialty ? (
-                  <Link to={`/package-specialty/${id}`} className="info-left__button">
+                  <Link
+                    to={`/${path.CLINIC}/${packageData.clinicId}/specialties/${packageData.specialtyId}/package/${packageData.id}`}
+                    className="info-left__button"
+                  >
                     {t("button.see-more")}
                   </Link>
                 ) : (
@@ -76,9 +80,7 @@ const Introduce = ({ doctorData, id, small, buttonSeeMore, packageData, packageC
             <h2 className="introduction-right__name">
               {language === "vi" ? packageData.nameVi : packageData.nameEn}
             </h2>
-            <div className="introduction-right__summary">
-              {packageData?.introductionHTML && HtmlReactParser(packageData?.introductionHTML)}
-            </div>
+            <div className="introduction-right__summary">{HtmlReactParser(packageData.introductionHTML)}</div>
           </div>
         </div>
       </>

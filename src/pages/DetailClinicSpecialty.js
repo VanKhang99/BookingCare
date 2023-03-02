@@ -172,6 +172,7 @@ const DetailClinicSpecialty = () => {
                     specialtyId={state.specialtyData.specialtyId}
                   />
                 )}
+
                 {state.specialtyData.introductionHTML && (
                   <ClinicTopic
                     html={state.specialtyData.introductionHTML}

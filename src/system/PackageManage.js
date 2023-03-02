@@ -152,7 +152,7 @@ const PackageManage = () => {
         "selectedClinic",
       ];
       const validate = checkData(state, propsCheckArr);
-      if (!validate) throw new Error("Input data not enough");
+      if (!validate) return toast.error("Please fill in all information before saving");
 
       let imageUploadToS3;
       if (typeof state.fileImage !== "string") {
@@ -165,6 +165,8 @@ const PackageManage = () => {
         imageUploadToS3 = await postImageToS3(state.fileImage);
       }
 
+      console.log(state);
+
       const packageInfo = {
         ...state,
         clinicId: state.selectedClinic.value,
@@ -172,7 +174,7 @@ const PackageManage = () => {
         priceId: state.selectedPrice.value,
         provinceId: state.selectedProvince.value,
         paymentId: state.selectedPayment.value,
-        packageTypeId: state.selectedPackageType.value,
+        packageTypeId: state.selectedPackageType?.value,
         image: imageUploadToS3?.data?.data?.image,
         ...(state.action === "edit" && { id: state.selectedPackage?.value }),
         action: state.action || "create",
@@ -182,7 +184,7 @@ const PackageManage = () => {
 
       if (res?.payload?.status === "success") {
         toast.success("Package's info is saved successfully!");
-        await dispatch(getAllPackages());
+        await dispatch(getAllPackages({ clinicId: null, specialId: null }));
         setState({ ...initialState });
       }
     } catch (error) {
@@ -208,12 +210,13 @@ const PackageManage = () => {
       return setState({
         ...state,
         selectedPackage: packageSelected,
-        selectedPackageType: packageTypeInDB,
-        selectedSpecialty: specialtyInDB,
+        selectedPackageType: packageTypeInDB ?? "",
+        selectedSpecialty: specialtyInDB ?? "",
         selectedClinic: clinicInDB,
         selectedPrice: priceInDB,
         selectedPayment: paymentInDB,
         selectedProvince: provinceInDB,
+        image: state.image,
         previewImageUrl: packageData.imageUrl,
         isHaveInfo: true,
         action: "edit",
@@ -235,7 +238,7 @@ const PackageManage = () => {
       const res = await dispatch(deletePackage(state.selectedPackage.value));
       if (res.payload === "") {
         toast.success("Package is deleted successfully!");
-        await dispatch(getAllPackages());
+        await dispatch(getAllPackages({ clinicId: null, specialId: null }));
         return setState({ ...initialState });
       }
     } catch (error) {
@@ -250,7 +253,7 @@ const PackageManage = () => {
     dispatch(getAllSpecialties("all"));
     dispatch(getAllClinics("all"));
     dispatch(getAllPackagesType());
-    dispatch(getAllPackages());
+    dispatch(getAllPackages({ clinicId: null, specialId: null }));
     nameEnRef.current.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

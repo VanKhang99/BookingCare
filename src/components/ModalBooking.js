@@ -117,6 +117,7 @@ const ModalBooking = ({
     }
 
     try {
+      console.log(doctorData);
       const { moreData } = doctorData;
       const { clinic, priceData } = moreData;
       let clinicName;

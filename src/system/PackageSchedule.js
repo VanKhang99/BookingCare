@@ -8,7 +8,7 @@ const PackageSchedule = () => {
   const { packageArr } = useSelector((store) => store.package);
 
   useEffect(() => {
-    dispatch(getAllPackages());
+    dispatch(getAllPackages({ clinicId: null, specialId: null }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

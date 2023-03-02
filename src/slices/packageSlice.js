@@ -7,14 +7,14 @@ const initialState = {
   packageArr: [],
 };
 
-export const getAllPackages = createAsyncThunk("package/getAllPackages", async (_, thunkAPI) => {
-  try {
-    const res = await axios.get("/api/packages");
-    return res;
-  } catch (error) {
-    return error.response.data;
-  }
-});
+// export const getAllPackages = createAsyncThunk("package/getAllPackages", async (_, thunkAPI) => {
+//   try {
+//     const res = await axios.get("/api/packages");
+//     return res;
+//   } catch (error) {
+//     return error.response.data;
+//   }
+// });
 
 export const saveInfoPackage = createAsyncThunk("package/createPackage", async (data, thunkAPI) => {
   try {
@@ -48,17 +48,14 @@ export const getAllPackagesByClinicId = createAsyncThunk(
   }
 );
 
-export const getAllPackagesByIds = createAsyncThunk(
-  "package/getAllPackagesByIds",
-  async (dataIds, thunkAPI) => {
-    try {
-      const res = await axios.get(`/api/packages/${dataIds.specialtyId}/${dataIds.clinicId}`);
-      return res.data;
-    } catch (error) {
-      return error.response.data;
-    }
+export const getAllPackages = createAsyncThunk("package/getAllPackagesByIds", async (dataIds, thunkAPI) => {
+  try {
+    const res = await axios.get(`/api/packages/${dataIds.specialtyId}/${dataIds.clinicId}`);
+    return res.data;
+  } catch (error) {
+    return error.response.data;
   }
-);
+});
 
 export const deletePackage = createAsyncThunk("package/deletePackage", async (packageId, thunkAPI) => {
   try {
@@ -82,7 +79,7 @@ const packageSlice = createSlice({
       })
       .addCase(getAllPackages.fulfilled, (state, { payload }) => {
         state.isLoadingPackage = false;
-        state.packageArr = payload.data.packages;
+        state.packageArr = payload.data;
       })
       .addCase(getAllPackages.rejected, (state) => {
         state.isLoadingPackage = false;

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import _ from "lodash";
+
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useFetchDataBaseId } from "../utils/CustomHook";
 import { Element } from "react-scroll";
-import { Doctor, Package, ModalBooking } from "../components";
+import { Slider, Doctor, Package, ModalBooking } from "../components";
 import { getDetailDoctor, getDoctorsBaseKeyMap } from "../slices/doctorSlice";
-import { getAllPackagesByClinicId, getPackage, getAllPackagesByIds } from "../slices/packageSlice";
+import { getPackage } from "../slices/packageSlice";
 import "../styles/ClinicBooking.scss";
 
 const initialState = {
@@ -15,11 +17,11 @@ const initialState = {
   hourClicked: {},
   doctorData: {},
   packageData: {},
-  packages: [],
 };
 
 const ClinicBooking = ({ title, clinicId, pageClinicSpecialty, specialtyId }) => {
   const [state, setState] = useState({ ...initialState });
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const doctors = useFetchDataBaseId(clinicId, "doctors", getDoctorsBaseKeyMap, 0);
 
@@ -78,29 +80,6 @@ const ClinicBooking = ({ title, clinicId, pageClinicSpecialty, specialtyId }) =>
     }
   };
 
-  const handleGetPackages = async () => {
-    try {
-      let res;
-      if (pageClinicSpecialty && specialtyId) {
-        res = await dispatch(getAllPackagesByIds({ specialtyId, clinicId }));
-      } else {
-        res = await dispatch(getAllPackagesByClinicId(clinicId));
-      }
-
-      if (res?.payload?.packages?.length > 0) {
-        return setState({ ...state, packages: res.payload.packages });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    if (clinicId) {
-      handleGetPackages();
-    }
-  }, []);
-
   return (
     <Element name={title}>
       <div className="clinic-booking">
@@ -122,20 +101,13 @@ const ClinicBooking = ({ title, clinicId, pageClinicSpecialty, specialtyId }) =>
           <div className="packages">
             {!pageClinicSpecialty && <h3 className="packages__title">Gói khám bệnh</h3>}
 
-            <ul className="packages-list">
-              {state.packages?.length > 0 &&
-                state.packages.map((pk, index) => {
-                  return (
-                    <Package
-                      key={index}
-                      id={pk.id}
-                      packageData={pk}
-                      onToggleModal={handleModal}
-                      packageClinicSpecialty={pageClinicSpecialty ? pageClinicSpecialty : false}
-                    />
-                  );
-                })}
-            </ul>
+            <Slider
+              mainTitle="Bác sĩ"
+              buttonText={t("button.see-more").toUpperCase()}
+              clinicSpecialtyDoctor="clinic-specialty-doctor"
+              clinicId={clinicId}
+              specialtyId={specialtyId}
+            />
           </div>
         </div>
       </div>

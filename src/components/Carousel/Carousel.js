@@ -10,10 +10,14 @@ import {
   CarouselOutstandingDoctors,
   CarouselHandbook,
   CarouselDoctorAndFacilities,
+  CarouselClinicSpecialty,
 } from "./index.js";
 import "../../styles/Carousel.scss";
+// import Specialties from "./../../pages/Specialties";
 
 const Slider = ({
+  clinicId,
+  specialtyId,
   mainTitle,
   buttonText,
   buttonText2,
@@ -24,6 +28,7 @@ const Slider = ({
   outstandingDoctors,
   handbook,
   doctorAndFacilities,
+  clinicSpecialtyDoctor,
 }) => {
   const slidesToShow = 4;
 
@@ -47,7 +52,8 @@ const Slider = ({
         outstandingFacilities ||
         outstandingDoctors ||
         handbook ||
-        doctorAndFacilities
+        doctorAndFacilities ||
+        clinicSpecialtyDoctor
       }`}
     >
       <div className="carousel-content u-wrapper">
@@ -91,6 +97,12 @@ const Slider = ({
               </a>
             </div>
           )}
+
+          {clinicSpecialtyDoctor && (
+            <Link to={`/`} className="button button-main">
+              {buttonText}
+            </Link>
+          )}
         </div>
 
         {doctorRemote && <CarouselRemoteDoctor doctorRemote={doctorRemote} settings={settings} />}
@@ -118,6 +130,14 @@ const Slider = ({
               slidesToShow: 2,
               nextArrow: <NextArrow slidesToShow={2} />,
             }}
+          />
+        )}
+
+        {clinicSpecialtyDoctor && (
+          <CarouselClinicSpecialty
+            settings={{ ...settings, infinite: false }}
+            clinicId={clinicId}
+            specialtyId={specialtyId}
           />
         )}
       </div>

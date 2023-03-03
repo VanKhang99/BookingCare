@@ -2,27 +2,24 @@ import React, { useState, useCallback } from "react";
 import HtmlReactParser from "html-react-parser";
 import _ from "lodash";
 import { useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useFetchDataBaseId } from "../utils/CustomHook";
 import { getPackage } from "../slices/packageSlice";
-import { getSchedules } from "../slices/scheduleSlice";
 import { DateOptions, BookingHours, ClinicInfo, ModalBooking, Introduce, Loading } from "../components";
 
 import "../styles/PackageDetail.scss";
 
 const initialState = {
   isOpenModalBooking: false,
-  hourClicked: {},
+  hourClicked: "",
   schedules: [],
 };
 
-const PackageDetail = () => {
+const PackageDetail = ({ packageOfClinic }) => {
   const [state, setState] = useState({ ...initialState });
-  const dispatch = useDispatch();
   const { packageId } = useParams();
+  const { language } = useSelector((store) => store.app);
   const packageData = useFetchDataBaseId(packageId, "package", getPackage);
-  console.log(packageData);
-  console.log(packageId);
 
   const handleModal = (hourClicked) => {
     return setState({
@@ -40,14 +37,13 @@ const PackageDetail = () => {
     if (_.isEmpty(packageData)) return;
 
     const dataPackageModal = {
-      nameEn: packageData.nameEn,
-      nameVi: packageData.nameVi,
+      packageName: language === "vi" ? packageData.nameVi : packageData.nameEn,
       image: packageData.imageUrl,
       price: packageData.pricePackage,
-      clinicName: packageData.clinicName,
-      priceId: packageData.priceId,
+      clinicName: language === "vi" ? packageData.clinicData.nameVi : packageData.clinicData.nameEn,
     };
     return dataPackageModal;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.hourClicked]);
 
   return (
@@ -66,21 +62,26 @@ const PackageDetail = () => {
 
             <div className="hours-address-price row">
               <BookingHours schedules={state.schedules ? state.schedules : []} onToggleModal={handleModal} />
-              <ClinicInfo id={+packageId} needAddress={true} packageData={packageData} />
+              <ClinicInfo
+                id={+packageId}
+                needAddress={true}
+                packageData={packageData}
+                packageOfClinic={packageOfClinic}
+              />
             </div>
           </div>
 
           <div className="package-content">
             <div className="package-content__include">
               <div className="u-wrapper">
-                {packageData?.contentHTML && HtmlReactParser(packageData.contentHTML)}
+                {packageData.contentHTML && HtmlReactParser(packageData.contentHTML)}
               </div>
             </div>
 
             {window.location.href.includes("package-clinic") && (
               <div className="package-content__list-exam">
                 <div className="u-wrapper">
-                  {packageData?.listExaminationHTML && HtmlReactParser(packageData.listExaminationHTML)}
+                  {packageData.listExaminationHTML && HtmlReactParser(packageData.listExaminationHTML)}
                 </div>
               </div>
             )}
@@ -94,7 +95,7 @@ const PackageDetail = () => {
               onHide={() => handleModal()}
               packageId={packageId ? packageId : ""}
               packageData={handlePackageDataOnModal()}
-              hourClicked={state.hourClicked && !_.isEmpty(state.hourClicked) && state.hourClicked}
+              hourClicked={!_.isEmpty(state.hourClicked) && state.hourClicked}
             />
           </div>
         </>

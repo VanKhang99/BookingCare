@@ -223,14 +223,9 @@ const ClinicSpecialtyManage = () => {
   }, []);
 
   useEffect(() => {
-    // if (clinics?.length > 0) {
-    //   handleOption(clinics);
-    // }
-
     if (state.oldSelectedClinic || state.oldSelectedSpecialty) {
       handleUpdateSpecialtyClinic();
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
 

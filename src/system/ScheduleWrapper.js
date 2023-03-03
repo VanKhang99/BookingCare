@@ -1,19 +1,31 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllDoctors } from "../slices/doctorSlice";
+import { getAllPackages } from "../slices/packageSlice";
 import { ScheduleManage } from "./index";
 
-const ScheduleWrapper = ({ isDoctorAccount }) => {
+const ScheduleWrapper = ({ isDoctorAccount, scheduleOf }) => {
   const dispatch = useDispatch();
   const { doctors } = useSelector((store) => store.doctor);
-  console.log(doctors);
+  const { packageArr } = useSelector((store) => store.package);
 
   useEffect(() => {
-    dispatch(getAllDoctors("all"));
+    if (scheduleOf === "doctor") {
+      dispatch(getAllDoctors("all"));
+    } else {
+      dispatch(getAllPackages({ clinicId: null, specialId: null }));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [scheduleOf]);
 
-  return <ScheduleManage doctors={doctors} scheduleOf="doctor" isDoctorAccount={isDoctorAccount} />;
+  return (
+    <ScheduleManage
+      doctors={doctors}
+      packages={packageArr}
+      scheduleOf={scheduleOf}
+      isDoctorAccount={isDoctorAccount}
+    />
+  );
 };
 
 export default ScheduleWrapper;

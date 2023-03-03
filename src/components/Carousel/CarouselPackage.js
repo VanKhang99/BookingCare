@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Carousel } from "antd";
@@ -6,13 +6,20 @@ import { getAllPackages } from "../../slices/packageSlice";
 import { path } from "../../utils/constants";
 import "../../styles/Carousel.scss";
 
-const CarouselClinicSpecialty = ({ clinicId, specialtyId, settings }) => {
+const CarouselPackage = ({ clinicId, specialtyId, settings, pageClinicSpecialty }) => {
   const dispatch = useDispatch();
   const { language } = useSelector((store) => store.app);
   const { packageArr } = useSelector((store) => store.package);
+  console.log(clinicId);
+  console.log(specialtyId);
 
   useEffect(() => {
-    dispatch(getAllPackages({ specialtyId, clinicId }));
+    if (!specialtyId) {
+      dispatch(getAllPackages({ specialtyId: null, clinicId }));
+    } else {
+      dispatch(getAllPackages({ specialtyId, clinicId }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -22,13 +29,21 @@ const CarouselClinicSpecialty = ({ clinicId, specialtyId, settings }) => {
           const { imageUrl, id: packageId, nameVi, nameEn } = pk;
           return (
             <Link
-              to={`/${path.CLINIC}/${clinicId}/specialties/${specialtyId}/package/${packageId}`}
+              to={`${
+                pageClinicSpecialty
+                  ? `/${path.CLINIC}/${clinicId}/specialties/${specialtyId}/package/${packageId}`
+                  : `/${path.CLINIC}/${clinicId}/package/${packageId}`
+              }`}
               key={packageId}
               className="slide"
             >
               <div className="slide-content">
                 <div className="slide-content__img">
-                  <img src={imageUrl} alt={language === "vi" ? nameVi : nameEn} />
+                  <img
+                    src={imageUrl}
+                    alt={language === "vi" ? nameVi : nameEn}
+                    style={{ objectFit: `${pageClinicSpecialty ? "contain" : "cover"}` }}
+                  />
                 </div>
                 <span className="slide-content__name">{language === "vi" ? nameVi : nameEn}</span>
               </div>
@@ -39,4 +54,4 @@ const CarouselClinicSpecialty = ({ clinicId, specialtyId, settings }) => {
   );
 };
 
-export default CarouselClinicSpecialty;
+export default CarouselPackage;

@@ -194,25 +194,25 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total, onRese
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (dataUserEdit) {
-      setState({
-        ...state,
-        email: dataUserEdit.email,
-        firstName: dataUserEdit.firstName,
-        lastName: dataUserEdit.lastName,
-        address: dataUserEdit.address,
-        gender: dataUserEdit.gender,
-        phoneNumber: dataUserEdit.phoneNumber,
-        image: dataUserEdit.image ?? "",
-        positionId: dataUserEdit.positionId ?? "",
-        roleId: dataUserEdit.roleId ?? "",
-        previewImageUrl: dataUserEdit.imageUrl ?? "",
-        action: "edit",
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataUserEdit]);
+  // useEffect(() => {
+  //   if (dataUserEdit) {
+  //     setState({
+  //       ...state,
+  //       email: dataUserEdit.email,
+  //       firstName: dataUserEdit.firstName,
+  //       lastName: dataUserEdit.lastName,
+  //       address: dataUserEdit.address,
+  //       gender: dataUserEdit.gender,
+  //       phoneNumber: dataUserEdit.phoneNumber,
+  //       image: dataUserEdit.image ?? "",
+  //       positionId: dataUserEdit.positionId ?? "",
+  //       roleId: dataUserEdit.roleId ?? "",
+  //       previewImageUrl: dataUserEdit.imageUrl ?? "",
+  //       action: "edit",
+  //     });
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [dataUserEdit]);
 
   useEffect(() => {
     if (!state.previewImageUrl) return;

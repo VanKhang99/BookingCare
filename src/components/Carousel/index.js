@@ -3,10 +3,10 @@ import NextArrow from "./NextArrow";
 import CarouselRemoteDoctor from "./CarouselRemoteDoctor";
 import CarouselPopularSpecialty from "./CarouselPopularSpecialty";
 import CarouselOutstandingFacilities from "./CarouselOutstandingFacilities";
-import CarouselOutstandingDoctors from "./CarouselOutstandingDoctor";
+import CarouselDoctor from "./CarouselDoctor";
 import CarouselHandbook from "./CarouselHandbook";
 import CarouselDoctorAndFacilities from "./CarouselDoctorAndFacilities";
-import CarouselClinicSpecialty from "./CarouselClinicSpecialty";
+import CarouselPackage from "./CarouselPackage";
 
 export {
   PrevArrow,
@@ -14,8 +14,8 @@ export {
   CarouselRemoteDoctor,
   CarouselPopularSpecialty,
   CarouselOutstandingFacilities,
-  CarouselOutstandingDoctors,
+  CarouselDoctor,
   CarouselHandbook,
   CarouselDoctorAndFacilities,
-  CarouselClinicSpecialty,
+  CarouselPackage,
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import _ from "lodash";
 import Select from "react-select";
 import MarkdownIt from "markdown-it";
@@ -63,7 +63,6 @@ const PackageManage = () => {
   const { clinics } = useSelector((store) => store.clinic);
   const { specialties } = useSelector((store) => store.specialty);
   const { packagesType } = useSelector((store) => store.packageType);
-  const nameEnRef = useRef(null);
 
   const handleInputs = (e, type) => {
     const stateCopy = JSON.parse(JSON.stringify({ ...state }));
@@ -151,6 +150,7 @@ const PackageManage = () => {
         "selectedPayment",
         "selectedClinic",
       ];
+
       const validate = checkData(state, propsCheckArr);
       if (!validate) return toast.error("Please fill in all information before saving");
 
@@ -164,8 +164,6 @@ const PackageManage = () => {
         // update new image
         imageUploadToS3 = await postImageToS3(state.fileImage);
       }
-
-      console.log(state);
 
       const packageInfo = {
         ...state,
@@ -198,14 +196,13 @@ const PackageManage = () => {
       const res = await dispatch(getPackage(selectedOption?.value || state.oldSelectedClinic));
       if (_.isEmpty(res.payload.data)) return toast.error("Get data package failed!!!");
       const packageData = res.payload.data;
-      console.log(packageData);
       const packageSelected = findItemSelectedById("package", packageArr, +packageData.id);
       const packageTypeInDB = findItemSelectedById("packageType", packagesType, +packageData?.packageTypeId);
       const specialtyInDB = findItemSelectedById("specialty", specialties, +packageData?.specialtyId);
       const clinicInDB = findItemSelectedById("clinic", clinics, packageData.clinicId);
-      const priceInDB = findItemSelectedById("price", priceArr, packageData?.priceId);
-      const paymentInDB = findItemSelectedById("payment", paymentArr, packageData?.paymentId);
-      const provinceInDB = findItemSelectedById("province", provinceArr, packageData?.provinceId);
+      const priceInDB = findItemSelectedById("price", priceArr, packageData.pricePackage.keyMap);
+      const paymentInDB = findItemSelectedById("payment", paymentArr, packageData.paymentPackage.keyMap);
+      const provinceInDB = findItemSelectedById("province", provinceArr, packageData.provincePackage.keyMap);
 
       return setState({
         ...state,
@@ -254,7 +251,6 @@ const PackageManage = () => {
     dispatch(getAllClinics("all"));
     dispatch(getAllPackagesType());
     dispatch(getAllPackages({ clinicId: null, specialId: null }));
-    nameEnRef.current.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -298,7 +294,6 @@ const PackageManage = () => {
             <h4 className="u-input-label">{t("package-manage.name-en")}</h4>
 
             <Form.Control
-              ref={nameEnRef}
               type="text"
               value={state.nameEn}
               className="u-input"

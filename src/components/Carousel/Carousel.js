@@ -7,10 +7,10 @@ import {
   CarouselRemoteDoctor,
   CarouselPopularSpecialty,
   CarouselOutstandingFacilities,
-  CarouselOutstandingDoctors,
+  CarouselDoctor,
   CarouselHandbook,
   CarouselDoctorAndFacilities,
-  CarouselClinicSpecialty,
+  CarouselPackage,
 } from "./index.js";
 import "../../styles/Carousel.scss";
 // import Specialties from "./../../pages/Specialties";
@@ -18,6 +18,8 @@ import "../../styles/Carousel.scss";
 const Slider = ({
   clinicId,
   specialtyId,
+  pageClinicSpecialty,
+
   mainTitle,
   buttonText,
   buttonText2,
@@ -25,10 +27,10 @@ const Slider = ({
   doctorRemote,
   popularSpecialty,
   outstandingFacilities,
-  outstandingDoctors,
+  doctors,
   handbook,
   doctorAndFacilities,
-  clinicSpecialtyDoctor,
+  carouselPackage,
 }) => {
   const slidesToShow = 4;
 
@@ -50,10 +52,10 @@ const Slider = ({
         doctorRemote ||
         popularSpecialty ||
         outstandingFacilities ||
-        outstandingDoctors ||
+        doctors ||
         handbook ||
         doctorAndFacilities ||
-        clinicSpecialtyDoctor
+        carouselPackage
       }`}
     >
       <div className="carousel-content u-wrapper">
@@ -78,7 +80,7 @@ const Slider = ({
             </Link>
           )}
 
-          {outstandingDoctors && (
+          {doctors && (
             <Link to={`/${path.DOCTOR}s`} className="button button-main">
               {buttonText}
             </Link>
@@ -98,7 +100,7 @@ const Slider = ({
             </div>
           )}
 
-          {clinicSpecialtyDoctor && (
+          {carouselPackage && (
             <Link to={`/`} className="button button-main">
               {buttonText}
             </Link>
@@ -111,7 +113,7 @@ const Slider = ({
 
         {outstandingFacilities && <CarouselOutstandingFacilities settings={settings} />}
 
-        {outstandingDoctors && <CarouselOutstandingDoctors settings={settings} />}
+        {doctors && <CarouselDoctor settings={settings} clinicId={clinicId} />}
 
         {handbook && (
           <CarouselHandbook
@@ -133,11 +135,12 @@ const Slider = ({
           />
         )}
 
-        {clinicSpecialtyDoctor && (
-          <CarouselClinicSpecialty
+        {carouselPackage && (
+          <CarouselPackage
             settings={{ ...settings, infinite: false }}
             clinicId={clinicId}
             specialtyId={specialtyId}
+            pageClinicSpecialty={pageClinicSpecialty}
           />
         )}
       </div>

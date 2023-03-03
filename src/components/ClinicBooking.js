@@ -9,6 +9,7 @@ import { Slider, Doctor, Package, ModalBooking } from "../components";
 import { getDetailDoctor, getDoctorsBaseKeyMap } from "../slices/doctorSlice";
 import { getPackage } from "../slices/packageSlice";
 import "../styles/ClinicBooking.scss";
+import Language from "./Language";
 
 const initialState = {
   doctorId: "",
@@ -22,6 +23,7 @@ const initialState = {
 const ClinicBooking = ({ title, clinicId, pageClinicSpecialty, specialtyId }) => {
   const [state, setState] = useState({ ...initialState });
   const { t } = useTranslation();
+  const { language } = useSelector((store) => store.app);
   const dispatch = useDispatch();
   const doctors = useFetchDataBaseId(clinicId, "doctors", getDoctorsBaseKeyMap, 0);
 
@@ -86,9 +88,15 @@ const ClinicBooking = ({ title, clinicId, pageClinicSpecialty, specialtyId }) =>
         <h2 className="clinic-booking__title u-clinic-title">{title}</h2>
         <div className="clinic-booking-content">
           <div className="doctors">
-            {!pageClinicSpecialty && <h3 className="doctors__title">Bác sĩ</h3>}
-
-            <ul className="doctors-list">
+            {!pageClinicSpecialty && (
+              <Slider
+                mainTitle={language === "vi" ? "Bác sĩ" : "Doctor"}
+                buttonText={t("button.see-more").toUpperCase()}
+                doctors="clinic-doctors"
+                clinicId={clinicId}
+              />
+            )}
+            {/* <ul className="doctors-list">
               {doctors?.length > 0 &&
                 doctors.map((doctor, index) => {
                   const { doctorId } = doctor;
@@ -96,17 +104,16 @@ const ClinicBooking = ({ title, clinicId, pageClinicSpecialty, specialtyId }) =>
                     <Doctor key={index} doctorId={doctorId} doctorData={doctor} onToggleModal={handleModal} />
                   );
                 })}
-            </ul>
+            </ul> */}
           </div>
           <div className="packages">
-            {!pageClinicSpecialty && <h3 className="packages__title">Gói khám bệnh</h3>}
-
             <Slider
-              mainTitle="Bác sĩ"
+              mainTitle={pageClinicSpecialty ? "Bác sĩ" : "Gói khám bệnh"}
               buttonText={t("button.see-more").toUpperCase()}
-              clinicSpecialtyDoctor="clinic-specialty-doctor"
+              carouselPackage="clinic-package"
               clinicId={clinicId}
               specialtyId={specialtyId}
+              pageClinicSpecialty={pageClinicSpecialty}
             />
           </div>
         </div>

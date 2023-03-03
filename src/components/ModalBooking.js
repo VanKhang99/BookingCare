@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import _ from "lodash";
 import HtmlReactParser from "html-react-parser";
 import Button from "react-bootstrap/Button";
@@ -117,23 +117,18 @@ const ModalBooking = ({
     }
 
     try {
-      console.log(doctorData);
-      const { moreData } = doctorData;
-      const { clinic, priceData } = moreData;
+      console.log(packageData);
       let clinicName;
       let doctorName;
       let packageName;
       let dateBooked = hourClicked && `${formatDate(new Date(+hourClicked.date), language).split(" - ")[1]}`;
       let birthday = state.birthday.split("/");
-      if (id || doctorId) {
-        clinicName = language === "vi" ? clinic.nameVi : clinic.nameEn;
-        doctorName =
-          language === "vi"
-            ? `${doctorData.lastName} ${doctorData.firstName}`
-            : `${doctorData.firstName} ${doctorData.lastName}`;
+      if (!packageData) {
+        clinicName = doctorData.clinicName;
+        doctorName = doctorData.doctorName;
       } else {
-        clinicName = language === "vi" ? packageData?.clinicName?.valueVi : packageData?.clinicName?.valueEn;
-        packageName = language === "vi" ? packageData?.nameVi : packageData?.nameEn;
+        clinicName = packageData.clinicName;
+        packageName = packageData.packageName;
       }
 
       dateBooked =
@@ -161,7 +156,7 @@ const ModalBooking = ({
         clinicName,
         packageName,
         packageId: +packageId,
-        priceId: priceData.keyMap || packageData.priceId,
+        priceId: doctorData?.price.keyMap || packageData?.price.keyMap,
         remote: remote ?? false,
       };
       delete dataSendServer["errorInput"];
@@ -198,36 +193,28 @@ const ModalBooking = ({
     let image;
 
     if (!_.isEmpty(doctorData)) {
-      const { imageUrl, firstName, lastName, positionId, positionData, roleData, moreData } = doctorData;
-      const { clinic, priceData } = moreData;
+      const { imageUrl, doctorName, position, positionId, role } = doctorData;
+      // const { clinic, priceData } = moreData;
       image = imageUrl;
+      name = positionId !== "P0" ? `${position} - ${role} - ${doctorName}` : `${role} - ${doctorName}`;
       if (language === "vi") {
-        name =
-          positionId !== "P0"
-            ? `${positionData.valueVi} - ${roleData.valueVi} - ${lastName} ${firstName}`
-            : `${roleData.valueVi} - ${lastName} ${firstName}`;
         timeFrame = hourClicked?.timeTypeData?.valueVi;
-        price = formatterPrice(language).format(priceData?.valueVi);
+        price = formatterPrice(language).format(doctorData.price.valueVi);
       } else {
-        name =
-          positionId !== "P0"
-            ? `${positionData.valueEn} - ${roleData.valueEn} - ${firstName} ${lastName}`
-            : `${roleData.valueEn} - ${firstName} ${lastName}`;
         timeFrame = hourClicked?.timeTypeData?.valueEn;
-        price = formatterPrice(language).format(priceData?.valueEn);
+        price = formatterPrice(language).format(doctorData.price.valueEn);
       }
     }
 
     if (!_.isEmpty(packageData)) {
       image = packageData.image;
+      name = packageData.packageName;
       if (language === "vi") {
-        name = packageData.nameVi;
         timeFrame = hourClicked?.timeTypeData?.valueVi;
-        price = formatterPrice(language).format(packageData?.price?.valueVi);
+        price = formatterPrice(language).format(packageData.price?.valueVi);
       } else {
-        name = packageData.nameEn;
         timeFrame = hourClicked?.timeTypeData?.valueEn;
-        price = formatterPrice(language).format(packageData?.price?.valueEn);
+        price = formatterPrice(language).format(packageData.price?.valueEn);
       }
     }
 
@@ -248,14 +235,18 @@ const ModalBooking = ({
     return current && current >= yesterday;
   }, []);
 
+  const setGenderInitial = () => {
+    return setState({ ...state, gender: genderArr[0].keyMap });
+  };
+
   useEffect(() => {
     dispatch(getAllCodes("GENDER"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (genderArr && genderArr.length > 0) {
-      return setState({ ...state, gender: genderArr[0].keyMap });
+    if (genderArr?.length > 0) {
+      setGenderInitial();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [genderArr]);
@@ -410,7 +401,7 @@ const ModalBooking = ({
         </Form>
 
         <div className="modal-booking-note">
-          <h4 className="modal-booking-note__title">LƯU Ý</h4>
+          <h4 className="modal-booking-note__title">{language === "vi" ? "LƯU Ý" : "NOTE"}</h4>
           <ol className="modal-booking-note-list">
             <li className="note-item">
               {t("modal-booking.note-first")}

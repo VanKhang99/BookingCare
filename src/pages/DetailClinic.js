@@ -56,7 +56,7 @@ const DetailClinic = () => {
       handleNavigator(dataClinic);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataClinic, language]);
+  }, [_.isEmpty(dataClinic), language]);
 
   return (
     <div className="clinic">
@@ -141,50 +141,49 @@ const DetailClinic = () => {
               {dataClinic.haveSpecialtyPage || (
                 <ClinicBooking
                   title={language === "vi" ? "Đặt lịch khám" : "Booking"}
-                  clinicId={dataClinic.clinicId}
-                  // onToggleModal={handleModal}
+                  clinicId={dataClinic.id}
                 />
               )}
               {dataClinic.introductionHTML && (
                 <ClinicTopic
                   html={dataClinic.introductionHTML}
                   title={language === "vi" ? "Giới thiệu" : "Introduction"}
-                  clinicId={dataClinic.clinicId}
+                  clinicId={dataClinic.id}
                 />
               )}
               {dataClinic.strengthsHTML && (
                 <ClinicTopic
                   html={dataClinic.strengthsHTML}
                   title={language === "vi" ? "Thế mạnh cạnh tranh" : "Competitive strength"}
-                  clinicId={dataClinic.clinicId}
+                  clinicId={dataClinic.id}
                 />
               )}
               {dataClinic.equipmentHTML && (
                 <ClinicTopic
                   html={dataClinic.equipmentHTML}
                   title={language === "vi" ? "Trang thiết bị" : "Equipment"}
-                  clinicId={dataClinic.clinicId}
+                  clinicId={dataClinic.id}
                 />
               )}
               {dataClinic.locationHTML && (
                 <ClinicTopic
                   html={dataClinic.locationHTML}
                   title={language === "vi" ? "Vị trí" : "Location"}
-                  clinicId={dataClinic.clinicId}
+                  clinicId={dataClinic.id}
                 />
               )}
               {dataClinic.processHTML && (
                 <ClinicTopic
                   html={dataClinic.processHTML}
                   title={language === "vi" ? "Quy trình khám" : "Process"}
-                  clinicId={dataClinic.clinicId}
+                  clinicId={dataClinic.id}
                 />
               )}
               {dataClinic.priceHTML && (
                 <ClinicTopic
                   html={dataClinic.priceHTML}
                   title={language === "vi" ? "Giá khám bệnh" : "Price"}
-                  clinicId={dataClinic.clinicId}
+                  clinicId={dataClinic.id}
                 />
               )}
             </div>

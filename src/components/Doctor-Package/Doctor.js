@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { MdLocationOn } from "react-icons/md";
-import { getSchedules } from "../../slices/scheduleSlice";
 import { Introduce, DateOptions, BookingHours, ClinicInfo } from "../index";
 import "../../styles/DoctorOrPackage.scss";
 
@@ -11,7 +10,6 @@ const initialState = {
 
 const Doctor = ({ doctorId, doctorData, onToggleModal, needAddress, assurance, remote }) => {
   const [state, setState] = useState({ ...initialState });
-  const dispatch = useDispatch();
   const { language } = useSelector((store) => store.app);
 
   const handleUpdateSchedules = (schedulesArr) => {

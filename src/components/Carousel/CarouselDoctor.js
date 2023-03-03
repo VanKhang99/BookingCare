@@ -7,7 +7,7 @@ import { MdWork } from "react-icons/md";
 import { getAllDoctors } from "../../slices/doctorSlice";
 import "../../styles/Carousel.scss";
 
-const CarouselOutstandingDoctors = ({ onChange, settings }) => {
+const CarouselDoctor = ({ onChange, settings, clinicId }) => {
   const dispatch = useDispatch();
   const { language } = useSelector((store) => store.app);
   const { doctors } = useSelector((store) => store.doctor);
@@ -59,4 +59,4 @@ const CarouselOutstandingDoctors = ({ onChange, settings }) => {
   );
 };
 
-export default CarouselOutstandingDoctors;
+export default CarouselDoctor;

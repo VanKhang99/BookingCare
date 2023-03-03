@@ -36,7 +36,6 @@ import {
   SpecialtyManage,
   PackageTypeManage,
   PackageManage,
-  PackageSchedule,
   HandBookManage,
   AllcodeManage,
 } from "./system";
@@ -57,14 +56,9 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <SharedLayout clientInterface={1} />
-              </ProtectedRoute>
-            }
-          >
+          <Route path={path.LOGIN} element={<Login />} />
+
+          <Route path="/" element={<SharedLayout clientInterface={1} />}>
             <Route index element={<Home />} />
             <Route path={path.SPECIALTY} element={<Specialties remote={0} />} />
             <Route path={`${path.SPECIALTY}/${path.REMOTE}`} element={<Specialties remote={1} />} />
@@ -76,6 +70,10 @@ function App() {
 
             <Route path={`${path.CLINIC}s`} element={<Clinics />} />
             <Route path={`${path.CLINIC}/:clinicId`} element={<DetailClinic />} />
+            <Route
+              path={`${path.CLINIC}/:clinicId/package/:packageId`}
+              element={<PackageDetail packageOfClinic={1} />}
+            />
             <Route path={`${path.CLINIC}/:clinicId/specialties`} element={<ClinicSpecialties />} />
             <Route
               path={`${path.CLINIC}/:clinicId/specialties/:specialtyId`}
@@ -94,7 +92,6 @@ function App() {
             <Route path={`${path.PACKAGE_CLINIC}/:packageId`} element={<PackageDetail />} />
             {/* <Route path={`${path.PACKAGE_SPECIALTY}/:packageId`} element={<PackageDetail />} /> */}
 
-            <Route path={path.LOGIN} element={<Login />} />
             <Route path={path.SUPPORT} element={<Support />} />
             <Route path={path.ERROR} element={<Navigate to="/" replace />} />
             <Route
@@ -106,7 +103,6 @@ function App() {
               element={<VerifyBooking />}
             />
           </Route>
-          {/* <Route path={path.HOME} element={<Home />} /> */}
 
           <Route
             path={`${path.ADMIN}-${path.SYSTEM}`}
@@ -121,7 +117,7 @@ function App() {
             <Route path="user-manage" element={<UserManage />} />
 
             <Route path="doctor-manage" element={<DoctorManage />} />
-            <Route path="doctor-schedule-manage" element={<ScheduleWrapper />} />
+            <Route path="doctor-schedule-manage" element={<ScheduleWrapper scheduleOf="doctor" />} />
             <Route path="patient-booking-manage" element={<PatientBooking />} />
 
             <Route path="clinic-manage" element={<ClinicManage />} />
@@ -133,7 +129,7 @@ function App() {
 
             <Route path="package-type" element={<PackageTypeManage />} />
             <Route path="package-manage" element={<PackageManage />} />
-            <Route path="package-schedule" element={<PackageSchedule />} />
+            <Route path="package-schedule" element={<ScheduleWrapper scheduleOf="package" />} />
 
             <Route path="allcode-manage" element={<AllcodeManage />} />
           </Route>

@@ -15,7 +15,7 @@ const CarouselRemoteDoctor = ({ onChange, settings, doctorRemote }) => {
   const handleGetSpecialtiesRemote = async () => {
     try {
       const res = await dispatch(getAllSpecialties("remote"));
-      if (res?.payload?.specialties) {
+      if (res.payload.specialties.length > 0) {
         return setSpecialtiesRemote(res.payload.specialties);
       }
     } catch (error) {

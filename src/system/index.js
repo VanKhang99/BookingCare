@@ -13,7 +13,6 @@ import ClinicSpecialtyManage from "./ClinicSpecialtyManage";
 import SpecialtyManage from "./SpecialtyManage";
 import PackageTypeManage from "./PackageTypeManage";
 import PackageManage from "./PackageManage";
-import PackageSchedule from "./PackageSchedule";
 import HandBookManage from "./HandBookManage";
 import AllcodeManage from "./AllcodeManage";
 
@@ -35,7 +34,6 @@ export {
   SpecialtyManage,
   PackageTypeManage,
   PackageManage,
-  PackageSchedule,
   HandBookManage,
   AllcodeManage,
   TableList,

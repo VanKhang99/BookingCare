@@ -53,7 +53,8 @@ const Login = () => {
         dispatch(handleChangePathSystem("/doctor-system"));
       }
     }
-  }, [isLoggedIn, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoggedIn]);
 
   return (
     <div className="login-background">

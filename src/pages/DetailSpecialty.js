@@ -4,15 +4,7 @@ import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getInfoSpecialty } from "../slices/specialtySlice";
 import { getDetailDoctor, getDoctorsBaseKeyMap } from "../slices/doctorSlice";
-import {
-  Header,
-  Footer,
-  IntroSpecialty,
-  Doctor,
-  ModalBooking,
-  ProvinceOptions,
-  RoleBookingCare,
-} from "../components";
+import { IntroSpecialty, Doctor, ModalBooking, ProvinceOptions, RoleBookingCare } from "../components";
 import "../styles/DetailSpecialty.scss";
 
 const initialState = {
@@ -30,6 +22,8 @@ const DetailSpecialty = ({ remote }) => {
   const dispatch = useDispatch();
   const { specialtyId } = useParams();
 
+  console.log(remote);
+
   const doctorsFilter = useMemo(async () => {
     const res = await dispatch(getDoctorsBaseKeyMap({ keyMapId: specialtyId, remote }));
 
@@ -43,6 +37,7 @@ const DetailSpecialty = ({ remote }) => {
         dispatch(getInfoSpecialty(id)),
         dispatch(getDoctorsBaseKeyMap({ keyMapId: id, remote })),
       ]);
+      console.log(data);
 
       return setState({
         ...state,
@@ -106,11 +101,11 @@ const DetailSpecialty = ({ remote }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  console.log(state);
+
   return (
     <div className="specialty-container">
       <div className="specialty">
-        <Header />
-
         <div className="specialty-content ">
           <div className="specialty-intro">
             <IntroSpecialty
@@ -159,7 +154,6 @@ const DetailSpecialty = ({ remote }) => {
               Cần tìm hiểu thêm? <a href="#">Xem câu hỏi thường gặp</a>
             </p>
           </div>
-          <Footer />
         </div>
       </div>
 

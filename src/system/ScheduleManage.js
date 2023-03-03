@@ -38,9 +38,13 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
   }, []);
 
   const handleHoursList = async () => {
-    const res = await dispatch(getAllCodes("TIME"));
-    if (res?.payload?.allCode?.length > 0) {
-      setState({ ...state, hoursList: res.payload.allCode, initHoursList: res.payload.allCode });
+    try {
+      const res = await dispatch(getAllCodes("TIME"));
+      if (res?.payload?.allCode?.length > 0) {
+        setState({ ...state, hoursList: res.payload.allCode, initHoursList: res.payload.allCode });
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -176,6 +180,7 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
     }
 
     try {
+      console.log(state);
       let result = [];
       let timeSelected = state.hoursList.filter((hour) => hour.isSelected === true);
       if (!timeSelected.length) {
@@ -192,7 +197,7 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
         if (isDoctorAccount) {
           objectTime.doctorId = JSON.parse(localStorage.getItem("userInfo")).id;
         } else {
-          doctors
+          scheduleOf === "doctor"
             ? (objectTime.doctorId = state.selectedDoctor.value)
             : (objectTime.packageId = state.selectedPackage.value);
         }
@@ -212,7 +217,10 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
 
       if (result?.length > 0) {
         const res = await dispatch(
-          createSchedules({ dataSchedule: result, keyMap: `${doctors ? "doctorId" : "packageId"}` })
+          createSchedules({
+            dataSchedule: result,
+            keyMap: `${scheduleOf === "doctor" || isDoctorAccount ? "doctorId" : "packageId"}`,
+          })
         );
         if (res?.payload?.status === "success") {
           toast.success(res.payload.message);
@@ -290,8 +298,6 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
 
-  console.log(state);
-
   return (
     <div className="schedule-manage container">
       <div className="u-main-title mt-3">{t("schedule-manage.title")}</div>
@@ -300,7 +306,9 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
         <div className="select-doctor col-6 mt-5">
           {!isDoctorAccount && (
             <h4 className="u-input-label">
-              {doctors ? t("schedule-manage.choose-doctor") : t("schedule-manage.choose-package")}
+              {scheduleOf === "doctor"
+                ? t("schedule-manage.choose-doctor")
+                : t("schedule-manage.choose-package")}
             </h4>
           )}
 
@@ -319,7 +327,7 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
             </h4>
           )}
 
-          {doctors?.length > 0 && !isDoctorAccount && (
+          {doctors?.length > 0 && !isDoctorAccount && scheduleOf === "doctor" && (
             <div className="mt-3">
               <Select
                 value={state.selectedDoctor}
@@ -329,7 +337,7 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
             </div>
           )}
 
-          {packages?.length > 0 && (
+          {packages?.length > 0 && scheduleOf === "package" && (
             <div className="mt-3">
               <Select
                 value={state.selectedPackage}

@@ -14,7 +14,7 @@ const CarouselPopularSpecialty = ({ onChange, settings }) => {
   const handleGetSpecialties = async () => {
     try {
       const res = await dispatch(getAllSpecialties("popular"));
-      if (res && res.payload && res.payload.specialties) {
+      if (res.payload.specialties.length > 0) {
         return setSpecialties(res.payload.specialties);
       }
     } catch (error) {

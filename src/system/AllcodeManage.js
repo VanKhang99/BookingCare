@@ -99,7 +99,6 @@ const AllcodeManage = () => {
         valueVi: state.valueVi,
         action: state.action || "create",
       };
-      console.log(allCodeData);
 
       const info = await dispatch(createAllCode(allCodeData));
 

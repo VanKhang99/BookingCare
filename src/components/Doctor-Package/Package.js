@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { MdLocationOn } from "react-icons/md";
-import { getSchedules } from "../../slices/scheduleSlice";
 import { Introduce, DateOptions, BookingHours, ClinicInfo } from "../index";
 import "../../styles/DoctorOrPackage.scss";
 
@@ -16,8 +15,6 @@ const Package = ({ id, packageData, onToggleModal, packageClinicSpecialty }) => 
   const handleUpdateSchedules = (schedulesArr) => {
     return setState({ ...state, schedules: schedulesArr });
   };
-
-  console.log(packageData);
 
   return (
     <>

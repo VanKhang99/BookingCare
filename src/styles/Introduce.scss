@@ -25,10 +25,12 @@
   }
 
   .introduction-right {
+    align-self: center;
     &__name {
       font-weight: 700;
       font-size: $base-size + 1.4rem;
       margin-bottom: 0.8rem;
+      color: $main-color-text;
     }
     &__summary {
       p {

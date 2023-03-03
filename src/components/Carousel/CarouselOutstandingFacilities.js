@@ -14,7 +14,7 @@ const CarouselOutstandingFacilities = ({ onChange, settings }) => {
   const handleGetAllClinicPopular = async () => {
     try {
       const res = await dispatch(getAllClinics("popular"));
-      if (res?.payload?.clinics) {
+      if (res.payload.clinics.length > 0) {
         return setClinics(res.payload.clinics);
       }
     } catch (error) {

@@ -40,8 +40,9 @@ const ClinicSpecialties = () => {
   };
 
   useEffect(() => {
-    if (!clinicId) return;
-    handleFetchSpecialties();
+    if (clinicId) {
+      handleFetchSpecialties();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import HtmlReactParser from "html-react-parser";
 import _ from "lodash";
 import { useParams } from "react-router-dom";
-// import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useFetchDataBaseId } from "../utils/CustomHook";
 import { getDetailDoctor } from "../slices/doctorSlice";
 import { DateOptions, BookingHours, ClinicInfo, ModalBooking, Introduce, Loading } from "../components";
@@ -10,7 +10,7 @@ import "../styles/DetailDoctor.scss";
 
 const initialState = {
   isOpenModalBooking: false,
-  hourBooked: {},
+  hourBooked: "",
   schedules: [],
 
   action: "",
@@ -19,6 +19,7 @@ const initialState = {
 const DetailDoctor = ({ remote }) => {
   const [state, setState] = useState({ ...initialState });
   const { id } = useParams();
+  const { language } = useSelector((store) => store.app);
   const doctor = useFetchDataBaseId(id, "doctor", getDetailDoctor);
 
   const handleModal = (hourClicked, action = "") => {
@@ -40,6 +41,25 @@ const DetailDoctor = ({ remote }) => {
   const handleUpdateSchedules = (schedulesArr) => {
     return setState({ ...state, schedules: schedulesArr });
   };
+
+  const handleDoctorDataOnModal = useCallback(() => {
+    if (_.isEmpty(doctor)) return;
+
+    const dataDoctorModal = {
+      doctorName:
+        language === "vi"
+          ? `${doctor.lastName} ${doctor.firstName}`
+          : `${doctor.firstName} ${doctor.lastName}`,
+      imageUrl: doctor.imageUrl,
+      price: doctor.moreData.priceData,
+      clinicName: language === "vi" ? doctor.moreData.clinic.nameVi : doctor.moreData.clinic.nameEn,
+      position: language === "vi" ? doctor.positionData.valueVi : doctor.positionData.valueEn,
+      role: language === "vi" ? doctor.roleData.valueVi : doctor.roleData.valueEn,
+      positionId: doctor.positionData.keyMap,
+    };
+    return dataDoctorModal;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.hourClicked]);
 
   return (
     <div className="outstanding-doctor-container">
@@ -69,7 +89,7 @@ const DetailDoctor = ({ remote }) => {
             <ModalBooking
               show={state.isOpenModalBooking}
               onHide={handleModal}
-              doctorData={!_.isEmpty(doctor) && doctor}
+              doctorData={handleDoctorDataOnModal()}
               action={state.action}
               hourClicked={state.hourClicked && !_.isEmpty(state.hourClicked) && state.hourClicked}
             />

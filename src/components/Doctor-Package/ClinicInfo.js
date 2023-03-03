@@ -10,13 +10,23 @@ import { formatterPrice } from "../../utils/helpers";
 
 import "../../styles/ClinicInfo.scss";
 
-const ClinicInfo = ({ doctorData, id, small, packageData, needAddress, assurance, remote }) => {
+const ClinicInfo = ({
+  doctorData,
+  id,
+  small,
+  packageData,
+  needAddress,
+  assurance,
+  remote,
+  packageOfClinic,
+}) => {
   const [state, setState] = useState({
     showPrice: false,
     showInsurance: false,
   });
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
+  console.log(packageOfClinic);
 
   const handleDisplayMoreInfo = (type) => {
     return setState({ ...state, [`show${type}`]: !state[`show${type}`] });
@@ -29,8 +39,16 @@ const ClinicInfo = ({ doctorData, id, small, packageData, needAddress, assurance
     let priceEn;
     let payment;
     if (!_.isEmpty(packageData)) {
-      const { address, clinicData, nameVi, nameEn, pricePackage, paymentPackage } = packageData;
-      name = language === "vi" ? clinicData?.nameVi : clinicData?.nameEn;
+      const { pricePackage, paymentPackage, specialty, clinicData } = packageData;
+      address = packageData.address;
+      if (packageOfClinic) {
+        name = language === "vi" ? `${clinicData.nameVi}` : `${clinicData.nameEn}`;
+      } else {
+        name =
+          language === "vi"
+            ? `${specialty.nameVi} - ${clinicData.nameVi}`
+            : `${specialty.nameEn} - ${clinicData.nameEn}`;
+      }
       price =
         language === "vi"
           ? formatterPrice(language).format(pricePackage.valueVi)
@@ -43,7 +61,7 @@ const ClinicInfo = ({ doctorData, id, small, packageData, needAddress, assurance
       const {
         moreData: { clinic, paymentData, priceData },
       } = doctorData;
-      name = language === "vi" ? clinic.nameVi : clinic.nameViEn;
+      name = language === "vi" ? clinic.nameVi : clinic.nameEn;
       address = clinic.address;
       price =
         language === "vi"

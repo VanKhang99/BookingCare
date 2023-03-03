@@ -94,11 +94,11 @@
       }
 
       &.slick-prev {
-        left: -3%;
+        left: -3.2%;
       }
 
       &.slick-next {
-        right: -3%;
+        right: -3.2%;
       }
 
       svg {
@@ -125,7 +125,7 @@
     }
   }
 
-  &.carousel-outstanding-doctors {
+  &.carousel-doctors {
     .slides {
       .slick-track {
         .slide {
@@ -212,30 +212,31 @@
     }
   }
 
-  &.carousel-clinic-specialty-doctor {
+  &.carousel-clinic-package {
     padding: 0;
     border-bottom: 0;
     .carousel-top {
       padding-top: 0;
       margin-bottom: 0;
       &__title {
-        font-size: $base-size + 0.6rem;
+        font-size: $base-size + 0.4rem;
       }
     }
 
     .slides {
       .slick-list {
-        margin-left: -2.4rem;
+        margin-left: -1.6rem;
+        margin-right: -1.6rem;
 
         .slick-track {
-          gap: 2.4rem;
+          gap: 1.6rem;
         }
 
         .slick-slide {
-          flex-shrink: 0;
+          // flex-shrink: 0;
           margin: 1rem 0;
-          padding: 2rem;
-          box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.2);
+
+          box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.15);
           height: auto;
           border-radius: 0.6rem;
           border: 1px solid $grey-2;
@@ -245,14 +246,16 @@
         .slide-content {
           &__img {
             img {
-              object-fit: contain;
-              height: 10rem;
+              display: block;
+              width: 100%;
+              height: auto;
+              border-radius: unset;
             }
           }
 
           &__name {
+            padding: 2rem 2rem 2rem;
             display: block;
-            margin-top: 2rem;
             font-family: $font-main;
             font-weight: 600;
             font-size: $base-size + 0.2rem;

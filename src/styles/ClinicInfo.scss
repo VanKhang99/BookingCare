@@ -22,6 +22,7 @@
       &__name {
         font-size: $base-size + 0.2rem;
         font-weight: 700;
+        color: $main-color-text;
       }
 
       &__address {
@@ -81,6 +82,7 @@
         justify-content: space-between;
         font-size: $base-size + 0.1rem;
         font-weight: 700;
+        color: $main-color-text;
 
         span {
           font-size: $base-size + 0.2rem;

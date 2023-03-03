@@ -28,7 +28,7 @@ const Home = () => {
             <Slider
               mainTitle={t("slider.outstanding-doctors-title")}
               buttonText={t("button.searching").toUpperCase()}
-              outstandingDoctors="outstanding-doctors"
+              doctors="doctors"
             />
             <Slider
               mainTitle={t("slider.handbook-title")}

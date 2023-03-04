@@ -7,21 +7,11 @@ const initialState = {
   packageArr: [],
 };
 
-// export const getAllPackages = createAsyncThunk("package/getAllPackages", async (_, thunkAPI) => {
-//   try {
-//     const res = await axios.get("/api/packages");
-//     return res;
-//   } catch (error) {
-//     return error.response.data;
-//   }
-// });
-
-export const saveInfoPackage = createAsyncThunk("package/createPackage", async (data, thunkAPI) => {
+export const getAllPackages = createAsyncThunk("package/getAllPackages", async (dataIds, thunkAPI) => {
   try {
-    const res = await axios.post("/api/packages", data);
-    return res;
+    const res = await axios.get(`/api/packages/${dataIds.specialtyId}/${dataIds.clinicId}`);
+    return res.data;
   } catch (error) {
-    toast.error("Save info package failed. Please check your data and try again!");
     return error.response.data;
   }
 });
@@ -36,26 +26,27 @@ export const getPackage = createAsyncThunk("package/getPackage", async (packageI
   }
 });
 
-export const getAllPackagesByClinicId = createAsyncThunk(
-  "package/getAllPackagesByClinicId",
-  async (valueClinicId, thunkAPI) => {
-    try {
-      const res = await axios.get(`/api/packages/clinicId/${valueClinicId}`);
-      return res.data;
-    } catch (error) {
-      return error.response.data;
-    }
-  }
-);
-
-export const getAllPackages = createAsyncThunk("package/getAllPackagesByIds", async (dataIds, thunkAPI) => {
+export const saveInfoPackage = createAsyncThunk("package/createPackage", async (data, thunkAPI) => {
   try {
-    const res = await axios.get(`/api/packages/${dataIds.specialtyId}/${dataIds.clinicId}`);
-    return res.data;
+    const res = await axios.post("/api/packages", data);
+    return res;
   } catch (error) {
+    toast.error("Save info package failed. Please check your data and try again!");
     return error.response.data;
   }
 });
+
+// export const getAllPackagesByClinicId = createAsyncThunk(
+//   "package/getAllPackagesByClinicId",
+//   async (valueClinicId, thunkAPI) => {
+//     try {
+//       const res = await axios.get(`/api/packages/clinicId/${valueClinicId}`);
+//       return res.data;
+//     } catch (error) {
+//       return error.response.data;
+//     }
+//   }
+// );
 
 export const deletePackage = createAsyncThunk("package/deletePackage", async (packageId, thunkAPI) => {
   try {

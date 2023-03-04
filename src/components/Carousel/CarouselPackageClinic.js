@@ -10,8 +10,6 @@ const CarouselPackage = ({ clinicId, specialtyId, settings, pageClinicSpecialty 
   const dispatch = useDispatch();
   const { language } = useSelector((store) => store.app);
   const { packageArr } = useSelector((store) => store.package);
-  console.log(clinicId);
-  console.log(specialtyId);
 
   useEffect(() => {
     if (!specialtyId) {

@@ -35,17 +35,15 @@
       margin-bottom: 3rem;
 
       border: 1px solid $grey-2;
-      padding: 2rem;
-      border-radius: 1rem;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      border-radius: 0.8rem;
+      overflow: hidden;
+      box-shadow: $shadow-4;
 
       &__image {
         img {
           object-fit: cover;
-          border-radius: 0.8rem;
-          width: 10rem;
-          height: 10rem;
-          border-radius: 50%;
+          width: 12rem;
+          height: 12rem;
         }
       }
     }

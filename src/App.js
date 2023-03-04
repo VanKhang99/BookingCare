@@ -71,16 +71,20 @@ function App() {
             <Route path={`${path.CLINIC}s`} element={<Clinics />} />
             <Route path={`${path.CLINIC}/:clinicId`} element={<DetailClinic />} />
             <Route
-              path={`${path.CLINIC}/:clinicId/package/:packageId`}
+              path={`${path.CLINIC}/:clinicId/${path.DOCTOR}/:doctorId`}
+              element={<DetailDoctor remote={0} />}
+            />
+            <Route
+              path={`${path.CLINIC}/:clinicId/${path.PACKAGE}/:packageId`}
               element={<PackageDetail packageOfClinic={1} />}
             />
-            <Route path={`${path.CLINIC}/:clinicId/specialties`} element={<ClinicSpecialties />} />
+            <Route path={`${path.CLINIC}/:clinicId/${path.SPECIALTIES}`} element={<ClinicSpecialties />} />
             <Route
-              path={`${path.CLINIC}/:clinicId/specialties/:specialtyId`}
+              path={`${path.CLINIC}/:clinicId/${path.SPECIALTIES}/:specialtyId`}
               element={<DetailClinicSpecialty />}
             />
             <Route
-              path={`${path.CLINIC}/:clinicId/specialties/:specialtyId/package/:packageId`}
+              path={`${path.CLINIC}/:clinicId/${path.SPECIALTIES}/:specialtyId/${path.PACKAGE}/:packageId`}
               element={<PackageDetail />}
             />
 

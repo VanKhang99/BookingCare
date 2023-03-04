@@ -3,7 +3,7 @@ import _ from "lodash";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getInfoSpecialty } from "../slices/specialtySlice";
-import { getDetailDoctor, getDoctorsBaseKeyMap } from "../slices/doctorSlice";
+import { getDoctor, getDoctorsBaseKeyMap } from "../slices/doctorSlice";
 import { IntroSpecialty, Doctor, ModalBooking, ProvinceOptions, RoleBookingCare } from "../components";
 import "../styles/DetailSpecialty.scss";
 
@@ -21,8 +21,6 @@ const DetailSpecialty = ({ remote }) => {
   const [state, setState] = useState({ ...initialState });
   const dispatch = useDispatch();
   const { specialtyId } = useParams();
-
-  console.log(remote);
 
   const doctorsFilter = useMemo(async () => {
     const res = await dispatch(getDoctorsBaseKeyMap({ keyMapId: specialtyId, remote }));
@@ -66,7 +64,7 @@ const DetailSpecialty = ({ remote }) => {
           isOpenModalBooking: !state.isOpenModalBooking,
         });
 
-      const res = await dispatch(getDetailDoctor(+doctorId));
+      const res = await dispatch(getDoctor(+doctorId));
       if (res?.payload?.data) {
         return setState({
           ...state,

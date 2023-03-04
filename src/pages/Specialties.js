@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Header, InputSearch, Footer } from "../components";
+import { InputSearch } from "../components";
 import { getAllSpecialties } from "../slices/specialtySlice";
 import { path } from "../utils/constants";
 import { helperFilterSearch } from "../utils/helpers";
@@ -30,12 +30,9 @@ const Specialties = ({ remote }) => {
   const handleSearchSpecialties = (e) => {
     let specialtiesCopy = [...specialties];
     const newSpecialties = specialtiesCopy.filter((specialty) => {
-      const { targetCompareLowerCase, inputPassedLowerCase } = helperFilterSearch(
-        e.target.value,
-        specialty.nameData.valueVi
-      );
+      const { targetName, input } = helperFilterSearch(e.target.value, specialty.nameVi);
 
-      if (language === "vi") return targetCompareLowerCase.includes(inputPassedLowerCase);
+      if (language === "vi") return targetName.includes(input);
 
       return specialty.nameData.valueEn.toLowerCase().includes(e.target.value.toLowerCase());
     });
@@ -49,59 +46,53 @@ const Specialties = ({ remote }) => {
   }, []);
 
   return (
-    <div className="specialties">
-      <Header />
-
-      <div className="specialties-list u-wrapper">
-        <div className="specialties-top">
-          <h2>
-            {language === "vi"
-              ? `Các chuyên khoa ${remote ? "từ xa" : "phổ biến"}`
-              : `${remote ? "Telemedicine" : "Popular"} specialties `}
-          </h2>
-          <div className="specialties-top-search">
-            <InputSearch
-              placeholder={language === "vi" ? "Tìm kiếm chuyên khoa" : "Search for a specialty"}
-              onSearch={handleSearchSpecialties}
-            />
-          </div>
+    <div className="specialties u-wrapper">
+      <div className="specialties-top">
+        <h2>
+          {language === "vi"
+            ? `Các chuyên khoa ${remote ? "từ xa" : "phổ biến"}`
+            : `${remote ? "Telemedicine" : "Popular"} specialties `}
+        </h2>
+        <div className="specialties-top-search">
+          <InputSearch
+            placeholder={language === "vi" ? "Tìm kiếm chuyên khoa" : "Search for a specialty"}
+            onSearch={handleSearchSpecialties}
+          />
         </div>
+      </div>
+      <div className="specialties-list ">
         {filterSpecialties.length > 0 &&
           filterSpecialties.map((specialty) => {
             return (
               <Link
                 to={
                   remote
-                    ? `/${path.SPECIALTY}/${path.REMOTE}/${specialty.specialtyId}`
-                    : `/${path.SPECIALTY}/${specialty.specialtyId}`
+                    ? `/${path.SPECIALTY}/${path.REMOTE}/${specialty.id}`
+                    : `/${path.SPECIALTY}/${specialty.id}`
                 }
-                key={specialty.specialtyId}
+                key={specialty.id}
                 className="specialties-item"
               >
                 <div className="specialties-item__image">
                   <img
-                    src={remote ? specialty.imageRemote : specialty.image}
-                    alt={language === "vi" ? specialty.nameData.valueVi : specialty.nameData.valueEn}
+                    src={remote ? specialty.imageRemoteUrl : specialty.imageUrl}
+                    alt={language === "vi" ? specialty.nameVi : specialty.nameEn}
                   />
                 </div>
 
                 <div className="specialties-item__name">
                   {remote ? (
                     <span>
-                      {language === "vi"
-                        ? `${specialty.nameData.valueVi} từ xa`
-                        : `Remote ${specialty.nameData.valueEn}`}
+                      {language === "vi" ? `${specialty.nameVi} từ xa` : `Remote ${specialty.nameEn}`}
                     </span>
                   ) : (
-                    <span>{language === "vi" ? specialty.nameData.valueVi : specialty.nameData.valueEn}</span>
+                    <span>{language === "vi" ? specialty.nameVi : specialty.nameEn}</span>
                   )}
                 </div>
               </Link>
             );
           })}
       </div>
-
-      <Footer />
     </div>
   );
 };

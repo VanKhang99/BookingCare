@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useInView, InView } from "react-intersection-observer";
 import { Element, Link as LinkScroll } from "react-scroll";
-import { Header, InputSearch, Footer } from "../components";
+import { InputSearch } from "../components";
 import { GoSearch } from "react-icons/go";
 import { getAllClinics } from "../slices/clinicSlice";
 import { helperFilterSearch } from "../utils/helpers";
@@ -33,6 +33,7 @@ const Clinics = () => {
   const handleFetchClinics = async () => {
     try {
       const res = await dispatch(getAllClinics("all"));
+      console.log(res);
       if (res.payload.clinics.length > 0) {
         // Create object alphabet {A: [], B: [], ...}
         const alphabetObject = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").reduce((acc, word) => {
@@ -73,14 +74,15 @@ const Clinics = () => {
 
   const handleSearchClinics = (inputToActions, type) => {
     let clinicsCopy = [...state.clinicsForActions];
+    console.log(clinicsCopy);
     let newClinics = clinicsCopy.map(([key, clinic]) => {
       const clinicFiltered = clinic.filter((cl) => {
-        const { targetCompareLowerCase, inputPassedLowerCase } = helperFilterSearch(
+        const { targetName, input } = helperFilterSearch(
           inputToActions,
-          type === "select" ? cl.address : cl.nameClinicData[language === "vi" ? "valueVi" : "valueEn"]
+          type === "select" ? cl.address : cl[language === "vi" ? "nameVi" : "nameEn"]
         );
 
-        return targetCompareLowerCase.includes(inputPassedLowerCase);
+        return targetName.includes(input);
       });
 
       return [key, clinicFiltered];
@@ -112,8 +114,6 @@ const Clinics = () => {
 
   return (
     <div className="clinics">
-      <Header />
-
       <div className="clinics-content">
         <InView>
           <div className="clinics-top u-wrapper" ref={ref}>
@@ -193,18 +193,13 @@ const Clinics = () => {
                     <div className="clinics-letter-list">
                       {clinic[1].map((cl) => {
                         return (
-                          <React.Fragment key={cl.clinicId}>
-                            <Link to={`/${path.CLINIC}/${cl.clinicId}`} className="clinics-letter-item">
+                          <React.Fragment key={cl.id}>
+                            <Link to={`/${path.CLINIC}/${cl.id}`} className="clinics-letter-item">
                               <div className="clinics-letter-item__image">
-                                <img
-                                  src={cl.logo}
-                                  alt={
-                                    language === "vi" ? cl.nameClinicData.valueVi : cl.nameClinicData.valueEn
-                                  }
-                                />
+                                <img src={cl.logoUrl} alt={language === "vi" ? cl.nameVi : cl.nameEn} />
                               </div>
                               <div className="clinics-letter-item__name">
-                                {language === "vi" ? cl.nameClinicData.valueVi : cl.nameClinicData.valueEn}
+                                {language === "vi" ? cl.nameVi : cl.nameEn}
                               </div>
                             </Link>
                           </React.Fragment>
@@ -218,8 +213,6 @@ const Clinics = () => {
           })}
         </div>
       </div>
-
-      <Footer />
     </div>
   );
 };

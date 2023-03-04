@@ -5,11 +5,21 @@ import axios from "../axios";
 const initialState = {
   isLoadingDoctors: false,
   doctors: [],
+  doctorsById: [],
 };
 
 export const getAllDoctors = createAsyncThunk("doctor/getAllDoctors", async (type, thunkAPI) => {
   try {
     const res = await axios.get(`/api/doctors/${type}`);
+    return res;
+  } catch (error) {
+    return error.response.data;
+  }
+});
+
+export const getAllDoctorsById = createAsyncThunk("doctor/getAllDoctorsById", async (data, thunkAPI) => {
+  try {
+    const res = await axios.get(`/api/doctors/${data.nameColumnMap}/${data.id}`);
     return res;
   } catch (error) {
     return error.response.data;
@@ -25,7 +35,7 @@ export const postInfoDoctor = createAsyncThunk("doctor/postInfoDoctor", async (d
   }
 });
 
-export const getDetailDoctor = createAsyncThunk("doctor/getDetailDoctor", async (doctorId, thunkAPI) => {
+export const getDoctor = createAsyncThunk("doctor/getDoctor", async (doctorId, thunkAPI) => {
   try {
     const res = await axios.get(`/api/doctors/detail/${doctorId}`);
     return res.data;
@@ -33,18 +43,6 @@ export const getDetailDoctor = createAsyncThunk("doctor/getDetailDoctor", async 
     return error.response.data;
   }
 });
-
-// export const getInfoAddressPriceClinic = createAsyncThunk(
-//   "doctor/getInfoAddressPriceClinic",
-//   async (doctorId, thunkAPI) => {
-//     try {
-//       const res = await axios.get(`/api/doctors/address-price-assurance/${doctorId}`);
-//       return res.data;
-//     } catch (error) {
-//       return error.response;
-//     }
-//   }
-// );
 
 export const getDoctorsBaseKeyMap = createAsyncThunk(
   "doctor/getDoctorsBaseKeyMap",
@@ -82,6 +80,18 @@ export const doctorSlice = createSlice({
         state.doctors = payload.data.doctors;
       })
       .addCase(getAllDoctors.rejected, (state) => {
+        state.isLoadingDoctors = false;
+      })
+
+      //GET ALL DOCTORS BY ID
+      .addCase(getAllDoctorsById.pending, (state) => {
+        state.isLoadingDoctors = true;
+      })
+      .addCase(getAllDoctorsById.fulfilled, (state, { payload }) => {
+        state.isLoadingDoctors = false;
+        state.doctorsById = payload.data.doctors;
+      })
+      .addCase(getAllDoctorsById.rejected, (state) => {
         state.isLoadingDoctors = false;
       });
   },

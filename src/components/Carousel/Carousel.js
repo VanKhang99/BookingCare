@@ -10,7 +10,8 @@ import {
   CarouselDoctor,
   CarouselHandbook,
   CarouselDoctorAndFacilities,
-  CarouselPackage,
+  CarouselPackageClinic,
+  CarouselDoctorClinic,
 } from "./index.js";
 import "../../styles/Carousel.scss";
 // import Specialties from "./../../pages/Specialties";
@@ -30,7 +31,8 @@ const Slider = ({
   doctors,
   handbook,
   doctorAndFacilities,
-  carouselPackage,
+  clinicPackage,
+  clinicDoctor,
 }) => {
   const slidesToShow = 4;
 
@@ -55,7 +57,8 @@ const Slider = ({
         doctors ||
         handbook ||
         doctorAndFacilities ||
-        carouselPackage
+        clinicPackage ||
+        clinicDoctor
       }`}
     >
       <div className="carousel-content u-wrapper">
@@ -100,7 +103,13 @@ const Slider = ({
             </div>
           )}
 
-          {carouselPackage && (
+          {clinicPackage && (
+            <Link to={`/`} className="button button-main">
+              {buttonText}
+            </Link>
+          )}
+
+          {clinicDoctor && (
             <Link to={`/`} className="button button-main">
               {buttonText}
             </Link>
@@ -113,7 +122,12 @@ const Slider = ({
 
         {outstandingFacilities && <CarouselOutstandingFacilities settings={settings} />}
 
-        {doctors && <CarouselDoctor settings={settings} clinicId={clinicId} />}
+        {doctors && (
+          <CarouselDoctor
+            settings={clinicId ? { ...settings, infinite: false } : settings}
+            clinicId={clinicId}
+          />
+        )}
 
         {handbook && (
           <CarouselHandbook
@@ -135,13 +149,17 @@ const Slider = ({
           />
         )}
 
-        {carouselPackage && (
-          <CarouselPackage
+        {clinicPackage && (
+          <CarouselPackageClinic
             settings={{ ...settings, infinite: false }}
             clinicId={clinicId}
             specialtyId={specialtyId}
             pageClinicSpecialty={pageClinicSpecialty}
           />
+        )}
+
+        {clinicDoctor && (
+          <CarouselDoctorClinic settings={{ ...settings, infinite: false }} clinicId={clinicId} />
         )}
       </div>
     </div>

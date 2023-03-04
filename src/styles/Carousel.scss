@@ -158,6 +158,7 @@
             &__degree,
             &__doctor-name,
             &__specialty {
+              font-family: $font-main;
               display: flex;
               align-items: center;
               align-items: center;
@@ -215,6 +216,7 @@
   &.carousel-clinic-package {
     padding: 0;
     border-bottom: 0;
+
     .carousel-top {
       padding-top: 0;
       margin-bottom: 0;
@@ -236,10 +238,9 @@
           // flex-shrink: 0;
           margin: 1rem 0;
 
-          box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.15);
+          box-shadow: $shadow-3;
           height: auto;
           border-radius: 0.6rem;
-          border: 1px solid $grey-2;
           overflow: hidden;
         }
 
@@ -254,13 +255,92 @@
           }
 
           &__name {
-            padding: 2rem 2rem 2rem;
+            padding: 2rem 1.2rem 2rem;
             display: block;
             font-family: $font-main;
             font-weight: 600;
             font-size: $base-size + 0.2rem;
             text-align: center;
             color: $main-color-text;
+          }
+        }
+      }
+    }
+  }
+
+  &.carousel-clinic-doctors {
+    padding: 0;
+    border-bottom: 0;
+    margin-bottom: 2.4rem;
+    .carousel-top {
+      padding-top: 0;
+      margin-bottom: 0;
+
+      &__title {
+        font-size: $base-size + 0.4rem;
+      }
+    }
+
+    .slides {
+      .slick-list {
+        margin-left: -1.6rem;
+        margin-right: -1.6rem;
+
+        .slick-track {
+          gap: 1.6rem;
+        }
+
+        .slick-slide {
+          margin: 1rem 0;
+          box-shadow: $shadow-3;
+          height: auto;
+          border-radius: 0.6rem;
+          overflow: hidden;
+        }
+
+        .slide {
+          border: none;
+
+          &-content {
+            &__img {
+              img {
+                display: block;
+                width: 100%;
+                height: auto;
+                border-radius: unset;
+              }
+            }
+
+            .slide-info {
+              padding: 1.2rem 1.6rem 1.2rem;
+              &__degree,
+              &__name,
+              &__specialty {
+                font-family: $font-main;
+                font-weight: 600;
+                font-size: $base-size + 0.2rem;
+                color: $main-color-text;
+              }
+
+              &__name {
+                font-weight: 700;
+                text-transform: uppercase;
+                margin-bottom: 1.2rem;
+              }
+
+              &__degree,
+              &__specialty {
+                display: flex;
+                align-items: center;
+                font-size: $base-size + 0.2rem;
+                svg {
+                  width: 1.6rem;
+                  height: 1.6rem;
+                  margin-right: 0.6rem;
+                  margin-top: -3px;
+                }
+              }
+            }
           }
         }
       }

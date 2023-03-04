@@ -26,7 +26,6 @@ const ClinicInfo = ({
   });
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
-  console.log(packageOfClinic);
 
   const handleDisplayMoreInfo = (type) => {
     return setState({ ...state, [`show${type}`]: !state[`show${type}`] });

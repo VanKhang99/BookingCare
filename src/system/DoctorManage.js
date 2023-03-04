@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 import { getAllCodes } from "../slices/allcodeSlice";
 import { getAllClinics } from "../slices/clinicSlice";
 import { getAllSpecialties } from "../slices/specialtySlice";
-import { getAllDoctors, postInfoDoctor, getDetailDoctor, deleteDoctor } from "../slices/doctorSlice";
+import { getAllDoctors, postInfoDoctor, getDoctor, deleteDoctor } from "../slices/doctorSlice";
 import { checkData, formatterPrice } from "../utils/helpers";
 import "react-markdown-editor-lite/lib/index.css";
 
@@ -153,7 +153,7 @@ const AddInfoDoctor = () => {
 
   const handleUpdateDoctor = async (selectedOption) => {
     try {
-      const res = await dispatch(getDetailDoctor(+selectedOption?.value || +state.oldIdDoctor));
+      const res = await dispatch(getDoctor(+selectedOption?.value || +state.oldIdDoctor));
 
       if (!res.payload.data) return toast.error("Get data doctor failed. Please check and try again!");
       const doctor = res.payload.data;

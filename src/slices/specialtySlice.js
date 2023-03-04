@@ -29,6 +29,18 @@ export const getInfoSpecialty = createAsyncThunk(
   }
 );
 
+export const getSpecialtyByIdAndRemote = createAsyncThunk(
+  "specialty/getSpecialtyByIdAndRemote",
+  async (data, thunkAPI) => {
+    try {
+      const res = await axios.get(`/api/specialties/${data.specialtyId}/remote=${data.remote}`);
+      return res.data;
+    } catch (error) {
+      return error.response.data;
+    }
+  }
+);
+
 export const saveInfoSpecialty = createAsyncThunk("specialty/saveInfoSpecialty", async (data, thunkAPI) => {
   try {
     const res = await axios.post("/api/specialties", { ...data });

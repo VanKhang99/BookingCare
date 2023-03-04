@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useFetchDataBaseId } from "../utils/CustomHook";
 import { Element } from "react-scroll";
 import { Slider, Doctor, Package, ModalBooking } from "../components";
-import { getDetailDoctor, getDoctorsBaseKeyMap } from "../slices/doctorSlice";
+import { getDoctor, getDoctorsBaseKeyMap } from "../slices/doctorSlice";
 import { getPackage } from "../slices/packageSlice";
 import "../styles/ClinicBooking.scss";
 import Language from "./Language";
@@ -36,7 +36,7 @@ const ClinicBooking = ({ title, clinicId, pageClinicSpecialty, specialtyId }) =>
     try {
       let res;
       if (doctorId && !packageId) {
-        res = await dispatch(getDetailDoctor(+doctorId));
+        res = await dispatch(getDoctor(+doctorId));
 
         if (res?.payload?.data) {
           return setState({
@@ -92,7 +92,7 @@ const ClinicBooking = ({ title, clinicId, pageClinicSpecialty, specialtyId }) =>
               <Slider
                 mainTitle={language === "vi" ? "Bác sĩ" : "Doctor"}
                 buttonText={t("button.see-more").toUpperCase()}
-                doctors="clinic-doctors"
+                clinicDoctor="clinic-doctors"
                 clinicId={clinicId}
               />
             )}
@@ -110,7 +110,7 @@ const ClinicBooking = ({ title, clinicId, pageClinicSpecialty, specialtyId }) =>
             <Slider
               mainTitle={pageClinicSpecialty ? "Bác sĩ" : "Gói khám bệnh"}
               buttonText={t("button.see-more").toUpperCase()}
-              carouselPackage="clinic-package"
+              clinicPackage="clinic-package"
               clinicId={clinicId}
               specialtyId={specialtyId}
               pageClinicSpecialty={pageClinicSpecialty}

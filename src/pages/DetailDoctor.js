@@ -4,7 +4,7 @@ import _ from "lodash";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useFetchDataBaseId } from "../utils/CustomHook";
-import { getDetailDoctor } from "../slices/doctorSlice";
+import { getDoctor } from "../slices/doctorSlice";
 import { DateOptions, BookingHours, ClinicInfo, ModalBooking, Introduce, Loading } from "../components";
 import "../styles/DetailDoctor.scss";
 
@@ -19,8 +19,9 @@ const initialState = {
 const DetailDoctor = ({ remote }) => {
   const [state, setState] = useState({ ...initialState });
   const { id } = useParams();
+  const { doctorId } = useParams();
   const { language } = useSelector((store) => store.app);
-  const doctor = useFetchDataBaseId(id, "doctor", getDetailDoctor);
+  const doctor = useFetchDataBaseId(id || doctorId, "doctor", getDoctor);
 
   const handleModal = (hourClicked, action = "") => {
     if (action === "full-booking") {

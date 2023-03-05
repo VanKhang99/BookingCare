@@ -13,39 +13,23 @@ const Introduce = ({ doctorData, id, small, buttonSeeMore, packageData, packageC
   const { t } = useTranslation();
 
   const handleDisplayNameRolePosition = (doctor) => {
-    if (doctor.positionId === "P0") {
-      return `${
-        language === "vi"
-          ? `${doctor.roleData.valueVi} - ${doctor.lastName} ${doctor.firstName} ${
-              remote ? "(Bác sĩ từ xa)" : ""
-            }`
-          : `${doctor.roleData.valueEn} - ${doctor.firstName} ${doctor.lastName} ${
-              remote ? "(Telemedicine)" : ""
-            }`
-      }`;
-    } else if (doctor.roleId === "R8") {
-      return `${
-        language === "vi"
-          ? `${doctor.positionData.valueVi} - ${doctor.lastName} ${doctor.firstName} ${
-              remote ? "(Bác sĩ từ xa)" : ""
-            }`
-          : `${doctor.positionData.valueEn} - ${doctor.firstName} ${doctor.lastName} ${
-              remote ? "(Telemedicine)" : ""
-            }`
-      }`;
+    const {
+      moreData: { firstName, lastName, positionData, roleData },
+    } = doctor;
+    const position = language === "vi" ? positionData.valueVi : positionData.valueEn;
+    const role = language === "vi" ? roleData.valueVi : roleData.valueEn;
+    const nameDoctor = language === "vi" ? `${lastName} ${firstName}` : `${firstName} ${lastName}`;
+    const typeRemote = remote ? (language === "vi" ? "(Bác sĩ từ xa)" : "(Telemedicine)") : "";
+
+    if (positionData.keyMap === "P0") {
+      return `${role} - ${nameDoctor} ${typeRemote}`;
     }
 
-    return `${
-      language === "vi"
-        ? `${doctor.positionData.valueVi} - ${doctor.roleData.valueVi} - ${doctor.lastName} ${
-            doctor.firstName
-          } ${remote ? "(Bác sĩ từ xa)" : ""} `
-        : `
-    ${doctor.positionData.valueEn} - ${doctor.roleData.valueEn} - ${doctor.firstName} ${doctor.lastName} ${
-            remote ? "(Telemedicine)" : ""
-          }
-    `
-    }`;
+    if (roleData.keyMap === "R8") {
+      return `${position} - ${nameDoctor} ${typeRemote}`;
+    }
+
+    return `${position} - ${role} - ${nameDoctor} ${typeRemote}`;
   };
 
   if (!_.isEmpty(packageData)) {
@@ -94,7 +78,7 @@ const Introduce = ({ doctorData, id, small, buttonSeeMore, packageData, packageC
           <div
             className="introduction-left__image"
             style={{
-              backgroundImage: `url(${doctorData?.imageUrl ? doctorData?.imageUrl : ""})`,
+              backgroundImage: `url(${doctorData?.moreData.imageUrl ? doctorData?.moreData.imageUrl : ""})`,
             }}
           ></div>
           {buttonSeeMore && (
@@ -104,7 +88,7 @@ const Introduce = ({ doctorData, id, small, buttonSeeMore, packageData, packageC
                   {t("button.see-more")}
                 </Link>
               ) : (
-                <Link to={`/doctor/${id}`} className="info-left__button">
+                <Link to={`/doctor/${doctorData.doctorId}`} className="info-left__button">
                   {t("button.see-more")}
                 </Link>
               )}
@@ -113,10 +97,12 @@ const Introduce = ({ doctorData, id, small, buttonSeeMore, packageData, packageC
         </div>
         <div className="introduction-right">
           <h2 className="introduction-right__name">
-            {doctorData?.positionData && doctorData?.roleData && handleDisplayNameRolePosition(doctorData)}
+            {doctorData?.moreData.positionData &&
+              doctorData?.moreData.roleData &&
+              handleDisplayNameRolePosition(doctorData)}
           </h2>
           <div className="introduction-right__summary">
-            {doctorData?.moreData?.introductionHTML && HtmlReactParser(doctorData.moreData.introductionHTML)}
+            {doctorData?.introductionHTML && HtmlReactParser(doctorData.introductionHTML)}
           </div>
         </div>
       </div>

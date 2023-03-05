@@ -10,16 +10,7 @@ import { formatterPrice } from "../../utils/helpers";
 
 import "../../styles/ClinicInfo.scss";
 
-const ClinicInfo = ({
-  doctorData,
-  id,
-  small,
-  packageData,
-  needAddress,
-  assurance,
-  remote,
-  packageOfClinic,
-}) => {
+const ClinicInfo = ({ doctorData, small, packageData, needAddress, assurance, remote, packageOfClinic }) => {
   const [state, setState] = useState({
     showPrice: false,
     showInsurance: false,
@@ -57,9 +48,7 @@ const ClinicInfo = ({
     }
 
     if (!_.isEmpty(doctorData)) {
-      const {
-        moreData: { clinic, paymentData, priceData },
-      } = doctorData;
+      const { clinic, priceData, paymentData } = doctorData;
       name = language === "vi" ? clinic.nameVi : clinic.nameEn;
       address = clinic.address;
       price =

@@ -123,7 +123,9 @@
     "consultant-remote": "Tư vấn từ xa",
 
     "name-vi": "Tên (vi)",
-    "name-en": "Tên (en)"
+    "name-en": "Tên (en)",
+    "doctor": "Bác sĩ",
+    "examination-package": "Gói khám bệnh"
   },
 
   "user-manage": {

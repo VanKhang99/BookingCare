@@ -1,0 +1,81 @@
+@import "./sass/variables";
+
+.clinic-top {
+  &__image {
+    height: 23rem;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+  }
+  .top-info {
+    padding: 2rem 0rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      img {
+        width: 14rem;
+        height: auto;
+        object-fit: cover;
+        padding: 0.4rem;
+        border: 1px solid $grey-4;
+        border-radius: 0.6rem;
+      }
+
+      .more-info {
+        span {
+          display: block;
+        }
+        &__name {
+          color: $main-color-text;
+          opacity: 0.96;
+          font-weight: 700;
+          font-size: $base-size + 1rem;
+        }
+
+        &__address {
+          display: flex;
+          align-items: center;
+          gap: 0.2rem;
+          margin-top: 0.4rem;
+          svg {
+            width: 1.8rem;
+            height: 1.8rem;
+            opacity: 0.8;
+            margin-top: -2px;
+          }
+
+          span {
+            font-size: $base-size + 0.2rem;
+            font-weight: 300;
+          }
+        }
+      }
+    }
+
+    &-right {
+      button,
+      a {
+        padding: 1rem 3.4rem;
+        font-weight: 700;
+        color: $main-color-text;
+        background-color: $color-yellow-dark;
+        border-radius: 0.5rem;
+        text-transform: uppercase;
+        transition: opacity 0.1s linear;
+
+        &:hover {
+          opacity: 0.9;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

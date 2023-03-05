@@ -110,7 +110,7 @@ const Slider = ({
           )}
 
           {clinicDoctor && (
-            <Link to={`/`} className="button button-main">
+            <Link to={`/${path.CLINIC}/${clinicId}/${path.DOCTOR}s`} className="button button-main">
               {buttonText}
             </Link>
           )}

@@ -7,8 +7,14 @@ import { useFetchDataBaseId } from "../utils/CustomHook";
 import { getClinic } from "../slices/clinicSlice";
 import { useInView, InView } from "react-intersection-observer";
 import { Link as LinkScroll } from "react-scroll";
-import { MdLocationOn } from "react-icons/md";
-import { BookingCareIntro, BookingCareBenefit, ClinicBooking, ClinicTopic, Loading } from "../components";
+import {
+  BookingCareIntro,
+  BookingCareBenefit,
+  ClinicBooking,
+  ClinicTopic,
+  ClinicTop,
+  Loading,
+} from "../components";
 import "../styles/DetailClinic.scss";
 
 const DetailClinic = () => {
@@ -63,46 +69,9 @@ const DetailClinic = () => {
       <div className="clinic-content">
         {!_.isEmpty(dataClinic) ? (
           <>
-            <div className="clinic-top u-wrapper">
-              <div
-                className="clinic-top__image"
-                style={{ backgroundImage: `url(${dataClinic.imageUrl})` }}
-              ></div>
-
-              <InView>
-                <div className="top-info" ref={ref}>
-                  <div className="top-info-left">
-                    <img src={dataClinic.logoUrl} alt={dataClinic.nameVi} />
-                    <div className="more-info">
-                      <span className="more-info__name">
-                        {language === "vi" ? dataClinic.nameVi : dataClinic.nameEn}
-                      </span>
-                      <div className="more-info__address">
-                        <MdLocationOn />
-                        <span>{dataClinic?.address}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="top-info-right">
-                    {dataClinic.haveSpecialtyPage ? (
-                      <Link to={`/clinic/${+clinicId}/specialties`}> {t("button.booking-examination")}</Link>
-                    ) : (
-                      <LinkScroll
-                        activeClass="active"
-                        className="button"
-                        to={language === "vi" ? "Đặt lịch khám" : "Booking"}
-                        spy={true}
-                        smooth={true}
-                        duration={500}
-                        offset={-160}
-                      >
-                        {t("button.booking-examination")}
-                      </LinkScroll>
-                    )}
-                  </div>
-                </div>
-              </InView>
-            </div>
+            <InView>
+              <ClinicTop refObserver={ref} clinicId={clinicId} dataClinic={dataClinic} />
+            </InView>
 
             <div className={`clinic-navigator ${inView ? "" : "fixed"}`}>
               <ul className="navigator-list">

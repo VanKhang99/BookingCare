@@ -138,7 +138,9 @@
     "consultant-remote": "Remote consultant",
 
     "name-vi": "Name (vi)",
-    "name-en": "Name (en)"
+    "name-en": "Name (en)",
+    "doctor": "Doctor",
+    "examination-package": "Examination package"
   },
 
   "doctor-manage": {

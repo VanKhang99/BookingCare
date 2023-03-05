@@ -158,7 +158,7 @@ const DetailSpecialty = ({ remote }) => {
       <div className="modal-booking">
         <ModalBooking
           show={state.isOpenModalBooking}
-          onHide={() => handleModal()}
+          onHide={handleModal}
           doctorId={state.doctorId ? state.doctorId : ""}
           doctor={state.doctorData ? state.doctorData : {}}
           hourClicked={state.hourClicked && !_.isEmpty(state.hourClicked) && state.hourClicked}

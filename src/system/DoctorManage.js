@@ -154,24 +154,25 @@ const AddInfoDoctor = () => {
   const handleUpdateDoctor = async (selectedOption) => {
     try {
       const res = await dispatch(getDoctor(+selectedOption?.value || +state.oldIdDoctor));
+      console.log(res);
 
       if (!res.payload.data) return toast.error("Get data doctor failed. Please check and try again!");
       const doctor = res.payload.data;
-      const { moreData } = doctor;
+      const { priceData, paymentData, provinceData, specialtyData } = doctor;
 
-      const doctorSelected = findItemSelectedById("doctor", doctors, doctor.id);
-      const priceInDB = findItemSelectedById("price", priceArr, moreData.priceData.keyMap);
-      const paymentInDB = findItemSelectedById("payment", paymentArr, moreData.paymentData.keyMap);
-      const provinceInDB = findItemSelectedById("province", provinceArr, moreData.provinceData.keyMap);
-      const specialtyInDB = findItemSelectedById("specialty", specialties, moreData.specialtyData.id);
-      const clinicInDB = findItemSelectedById("clinic", clinics, moreData.clinic.id);
+      const doctorSelected = findItemSelectedById("doctor", doctors, doctor.doctorId);
+      const priceInDB = findItemSelectedById("price", priceArr, priceData.keyMap);
+      const paymentInDB = findItemSelectedById("payment", paymentArr, paymentData.keyMap);
+      const provinceInDB = findItemSelectedById("province", provinceArr, provinceData.keyMap);
+      const specialtyInDB = findItemSelectedById("specialty", specialties, specialtyData.id);
+      const clinicInDB = findItemSelectedById("clinic", clinics, doctor.clinicId);
 
       return setState({
         ...state,
-        introductionHTML: moreData.introductionHTML,
-        introductionMarkdown: moreData.introductionMarkdown,
-        aboutHTML: moreData.aboutHTML,
-        aboutMarkdown: moreData.aboutMarkdown,
+        introductionHTML: doctor.introductionHTML,
+        introductionMarkdown: doctor.introductionMarkdown,
+        aboutHTML: doctor.aboutHTML,
+        aboutMarkdown: doctor.aboutMarkdown,
 
         selectedDoctor: doctorSelected,
         selectedPrice: priceInDB,
@@ -179,13 +180,13 @@ const AddInfoDoctor = () => {
         selectedProvince: provinceInDB,
         selectedSpecialty: specialtyInDB,
         selectedClinic: clinicInDB,
-        addressClinic: moreData.addressClinic ?? "",
-        popular: moreData.popular ?? 0,
-        remote: moreData.remote ?? 0,
-        note: moreData.note ?? "",
+        addressClinic: doctor.addressClinic ?? "",
+        popular: doctor.popular ?? 0,
+        remote: doctor.remote ?? 0,
+        note: doctor.note ?? "",
         isHaveInfo: true,
         action: "edit",
-        oldIdDoctor: doctor.id,
+        oldIdDoctor: doctor.doctorId,
       });
     } catch (error) {
       console.log(error);

@@ -117,7 +117,6 @@ const ModalBooking = ({
     }
 
     try {
-      console.log(packageData);
       let clinicName;
       let doctorName;
       let packageName;
@@ -165,7 +164,7 @@ const ModalBooking = ({
       // console.log(result);
 
       if (result.payload.status === "error") {
-        onHide(hourClicked, "full-booking");
+        onHide(hourClicked);
         return toast.error(result.payload.message);
       }
 

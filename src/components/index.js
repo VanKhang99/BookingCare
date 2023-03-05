@@ -22,6 +22,7 @@ import ClinicTopic from "./ClinicTopic";
 import Pagination from "./Pagination";
 import InputSearch from "./InputSearch";
 import Loading from "./Loading";
+import ClinicTop from "./ClinicTop";
 
 export {
   Header,
@@ -48,4 +49,5 @@ export {
   Pagination,
   InputSearch,
   Loading,
+  ClinicTop,
 };

@@ -16,7 +16,7 @@ const SharedLayout = ({ clientInterface }) => {
           <Outlet />
         </>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column" }}>
+        <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
           <Header />
           <Outlet />
           <Footer />

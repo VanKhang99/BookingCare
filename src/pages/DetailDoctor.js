@@ -3,7 +3,7 @@ import HtmlReactParser from "html-react-parser";
 import _ from "lodash";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useFetchDataBaseId } from "../utils/CustomHook";
+import { useFetchDataBaseId, useDataModal } from "../utils/CustomHook";
 import { getDoctor } from "../slices/doctorSlice";
 import { DateOptions, BookingHours, ClinicInfo, ModalBooking, Introduce, Loading } from "../components";
 import "../styles/DetailDoctor.scss";
@@ -22,6 +22,8 @@ const DetailDoctor = ({ remote }) => {
   const { doctorId } = useParams();
   const { language } = useSelector((store) => store.app);
   const doctor = useFetchDataBaseId(id || doctorId, "doctor", getDoctor);
+  const dataModal = useDataModal(language, doctor, state.hourBooked);
+  console.log(dataModal);
 
   const handleModal = (hourClicked, action = "") => {
     if (action === "full-booking") {
@@ -43,25 +45,6 @@ const DetailDoctor = ({ remote }) => {
     return setState({ ...state, schedules: schedulesArr });
   };
 
-  const handleDoctorDataOnModal = useCallback(() => {
-    if (_.isEmpty(doctor)) return;
-
-    const dataDoctorModal = {
-      doctorName:
-        language === "vi"
-          ? `${doctor.lastName} ${doctor.firstName}`
-          : `${doctor.firstName} ${doctor.lastName}`,
-      imageUrl: doctor.imageUrl,
-      price: doctor.moreData.priceData,
-      clinicName: language === "vi" ? doctor.moreData.clinic.nameVi : doctor.moreData.clinic.nameEn,
-      position: language === "vi" ? doctor.positionData.valueVi : doctor.positionData.valueEn,
-      role: language === "vi" ? doctor.roleData.valueVi : doctor.roleData.valueEn,
-      positionId: doctor.positionData.keyMap,
-    };
-    return dataDoctorModal;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.hourClicked]);
-
   return (
     <div className="outstanding-doctor-container">
       {!_.isEmpty(doctor) ? (
@@ -81,7 +64,7 @@ const DetailDoctor = ({ remote }) => {
 
           <div className="outstanding-doctor">
             <div className="outstanding-doctor__background  u-wrapper">
-              {doctor.moreData.aboutHTML && HtmlReactParser(doctor.moreData.aboutHTML)}
+              {doctor?.aboutHTML && HtmlReactParser(doctor?.aboutHTML)}
             </div>
           </div>
           <div className="outstanding-doctor-feedback u-wrapper">Feedback</div>
@@ -90,7 +73,7 @@ const DetailDoctor = ({ remote }) => {
             <ModalBooking
               show={state.isOpenModalBooking}
               onHide={handleModal}
-              doctorData={handleDoctorDataOnModal()}
+              doctorData={!_.isEmpty(dataModal) ? dataModal : {}}
               action={state.action}
               hourClicked={state.hourClicked && !_.isEmpty(state.hourClicked) && state.hourClicked}
             />

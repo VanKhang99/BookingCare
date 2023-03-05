@@ -20,7 +20,7 @@ const Doctor = ({ doctorId, doctorData, onToggleModal, needAddress, assurance, r
     <>
       <li className="doctor">
         <div className="doctor-left">
-          <Introduce id={+doctorId} small buttonSeeMore remote={remote} />
+          <Introduce doctorData={doctorData} small buttonSeeMore remote={remote} />
 
           <div className="doctor-location">
             <MdLocationOn />
@@ -39,7 +39,13 @@ const Doctor = ({ doctorId, doctorData, onToggleModal, needAddress, assurance, r
             small
             remote={remote}
           />
-          <ClinicInfo id={doctorId} small needAddress={needAddress} assurance={assurance} remote={remote} />
+          <ClinicInfo
+            doctorData={doctorData}
+            small
+            needAddress={needAddress}
+            assurance={assurance}
+            remote={remote}
+          />
         </div>
       </li>
     </>

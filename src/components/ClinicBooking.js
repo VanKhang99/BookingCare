@@ -90,7 +90,7 @@ const ClinicBooking = ({ title, clinicId, pageClinicSpecialty, specialtyId }) =>
           <div className="doctors">
             {!pageClinicSpecialty && (
               <Slider
-                mainTitle={language === "vi" ? "Bác sĩ" : "Doctor"}
+                mainTitle={t("common.doctor")}
                 buttonText={t("button.see-more").toUpperCase()}
                 clinicDoctor="clinic-doctors"
                 clinicId={clinicId}
@@ -108,7 +108,7 @@ const ClinicBooking = ({ title, clinicId, pageClinicSpecialty, specialtyId }) =>
           </div>
           <div className="packages">
             <Slider
-              mainTitle={pageClinicSpecialty ? "Bác sĩ" : "Gói khám bệnh"}
+              mainTitle={pageClinicSpecialty ? t("common.doctor") : t("common.examination-package")}
               buttonText={t("button.see-more").toUpperCase()}
               clinicPackage="clinic-package"
               clinicId={clinicId}

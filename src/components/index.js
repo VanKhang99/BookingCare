@@ -23,6 +23,7 @@ import Pagination from "./Pagination";
 import InputSearch from "./InputSearch";
 import Loading from "./Loading";
 import ClinicTop from "./ClinicTop";
+import ScrollToTop from "./ScrollToTop";
 
 export {
   Header,
@@ -50,4 +51,5 @@ export {
   InputSearch,
   Loading,
   ClinicTop,
+  ScrollToTop,
 };

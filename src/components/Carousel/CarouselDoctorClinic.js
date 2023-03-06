@@ -13,7 +13,9 @@ const CarouselDoctorClinic = ({ clinicId, settings }) => {
   const { doctorsById } = useSelector((store) => store.doctor);
 
   useEffect(() => {
-    dispatch(getAllDoctorsById({ nameColumnMap: "clinicId", id: clinicId }));
+    dispatch(
+      getAllDoctorsById({ nameColumnMap: "clinicId", id: clinicId, typeRemote: "includeTrueAndFalse" })
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

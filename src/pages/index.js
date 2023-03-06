@@ -3,7 +3,7 @@ import Specialties from "./Specialties";
 import DetailSpecialty from "./DetailSpecialty";
 import Clinics from "./Clinics";
 import DetailClinic from "./DetailClinic";
-import ClinicDoctors from "./ClinicDoctors";
+import ClinicCarouselMore from "./ClinicCarouselMore";
 import ClinicSpecialties from "./ClinicSpecialties";
 import DetailClinicSpecialty from "./DetailClinicSpecialty";
 import Doctors from "./Doctors";
@@ -35,7 +35,7 @@ export {
   DetailSpecialty,
   Clinics,
   DetailClinic,
-  ClinicDoctors,
+  ClinicCarouselMore,
   ClinicSpecialties,
   DetailClinicSpecialty,
   Doctors,

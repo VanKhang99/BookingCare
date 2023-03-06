@@ -19,7 +19,7 @@ export const getAllDoctors = createAsyncThunk("doctor/getAllDoctors", async (typ
 
 export const getAllDoctorsById = createAsyncThunk("doctor/getAllDoctorsById", async (data, thunkAPI) => {
   try {
-    const res = await axios.get(`/api/doctors/${data.nameColumnMap}/${data.id}`);
+    const res = await axios.get(`/api/doctors/${data.nameColumnMap}/${data.id}/remote=${data.typeRemote}`);
     return res;
   } catch (error) {
     return error.response.data;
@@ -89,7 +89,8 @@ export const doctorSlice = createSlice({
       })
       .addCase(getAllDoctorsById.fulfilled, (state, { payload }) => {
         state.isLoadingDoctors = false;
-        state.doctorsById = payload.data.doctors;
+        console.log(payload);
+        state.doctorsById = payload?.data?.doctors;
       })
       .addCase(getAllDoctorsById.rejected, (state) => {
         state.isLoadingDoctors = false;

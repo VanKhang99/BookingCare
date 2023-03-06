@@ -23,8 +23,8 @@ const initialState = {
   typesCreated: [],
   selectedType: "",
 
-  typeEn: "",
-  typeVi: "",
+  nameEn: "",
+  nameVi: "",
   image: "",
   fileImage: "",
   previewImageUrl: "",
@@ -56,7 +56,7 @@ const PackageTypeManage = () => {
     if (!data) return;
 
     const objectOptions = data.map((item) => {
-      const label = language === "vi" ? `${item.typeVi}` : `${item.typeEn}`;
+      const label = language === "vi" ? `${item.nameVi}` : `${item.nameEn}`;
       const value = item.id;
 
       return { label, value };
@@ -90,7 +90,7 @@ const PackageTypeManage = () => {
   const handleSaveData = async (e) => {
     e.preventDefault();
     try {
-      const propsCheckArr = ["typeEn", "typeVi", "image"];
+      const propsCheckArr = ["nameEn", "nameVi", "image"];
       const validate = checkData(state, propsCheckArr);
       if (!validate) return toast.error("Please fill in all information before saving");
 
@@ -109,8 +109,8 @@ const PackageTypeManage = () => {
       //Save image to db
       const packageTypeInfo = {
         id: state.selectedType?.value,
-        typeEn: state.typeEn,
-        typeVi: state.typeVi,
+        nameEn: state.nameEn,
+        nameVi: state.nameVi,
         image: imageUploadToS3?.data?.data?.image,
         action: state.action || "create",
         table: "package-type",
@@ -139,8 +139,8 @@ const PackageTypeManage = () => {
       return setState({
         ...state,
         selectedType: packageTypeSelected,
-        typeEn: packageTypeData.typeEn ?? "",
-        typeVi: packageTypeData.typeVi ?? "",
+        nameEn: packageTypeData.nameEn ?? "",
+        nameVi: packageTypeData.nameVi ?? "",
         image: packageTypeData.image,
         previewImageUrl: packageTypeData.imageUrl,
         isHaveInfo: true,
@@ -226,9 +226,9 @@ const PackageTypeManage = () => {
                   <h4 className="u-input-label">{t("package-type-manage.type-vi")}</h4>
                   <Form.Control
                     type="text"
-                    value={state.typeVi}
+                    value={state.nameVi}
                     className="u-input"
-                    onChange={(e, id) => handleInputs(e, "typeVi")}
+                    onChange={(e, id) => handleInputs(e, "nameVi")}
                   />
                 </Form.Group>
 
@@ -236,9 +236,9 @@ const PackageTypeManage = () => {
                   <h4 className="u-input-label">{t("package-type-manage.type-eng")}</h4>
                   <Form.Control
                     type="text"
-                    value={state.typeEn}
+                    value={state.nameEn}
                     className="u-input"
-                    onChange={(e, id) => handleInputs(e, "typeEn")}
+                    onChange={(e, id) => handleInputs(e, "nameEn")}
                   />
                 </Form.Group>
 

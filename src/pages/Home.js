@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 import { Banner, Slider, Media, CTA } from "../components";
 
 const Home = () => {
   const { t } = useTranslation();
+  const { language } = useSelector((store) => store.app);
+
+  useEffect(() => {
+    document.title =
+      language === "vi"
+        ? "BookingCare - Nền tảng chăm sóc sức khỏe toàn diện"
+        : "BookingCare - Comprehensive healthcare platform";
+  }, [language]);
   return (
     <div className="app">
       <main>

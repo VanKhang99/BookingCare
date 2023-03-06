@@ -36,26 +36,35 @@ export const useFetchDataBaseId = (id, type, functionDispatch, remote = undefine
   return data;
 };
 
-export const useDataModal = (language, data, hourClicked) => {
-  // console.log(data);
-  return useMemo(() => {
+export const useDataModal = (language, data, dataOf, hourClicked) => {
+  const dataModal = useMemo(() => {
     if (_.isEmpty(data)) return;
-    const {
-      priceData,
-      clinic,
-      moreData: { firstName, lastName, imageUrl, positionData, roleData },
-    } = data;
+    if (dataOf === "package") {
+      const { nameVi, nameEn, imageUrl, pricePackage, clinicData } = data;
+      return {
+        packageName: language === "vi" ? nameVi : nameEn,
+        image: imageUrl,
+        price: pricePackage,
+        clinicName: language === "vi" ? clinicData.nameVi : clinicData.nameEn,
+      };
+    } else {
+      const {
+        priceData,
+        clinic,
+        moreData: { firstName, lastName, imageUrl, positionData, roleData },
+      } = data;
+      return {
+        doctorName: language === "vi" ? `${lastName} ${firstName}` : `${firstName} ${lastName}`,
+        imageUrl: imageUrl,
+        price: priceData,
+        clinicName: language === "vi" ? clinic.nameVi : clinic.nameEn,
+        position: language === "vi" ? positionData.valueVi : positionData.valueEn,
+        role: language === "vi" ? roleData.valueVi : roleData.valueEn,
+        positionId: positionData.keyMap,
+      };
+    }
 
-    const dataModal = {
-      doctorName: language === "vi" ? `${lastName} ${firstName}` : `${firstName} ${lastName}`,
-      imageUrl: imageUrl,
-      price: priceData,
-      clinicName: language === "vi" ? clinic.nameVi : clinic.nameEn,
-      position: language === "vi" ? positionData.valueVi : positionData.valueEn,
-      role: language === "vi" ? roleData.valueVi : roleData.valueEn,
-      positionId: positionData.keyMap,
-    };
-    return dataModal;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hourClicked]);
+  return dataModal;
 };

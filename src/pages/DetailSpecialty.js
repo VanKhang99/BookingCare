@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import _ from "lodash";
-import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
 import { getInfoSpecialty } from "../slices/specialtySlice";
-import { getDoctor, getDoctorsBaseKeyMap } from "../slices/doctorSlice";
+import { useDataModal } from "../utils/CustomHook";
+import { getDoctor, getAllDoctorsById } from "../slices/doctorSlice";
+
 import { IntroSpecialty, Doctor, ModalBooking, ProvinceOptions, RoleBookingCare } from "../components";
 import "../styles/DetailSpecialty.scss";
 
@@ -20,27 +23,42 @@ const initialState = {
 const DetailSpecialty = ({ remote }) => {
   const [state, setState] = useState({ ...initialState });
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { specialtyId } = useParams();
+  const { language } = useSelector((store) => store.app);
+  const dataModal = useDataModal(language, state.doctorData, "doctor", state.hourClicked);
 
   const doctorsFilter = useMemo(async () => {
-    const res = await dispatch(getDoctorsBaseKeyMap({ keyMapId: specialtyId, remote }));
+    const res = await dispatch(
+      getAllDoctorsById({
+        nameColumnMap: "specialtyId",
+        id: +specialtyId,
+        typeRemote: "includeOnlyFalse",
+      })
+    );
 
-    if (res?.payload?.data.length > 0) return res.payload.data;
+    if (res?.payload?.data.doctors.length > 0) return res.payload.data.doctors;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleFetchDataSpecialty = async (id) => {
+  const handleFetchData = async (id) => {
     try {
       const data = await Promise.all([
-        dispatch(getInfoSpecialty(id)),
-        dispatch(getDoctorsBaseKeyMap({ keyMapId: id, remote })),
+        dispatch(getInfoSpecialty(+id)),
+        dispatch(
+          getAllDoctorsById({
+            nameColumnMap: "specialtyId",
+            id: +id,
+            typeRemote: remote ? "includeOnlyTrue" : "includeOnlyFalse",
+          })
+        ),
       ]);
       console.log(data);
 
       return setState({
         ...state,
-        specialtyData: { ...data[0].payload.specialty },
-        doctors: [...data[1].payload.data],
+        specialtyData: { ...data[0].payload.data },
+        doctors: data[1].payload.status === "error" ? [] : [...data[1].payload.data.doctors],
       });
     } catch (error) {
       console.log(error);
@@ -80,26 +98,26 @@ const DetailSpecialty = ({ remote }) => {
   };
 
   const handleProvinceChange = async (option) => {
+    console.log(option);
     const doctorsCopy = await doctorsFilter;
+    console.log(doctorsCopy);
 
     if (option.value === "*") {
       return setState({ ...state, doctors: doctorsCopy });
     }
 
     if (option.value !== "*") {
-      const newDoctors = doctorsCopy.filter((doctor) => doctor.provinceId === option.value);
+      const newDoctors = doctorsCopy.filter((doctor) => doctor.provinceData.keyMap === option.value);
       return setState({ ...state, doctors: newDoctors });
     }
   };
 
   useEffect(() => {
     if (specialtyId) {
-      handleFetchDataSpecialty(specialtyId);
+      handleFetchData(specialtyId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  console.log(state);
 
   return (
     <div className="specialty-container">
@@ -116,7 +134,9 @@ const DetailSpecialty = ({ remote }) => {
 
           <div className="specialty-doctors">
             <div className="u-wrapper">
-              <h2 className="specialty-doctors__title">Các bác sĩ chuyên khoa</h2>
+              <h2 className="specialty-doctors__title">
+                {language === "vi" ? "Các bác sĩ chuyên khoa" : "Specialties Doctors"}
+              </h2>
 
               <ProvinceOptions
                 specialtyId={specialtyId ? specialtyId : ""}
@@ -149,7 +169,7 @@ const DetailSpecialty = ({ remote }) => {
         <div className="specialty-footer">
           <div className="more-explore">
             <p className="u-wrapper">
-              Cần tìm hiểu thêm? <a href="#">Xem câu hỏi thường gặp</a>
+              {t("detail-specialty.explore-more")} <a href="#"> {t("detail-specialty.see-question")} </a>
             </p>
           </div>
         </div>

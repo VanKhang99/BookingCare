@@ -5,7 +5,7 @@ import {
   DetailSpecialty,
   Clinics,
   DetailClinic,
-  ClinicDoctors,
+  ClinicCarouselMore,
   ClinicSpecialties,
   DetailClinicSpecialty,
   Doctors,
@@ -71,11 +71,20 @@ function App() {
 
             <Route path={`${path.CLINIC}s`} element={<Clinics />} />
             <Route path={`${path.CLINIC}/:clinicId`} element={<DetailClinic />} />
-            <Route path={`${path.CLINIC}/:clinicId/${path.DOCTOR}s`} element={<ClinicDoctors />} />
+            <Route
+              path={`${path.CLINIC}/:clinicId/${path.DOCTOR}s`}
+              element={<ClinicCarouselMore pageClinicDoctors={1} />}
+            />
             <Route
               path={`${path.CLINIC}/:clinicId/${path.DOCTOR}/:doctorId`}
               element={<DetailDoctor remote={0} />}
             />
+
+            <Route
+              path={`${path.CLINIC}/:clinicId/${path.PACKAGE}s`}
+              element={<ClinicCarouselMore pageClinicDoctors={0} />}
+            />
+
             <Route
               path={`${path.CLINIC}/:clinicId/${path.PACKAGE}/:packageId`}
               element={<PackageDetail packageOfClinic={1} />}

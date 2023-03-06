@@ -3,7 +3,7 @@ import HtmlReactParser from "html-react-parser";
 import _ from "lodash";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useFetchDataBaseId } from "../utils/CustomHook";
+import { useFetchDataBaseId, useDataModal } from "../utils/CustomHook";
 import { getPackage } from "../slices/packageSlice";
 import { DateOptions, BookingHours, ClinicInfo, ModalBooking, Introduce, Loading } from "../components";
 
@@ -20,6 +20,7 @@ const PackageDetail = ({ packageOfClinic }) => {
   const { packageId } = useParams();
   const { language } = useSelector((store) => store.app);
   const packageData = useFetchDataBaseId(packageId, "package", getPackage);
+  const dataModal = useDataModal(language, packageData, "package", state.hourClicked);
 
   const handleModal = (hourClicked) => {
     return setState({
@@ -32,19 +33,6 @@ const PackageDetail = ({ packageOfClinic }) => {
   const handleUpdateSchedules = (schedulesArr) => {
     return setState({ ...state, schedules: schedulesArr });
   };
-
-  const handlePackageDataOnModal = useCallback(() => {
-    if (_.isEmpty(packageData)) return;
-
-    const dataPackageModal = {
-      packageName: language === "vi" ? packageData.nameVi : packageData.nameEn,
-      image: packageData.imageUrl,
-      price: packageData.pricePackage,
-      clinicName: language === "vi" ? packageData.clinicData.nameVi : packageData.clinicData.nameEn,
-    };
-    return dataPackageModal;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.hourClicked]);
 
   return (
     <div className="package-container">
@@ -94,7 +82,7 @@ const PackageDetail = ({ packageOfClinic }) => {
               show={state.isOpenModalBooking}
               onHide={() => handleModal()}
               packageId={packageId ? packageId : ""}
-              packageData={handlePackageDataOnModal()}
+              packageData={!_.isEmpty(dataModal) ? dataModal : {}}
               hourClicked={!_.isEmpty(state.hourClicked) && state.hourClicked}
             />
           </div>

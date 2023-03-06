@@ -29,6 +29,12 @@
         font-size: $base-size + 0.6rem;
         font-weight: 700;
         padding: 1.5rem 0;
+        color: $color-blue-2;
+        text-transform: uppercase;
+
+        strong {
+          font-size: $base-size + 0.6rem;
+        }
       }
 
       strong {
@@ -55,7 +61,7 @@
         border: none;
         background-color: transparent;
         color: $color-blue-dark-2;
-        font-weight: 700;
+        font-weight: 500;
         font-size: $base-size + 0.2rem;
         padding: 0.8rem 0 0.8rem;
       }

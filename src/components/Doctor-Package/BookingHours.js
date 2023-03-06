@@ -13,9 +13,9 @@ const BookingHours = ({ schedules, doctorId, packageId, onToggleModal, small, re
 
   const handleClick = (hourClicked, doctorId = null, packageId = null) => {
     if (doctorId) {
-      onToggleModal(hourClicked, doctorId);
+      onToggleModal(hourClicked, +doctorId);
     } else {
-      onToggleModal(hourClicked, doctorId, packageId);
+      onToggleModal(hourClicked, +doctorId, +packageId);
     }
   };
 

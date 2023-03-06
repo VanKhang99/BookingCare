@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { useDispatch, useSelector } from "react-redux";
-import { getDoctorsBaseKeyMap } from "../slices/doctorSlice";
+import { getAllDoctorsById } from "../slices/doctorSlice";
 import "../styles/ProvinceOptions.scss";
 
 const initialState = {
@@ -40,13 +40,19 @@ const ProvinceOptions = ({ specialtyId, onProvinceChange, remote }) => {
 
   const handleOptionLocation = async (id) => {
     try {
-      const res = await dispatch(getDoctorsBaseKeyMap({ keyMapId: id, remote }));
-      if (!res) return;
-      const { data } = res.payload;
-      const provinces = data.map((doctor) => {
+      const res = await dispatch(
+        getAllDoctorsById({
+          nameColumnMap: "specialtyId",
+          id: +id,
+          typeRemote: remote ? "includeOnlyTrue" : "includeOnlyFalse",
+        })
+      );
+      console.log(res);
+
+      const provinces = res.payload?.data.doctors.map((doctor) => {
         return {
           label: language === "vi" ? doctor.provinceData.valueVi : doctor.provinceData.valueEn,
-          value: doctor.provinceId,
+          value: doctor.provinceData.keyMap,
         };
       });
       const provincesUnique = makeUniqueLocation(provinces);
@@ -57,7 +63,7 @@ const ProvinceOptions = ({ specialtyId, onProvinceChange, remote }) => {
         });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -71,6 +77,8 @@ const ProvinceOptions = ({ specialtyId, onProvinceChange, remote }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
+
+  console.log(state);
 
   return (
     <>

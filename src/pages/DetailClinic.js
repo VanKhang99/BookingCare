@@ -14,6 +14,7 @@ import {
   ClinicTopic,
   ClinicTop,
   Loading,
+  ScrollToTop,
 } from "../components";
 import "../styles/DetailClinic.scss";
 
@@ -161,6 +162,8 @@ const DetailClinic = () => {
           <Loading />
         )}
       </div>
+
+      <ScrollToTop />
     </div>
   );
 };

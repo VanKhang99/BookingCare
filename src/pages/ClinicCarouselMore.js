@@ -3,13 +3,14 @@ import _ from "lodash";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { ClinicTop, InputSearch, Doctor, ModalBooking } from "../components";
+import { ClinicTop, InputSearch, Doctor, Package, ModalBooking } from "../components";
 import { getClinic } from "../slices/clinicSlice";
+import { getAllPackages, getPackage } from "../slices/packageSlice";
 import { getAllDoctorsById, getDoctor } from "../slices/doctorSlice";
 import { useFetchDataBaseId, useDataModal } from "../utils/CustomHook";
 import { GoSearch } from "react-icons/go";
 import { SlRefresh } from "react-icons/sl";
-import "../styles/ClinicDoctors.scss";
+import "../styles/ClinicCarouselMore.scss";
 
 const initialState = {
   inputSearch: "",
@@ -18,18 +19,26 @@ const initialState = {
 
   doctorId: "",
   doctorData: {},
+  packageId: "",
+  packageData: {},
   action: "",
 };
 
-const ClinicDoctors = () => {
+const ClinicCarouselMore = ({ pageClinicDoctors }) => {
   const [state, setState] = useState(initialState);
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { clinicId } = useParams();
   const { language } = useSelector((store) => store.app);
   const { doctorsById } = useSelector((store) => store.doctor);
+  const { packageArr } = useSelector((store) => store.package);
   const dataClinic = useFetchDataBaseId(clinicId ? +clinicId : "", "clinic", getClinic);
-  const dataModal = useDataModal(language, state.doctorData, state.hourClicked);
+  const dataModal = useDataModal(
+    language,
+    state[pageClinicDoctors ? "doctorData" : "packageData"],
+    pageClinicDoctors ? "doctor" : "package",
+    state.hourClicked
+  );
 
   const handleOnChangeSearch = (e) => {
     return setState({ ...state, inputSearch: e.target.value });
@@ -48,15 +57,23 @@ const ClinicDoctors = () => {
     //pass DoctorId --> Doctor --> BookingHours
     /// --> Run function (handleClick) to get "doctorId" pass reverse to parentComponent
     ////////via function handleModal --> run get dataDoctor and price to ModalBooking
-    // console.log(action);
+
     try {
-      const res = await dispatch(getDoctor(+doctorId));
+      let res;
+      if (pageClinicDoctors) {
+        res = await dispatch(getDoctor(+doctorId));
+      } else {
+        res = await dispatch(getPackage(+packageId));
+      }
+      console.log(res);
 
       if (res?.payload?.data) {
         return setState({
           ...state,
-          doctorData: res.payload.data,
-          doctorId,
+          ...(pageClinicDoctors
+            ? { doctorData: res.payload.data, doctorId }
+            : { packageData: res.payload.data, packageId }),
+
           isOpenModalBooking: !state.isOpenModalBooking,
           hourClicked: { ...hourClicked },
         });
@@ -73,12 +90,18 @@ const ClinicDoctors = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllDoctorsById({ nameColumnMap: "clinicId", id: +clinicId }));
+    if (pageClinicDoctors) {
+      dispatch(
+        getAllDoctorsById({ nameColumnMap: "clinicId", id: +clinicId, typeRemote: "includeTrueAndFalse" })
+      );
+    } else {
+      dispatch(getAllPackages({ clinicId: +clinicId, specialId: null }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log(state.doctorData);
   return (
-    <div className="clinic-doctors-container">
+    <div className="clinic-carousel-container">
       {!_.isEmpty(dataClinic) && (
         <>
           <ClinicTop clinicId={+clinicId} dataClinic={dataClinic} />
@@ -128,20 +151,35 @@ const ClinicDoctors = () => {
           </div>
 
           <div className="clinic-doctors u-wrapper">
-            {doctorsById.length > 0 &&
-              doctorsById.map((doctor) => {
-                return (
-                  <Doctor
-                    key={doctor.doctorId}
-                    doctorId={doctor.doctorId}
-                    onToggleModal={handleModal}
-                    doctorData={doctor}
-                    assurance
-                    needAddress
-                    remote={0}
-                  />
-                );
-              })}
+            {pageClinicDoctors
+              ? doctorsById.length > 0 &&
+                doctorsById.map((doctor) => {
+                  return (
+                    <Doctor
+                      key={doctor.doctorId}
+                      doctorId={doctor.doctorId}
+                      onToggleModal={handleModal}
+                      doctorData={doctor}
+                      assurance
+                      needAddress
+                      remote={0}
+                    />
+                  );
+                })
+              : packageArr.length > 0 &&
+                packageArr.map((pk) => {
+                  return (
+                    <Package
+                      key={pk.id}
+                      packageId={pk.id}
+                      onToggleModal={handleModal}
+                      packageData={pk}
+                      assurance
+                      needAddress
+                      packageClinicSpecialty={0}
+                    />
+                  );
+                })}
           </div>
 
           <div className="modal-booking">
@@ -149,7 +187,8 @@ const ClinicDoctors = () => {
               show={state.isOpenModalBooking}
               onHide={() => handleModal()}
               doctorId={state.doctorId ? state.doctorId : ""}
-              doctorData={!_.isEmpty(dataModal) ? dataModal : {}}
+              doctorData={!_.isEmpty(dataModal) && state.doctorId ? dataModal : {}}
+              packageData={!_.isEmpty(dataModal) && state.packageId ? dataModal : {}}
               hourClicked={state.hourClicked && !_.isEmpty(state.hourClicked) && state.hourClicked}
               remote={0}
             />
@@ -160,4 +199,4 @@ const ClinicDoctors = () => {
   );
 };
 
-export default ClinicDoctors;
+export default ClinicCarouselMore;

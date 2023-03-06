@@ -7,7 +7,14 @@ import { getSpecialtyOfClinic } from "../slices/clinicSpecialtySlice";
 import { useInView, InView } from "react-intersection-observer";
 import { Link as LinkScroll } from "react-scroll";
 import { MdLocationOn } from "react-icons/md";
-import { BookingCareIntro, BookingCareBenefit, ClinicBooking, ClinicTopic, Loading } from "../components";
+import {
+  BookingCareIntro,
+  BookingCareBenefit,
+  ClinicBooking,
+  ClinicTopic,
+  Loading,
+  ScrollToTop,
+} from "../components";
 import "../styles/DetailClinic.scss";
 
 const initialState = {
@@ -213,6 +220,7 @@ const DetailClinicSpecialty = () => {
           )}
         </div>
       </div>
+      <ScrollToTop />
     </>
   );
 };

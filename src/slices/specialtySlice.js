@@ -20,7 +20,7 @@ export const getInfoSpecialty = createAsyncThunk(
   "specialty/getInfoSpecialty",
   async (specialtyId, thunkAPI) => {
     try {
-      console.log(specialtyId);
+      // console.log(specialtyId);
       const res = await axios.get(`/api/specialties/${specialtyId}`);
       return res.data;
     } catch (error) {

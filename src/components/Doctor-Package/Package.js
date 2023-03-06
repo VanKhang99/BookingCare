@@ -8,7 +8,7 @@ const initialState = {
   schedules: [],
 };
 
-const Package = ({ id, packageData, onToggleModal, packageClinicSpecialty }) => {
+const Package = ({ packageId, packageData, onToggleModal, needAddress, packageClinicSpecialty }) => {
   const [state, setState] = useState({ ...initialState });
   const { language } = useSelector((store) => store.app);
 
@@ -21,7 +21,7 @@ const Package = ({ id, packageData, onToggleModal, packageClinicSpecialty }) => 
       <li className="package">
         <div className="package-left">
           <Introduce
-            id={+id}
+            id={+packageId}
             small
             buttonSeeMore
             packageData={packageData}
@@ -40,18 +40,24 @@ const Package = ({ id, packageData, onToggleModal, packageClinicSpecialty }) => 
 
         <div className="package-right">
           <DateOptions
-            id={id}
+            id={packageId}
             small
             onUpdateSchedules={handleUpdateSchedules}
             keyMapFetchPackage="packageId"
           />
           <BookingHours
-            packageId={id}
+            packageId={packageId}
             schedules={state.schedules ? state.schedules : []}
             onToggleModal={onToggleModal}
             small
           />
-          <ClinicInfo id={id} small packageData={packageData} />
+          <ClinicInfo
+            small
+            // id={packageId}
+            packageData={packageData}
+            needAddress={needAddress}
+            packageClinicSpecialty={packageClinicSpecialty}
+          />
         </div>
       </li>
     </>

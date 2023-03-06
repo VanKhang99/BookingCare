@@ -193,7 +193,7 @@ const ModalBooking = ({
 
     if (!_.isEmpty(doctorData)) {
       const { imageUrl, doctorName, position, positionId, role } = doctorData;
-      // const { clinic, priceData } = moreData;
+
       image = imageUrl;
       name = positionId !== "P0" ? `${position} - ${role} - ${doctorName}` : `${role} - ${doctorName}`;
       if (language === "vi") {

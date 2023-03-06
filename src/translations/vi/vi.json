@@ -21,6 +21,36 @@
     "for-doctor-facilities-title": "Dành cho bác sĩ và cơ sở y tế"
   },
 
+  "role-bc": {
+    "title": "Vai trò của BookingCare",
+
+    "help-people": "Giúp bệnh nhân chọn đúng bác sĩ giỏi và đặt lịch nhanh chóng.",
+    "help-people-1": "Hệ thống bác sĩ chuyên khoa giỏi, uy tín",
+    "help-people-2": "Thông tin về bác sĩ đã được xác thực rõ ràng, chính xác",
+    "help-people-3": "Sắp xếp khám đúng bác sĩ mà bệnh nhân đã chọn đặt lịch",
+    "help-people-4": "Bảo vệ quyền lợi của bệnh nhân khi đi khám",
+    "help-people-5": "Miễn phí đặt lịch..",
+
+    "support": "Hỗ trợ trước, trong và sau khi đi khám.",
+    "before-exam": "Trước khám",
+    "before-exam-1": "Nhắc lịch khám, dặn dò chuẩn bị trước khám",
+    "before-exam-2": "Hướng dẫn đi lại, quy trình làm thủ tục khám",
+
+    "during-exam": "Trong khi khám",
+    "during-exam-1": "Hỗ trợ giải quyết các vướng mắc trong khi khám",
+    "during-exam-2": "Hỗ trợ người bệnh những yêu cầu nảy sinh",
+
+    "after-exam": "Sau khi khám",
+    "after-exam-1": "Ghi nhận ý kiến của bệnh nhân sau khám",
+    "after-exam-2": "Hỗ trợ giải đáp, làm rõ những vấn đề chuyên môn",
+    "after-exam-3": "Bảo vệ quyền lợi của bệnh nhân khi đi khám"
+  },
+
+  "detail-specialty": {
+    "explore-more": "Cần tìm hiểu thêm ?",
+    "see-question": "Xem các câu hỏi thường gặp"
+  },
+
   "footer": {
     "company-name": "Công ty Cổ phần Công nghệ BookingCare",
     "business-registration-number": "ĐKKD số: 0106790291. Sở KHĐT Hà Nội cấp ngày 16/03/2015",
@@ -268,6 +298,7 @@
     "create": "Tạo mới",
     "update": "Cập nhật",
     "upload": "Tải ảnh",
-    "delete": "Xóa"
+    "delete": "Xóa",
+    "hide-away": "Ẩn bớt"
   }
 }

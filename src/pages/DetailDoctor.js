@@ -22,8 +22,7 @@ const DetailDoctor = ({ remote }) => {
   const { doctorId } = useParams();
   const { language } = useSelector((store) => store.app);
   const doctor = useFetchDataBaseId(id || doctorId, "doctor", getDoctor);
-  const dataModal = useDataModal(language, doctor, state.hourBooked);
-  console.log(dataModal);
+  const dataModal = useDataModal(language, doctor, "doctor", state.hourBooked);
 
   const handleModal = (hourClicked, action = "") => {
     if (action === "full-booking") {

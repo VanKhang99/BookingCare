@@ -21,6 +21,36 @@
     "for-doctor-facilities-title": "For doctors and medical facilities"
   },
 
+  "role-bc": {
+    "title": "Role of BookingCare",
+
+    "help-people": "Help patients choose the right doctor and book an appointment quickly.",
+    "help-people-1": "System of good and reputable specialist doctors",
+    "help-people-2": "The information about the doctor has been clearly and accurately verified",
+    "help-people-3": "Schedule an appointment with the correct doctor that the patient has chosen to schedule an appointment with",
+    "help-people-4": "Protecting the rights of patients when going to the doctor",
+    "help-people-5": "Free appointment.",
+
+    "support": "Support before, during and after the examination.",
+    "before-exam": "Before examination",
+    "before-exam-1": "Reminder of the examination schedule, advice to prepare before the examination",
+    "before-exam-2": "Travel guide, check-in procedures",
+
+    "during-exam": "During examination",
+    "during-exam-1": "Support to solve problems during examination",
+    "during-exam-2": "Support patients with arising requirements",
+
+    "after-exam": "After examination",
+    "after-exam-1": "Record the patient's opinion after the examination",
+    "after-exam-2": "Support to answer and clarify professional issues",
+    "after-exam-3": "Protecting the patient's rights when going to the doctor"
+  },
+
+  "detail-specialty": {
+    "explore-more": "Need to find more?",
+    "see-question": "See frequently asked questions"
+  },
+
   "footer": {
     "company-name": "BookingCare Technology Joint Stock Company",
     "business-registration-number": "Business registration number: 0106790291. Hanoi Department of Planning and Investment issued on March 16, 2015",
@@ -268,6 +298,7 @@
     "create": "Create",
     "update": "Update",
     "upload": "Upload",
-    "delete": "Delete"
+    "delete": "Delete",
+    "hide-away": "Hide away"
   }
 }

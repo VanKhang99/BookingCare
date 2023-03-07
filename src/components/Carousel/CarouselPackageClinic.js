@@ -29,8 +29,8 @@ const CarouselPackage = ({ clinicId, specialtyId, settings, pageClinicSpecialty 
             <Link
               to={`${
                 pageClinicSpecialty
-                  ? `/${path.CLINIC}/${clinicId}/specialties/${specialtyId}/package/${packageId}`
-                  : `/${path.CLINIC}/${clinicId}/package/${packageId}`
+                  ? `/${path.CLINIC}/${clinicId}/specialties/${specialtyId}/packages/${packageId}`
+                  : `/${path.CLINIC}/${clinicId}/packages/${packageId}`
               }`}
               key={packageId}
               className="slide"

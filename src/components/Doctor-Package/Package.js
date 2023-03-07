@@ -8,7 +8,15 @@ const initialState = {
   schedules: [],
 };
 
-const Package = ({ packageId, packageData, onToggleModal, needAddress, packageClinicSpecialty }) => {
+const Package = ({
+  packageId,
+  packageData,
+  onToggleModal,
+  needAddress,
+  assurance,
+  packageClinic,
+  packageClinicSpecialty,
+}) => {
   const [state, setState] = useState({ ...initialState });
   const { language } = useSelector((store) => store.app);
 
@@ -25,6 +33,7 @@ const Package = ({ packageId, packageData, onToggleModal, needAddress, packageCl
             small
             buttonSeeMore
             packageData={packageData}
+            packageClinic={packageClinic}
             packageClinicSpecialty={packageClinicSpecialty}
           />
 
@@ -53,7 +62,7 @@ const Package = ({ packageId, packageData, onToggleModal, needAddress, packageCl
           />
           <ClinicInfo
             small
-            // id={packageId}
+            assurance={assurance}
             packageData={packageData}
             needAddress={needAddress}
             packageClinicSpecialty={packageClinicSpecialty}

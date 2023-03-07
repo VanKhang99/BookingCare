@@ -65,13 +65,20 @@ export const formatDate = (date, language) => {
   return finalDateString;
 };
 
-export const formatterPrice = (language) => {
+export const formatterPrice = (language, priceData) => {
   const formatter = new Intl.NumberFormat(`${language === "vi" ? "vi-VN" : "en-US"}`, {
     style: "currency",
     currency: `${language === "vi" ? "VND" : "USD"}`,
   });
 
-  return formatter;
+  if (priceData.includes("-")) {
+    const splitPrice = priceData.split(" - ").map((p) => {
+      p = formatter.format(language === "vi" ? p : Math.ceil(+p / 25000));
+      return p;
+    });
+    return splitPrice.join(" - ");
+  }
+  return formatter.format(language === "vi" ? priceData : Math.ceil(+priceData / 25000));
 };
 
 export const checkData = (data, propsArrInfo) => {
@@ -166,4 +173,31 @@ export const deleteImageOnS3 = async (imageName) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+export const dataModalBooking = (language, data, dataOf) => {
+  if (_.isEmpty(data)) return;
+  if (dataOf === "package") {
+    const { nameVi, nameEn, imageUrl, clinicData } = data;
+    return {
+      packageName: language === "vi" ? nameVi : nameEn,
+      image: imageUrl,
+      price: data.price,
+      clinicName: language === "vi" ? clinicData.nameVi : clinicData.nameEn,
+    };
+  }
+
+  const {
+    clinic,
+    moreData: { firstName, lastName, imageUrl, positionData, roleData },
+  } = data;
+  return {
+    doctorName: language === "vi" ? `${lastName} ${firstName}` : `${firstName} ${lastName}`,
+    imageUrl: imageUrl,
+    price: data.price,
+    clinicName: language === "vi" ? clinic.nameVi : clinic.nameEn,
+    position: language === "vi" ? positionData.valueVi : positionData.valueEn,
+    role: language === "vi" ? roleData.valueVi : roleData.valueEn,
+    positionId: positionData.keyMap,
+  };
 };

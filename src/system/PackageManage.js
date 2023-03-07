@@ -32,11 +32,11 @@ const initialState = {
   selectedPackage: "",
   selectedClinic: "",
   selectedSpecialty: "",
-  selectedPrice: "",
   selectedProvince: "",
   selectedPayment: "",
   selectedPackageType: "",
 
+  price: "",
   address: "",
   nameEn: "",
   nameVi: "",
@@ -91,12 +91,6 @@ const PackageManage = () => {
       } else if (typeInfo === "province" || typeInfo === "payment") {
         label = language === "vi" ? `${item.valueVi}` : `${item.valueEn}`;
         value = item.keyMap;
-      } else if (typeInfo === "price") {
-        label =
-          language === "vi"
-            ? `${formatterPrice(language).format(item.valueVi)}`
-            : `${formatterPrice(language).format(item.valueEn)}`;
-        value = item.keyMap;
       }
 
       return { value, label };
@@ -145,7 +139,6 @@ const PackageManage = () => {
         "nameVi",
         "popular",
         "address",
-        "selectedPrice",
         "selectedProvince",
         "selectedPayment",
         "selectedClinic",
@@ -169,7 +162,6 @@ const PackageManage = () => {
         ...state,
         clinicId: state.selectedClinic.value,
         specialtyId: state.selectedSpecialty?.value,
-        priceId: state.selectedPrice.value,
         provinceId: state.selectedProvince.value,
         paymentId: state.selectedPayment.value,
         packageTypeId: state.selectedPackageType?.value,
@@ -200,7 +192,6 @@ const PackageManage = () => {
       const packageTypeInDB = findItemSelectedById("packageType", packagesType, +packageData?.packageTypeId);
       const specialtyInDB = findItemSelectedById("specialty", specialties, +packageData?.specialtyId);
       const clinicInDB = findItemSelectedById("clinic", clinics, packageData.clinicId);
-      const priceInDB = findItemSelectedById("price", priceArr, packageData.pricePackage.keyMap);
       const paymentInDB = findItemSelectedById("payment", paymentArr, packageData.paymentPackage.keyMap);
       const provinceInDB = findItemSelectedById("province", provinceArr, packageData.provincePackage.keyMap);
 
@@ -210,7 +201,6 @@ const PackageManage = () => {
         selectedPackageType: packageTypeInDB ?? "",
         selectedSpecialty: specialtyInDB ?? "",
         selectedClinic: clinicInDB,
-        selectedPrice: priceInDB,
         selectedPayment: paymentInDB,
         selectedProvince: provinceInDB,
         image: state.image,
@@ -244,7 +234,6 @@ const PackageManage = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllCodes("PRICE"));
     dispatch(getAllCodes("PAYMENT"));
     dispatch(getAllCodes("PROVINCE"));
     dispatch(getAllSpecialties("all"));
@@ -325,20 +314,16 @@ const PackageManage = () => {
         </div>
 
         <div className="row mt-5">
-          <div className="col-4">
+          <Form.Group className="col-4" controlId="formPrice">
             <h4 className="u-input-label">{t("common.choose-price")}</h4>
 
-            <div className="select-price mt-3">
-              {priceArr?.length > 0 && (
-                <Select
-                  value={state.selectedPrice}
-                  onChange={(option) => handleInputs(option, "selectedPrice")}
-                  options={handleOption("price", priceArr)}
-                  placeholder={t("common.placeholder-price")}
-                />
-              )}
-            </div>
-          </div>
+            <Form.Control
+              type="text"
+              value={state.price}
+              className="u-input mt-3"
+              onChange={(e, id) => handleInputs(e, "price")}
+            />
+          </Form.Group>
 
           <div className="col-4">
             <h4 className="u-input-label">{t("common.choose-province")}</h4>

@@ -96,15 +96,6 @@ const ClinicBooking = ({ title, clinicId, pageClinicSpecialty, specialtyId }) =>
                 clinicId={clinicId}
               />
             )}
-            {/* <ul className="doctors-list">
-              {doctors?.length > 0 &&
-                doctors.map((doctor, index) => {
-                  const { doctorId } = doctor;
-                  return (
-                    <Doctor key={index} doctorId={doctorId} doctorData={doctor} onToggleModal={handleModal} />
-                  );
-                })}
-            </ul> */}
           </div>
           <div className="packages">
             <Slider

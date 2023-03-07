@@ -1,16 +1,17 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import HtmlReactParser from "html-react-parser";
 import _ from "lodash";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useFetchDataBaseId, useDataModal } from "../utils/CustomHook";
+import { useFetchDataBaseId } from "../utils/CustomHook";
 import { getDoctor } from "../slices/doctorSlice";
+import { dataModalBooking } from "../utils/helpers";
 import { DateOptions, BookingHours, ClinicInfo, ModalBooking, Introduce, Loading } from "../components";
 import "../styles/DetailDoctor.scss";
 
 const initialState = {
   isOpenModalBooking: false,
-  hourBooked: "",
+  hourClicked: "",
   schedules: [],
 
   action: "",
@@ -22,21 +23,12 @@ const DetailDoctor = ({ remote }) => {
   const { doctorId } = useParams();
   const { language } = useSelector((store) => store.app);
   const doctor = useFetchDataBaseId(id || doctorId, "doctor", getDoctor);
-  const dataModal = useDataModal(language, doctor, "doctor", state.hourBooked);
 
-  const handleModal = (hourClicked, action = "") => {
-    if (action === "full-booking") {
-      return setState({
-        ...state,
-        isOpenModalBooking: !state.isOpenModalBooking,
-        hourClicked: { ...hourClicked },
-      });
-    }
+  const handleModal = (hourClicked, doctorId = null, packageId = null) => {
     return setState({
       ...state,
       isOpenModalBooking: !state.isOpenModalBooking,
       hourClicked: { ...hourClicked },
-      action,
     });
   };
 
@@ -72,9 +64,9 @@ const DetailDoctor = ({ remote }) => {
             <ModalBooking
               show={state.isOpenModalBooking}
               onHide={handleModal}
-              doctorData={!_.isEmpty(dataModal) ? dataModal : {}}
-              action={state.action}
-              hourClicked={state.hourClicked && !_.isEmpty(state.hourClicked) && state.hourClicked}
+              doctorId={doctorId}
+              doctorData={dataModalBooking(language, doctor, "doctor")}
+              hourClicked={!_.isEmpty(state.hourClicked) && state.hourClicked}
             />
           </div>
         </>

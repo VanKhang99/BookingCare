@@ -7,9 +7,12 @@ import { ClinicTop, InputSearch, Doctor, Package, ModalBooking } from "../compon
 import { getClinic } from "../slices/clinicSlice";
 import { getAllPackages, getPackage } from "../slices/packageSlice";
 import { getAllDoctorsById, getDoctor } from "../slices/doctorSlice";
-import { useFetchDataBaseId, useDataModal } from "../utils/CustomHook";
+import { useFetchDataBaseId } from "../utils/CustomHook";
+import { dataModalBooking } from "../utils/helpers";
 import { GoSearch } from "react-icons/go";
 import { SlRefresh } from "react-icons/sl";
+import { BsCaretDown } from "react-icons/bs";
+// import { RxChevronDown } from "react-icons/rx";
 import "../styles/ClinicCarouselMore.scss";
 
 const initialState = {
@@ -21,10 +24,13 @@ const initialState = {
   doctorData: {},
   packageId: "",
   packageData: {},
-  action: "",
+
+  filterDoctors: [],
+  filterPackages: [],
+  action: "init",
 };
 
-const ClinicCarouselMore = ({ pageClinicDoctors }) => {
+const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
   const [state, setState] = useState(initialState);
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -33,12 +39,6 @@ const ClinicCarouselMore = ({ pageClinicDoctors }) => {
   const { doctorsById } = useSelector((store) => store.doctor);
   const { packageArr } = useSelector((store) => store.package);
   const dataClinic = useFetchDataBaseId(clinicId ? +clinicId : "", "clinic", getClinic);
-  const dataModal = useDataModal(
-    language,
-    state[pageClinicDoctors ? "doctorData" : "packageData"],
-    pageClinicDoctors ? "doctor" : "package",
-    state.hourClicked
-  );
 
   const handleOnChangeSearch = (e) => {
     return setState({ ...state, inputSearch: e.target.value });
@@ -65,7 +65,6 @@ const ClinicCarouselMore = ({ pageClinicDoctors }) => {
       } else {
         res = await dispatch(getPackage(+packageId));
       }
-      console.log(res);
 
       if (res?.payload?.data) {
         return setState({
@@ -89,6 +88,12 @@ const ClinicCarouselMore = ({ pageClinicDoctors }) => {
     }
   };
 
+  const handleOptionFilter = () => {
+    if (!doctorsById.length && !packageArr.length) return;
+
+    console.log(packageArr);
+  };
+
   useEffect(() => {
     if (pageClinicDoctors) {
       dispatch(
@@ -99,6 +104,10 @@ const ClinicCarouselMore = ({ pageClinicDoctors }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    handleOptionFilter();
+  }, [doctorsById.length, packageArr.length]);
 
   return (
     <div className="clinic-carousel-container">
@@ -120,28 +129,44 @@ const ClinicCarouselMore = ({ pageClinicDoctors }) => {
             </div>
 
             <div className="filter-select">
-              <div className="filter-select-category">
-                <select id="test" className="clinics-actions-filter__list">
-                  <option value="Tỉnh thành">{language === "vi" ? "Danh mục" : "Category"}</option>
-                  <option value="Thành phố Hồ Chí Minh">
-                    {language === "vi" ? "Thành phố Hồ Chí Minh" : "Ho Chi Minh City"}
-                  </option>
-                  <option value="Thành phố Hà Nội">
-                    {language === "vi" ? "Thành phố Hà Nội" : "Ha Noi City"}
-                  </option>
-                </select>
+              <div className="filter-select-item">
+                <span className="filter-select-item__category">Danh mục</span>
+                <span className="filter-select-item__icon">
+                  <svg
+                    stroke="%23000000"
+                    fill="%23000000"
+                    stroke-width="0"
+                    viewBox="0 0 24 24"
+                    height="20px"
+                    width="20px"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g>
+                      <path fill="none" d="M0 0h24v24H0z"></path>
+                      <path d="M12 13.172l4.95-4.95 1.414 1.414L12 16 5.636 9.636 7.05 8.222z"></path>
+                    </g>
+                  </svg>
+                </span>
               </div>
 
-              <div className="filter-select-price">
-                <select id="test" className="clinics-actions-filter__list">
-                  <option value="Tỉnh thành">{language === "vi" ? "Mức giá" : "Price"}</option>
-                  <option value="Thành phố Hồ Chí Minh">
-                    {language === "vi" ? "Thành phố Hồ Chí Minh" : "Ho Chi Minh City"}
-                  </option>
-                  <option value="Thành phố Hà Nội">
-                    {language === "vi" ? "Thành phố Hà Nội" : "Ha Noi City"}
-                  </option>
-                </select>
+              <div className="filter-select-item">
+                <span className="filter-select-item__price">Mức giá</span>
+                <span className="filter-select-item__icon">
+                  <svg
+                    stroke="%23000000"
+                    fill="%23000000"
+                    stroke-width="0"
+                    viewBox="0 0 24 24"
+                    height="20px"
+                    width="20px"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g>
+                      <path fill="none" d="M0 0h24v24H0z"></path>
+                      <path d="M12 13.172l4.95-4.95 1.414 1.414L12 16 5.636 9.636 7.05 8.222z"></path>
+                    </g>
+                  </svg>
+                </span>
               </div>
 
               <div className="refresh">
@@ -176,7 +201,8 @@ const ClinicCarouselMore = ({ pageClinicDoctors }) => {
                       packageData={pk}
                       assurance
                       needAddress
-                      packageClinicSpecialty={0}
+                      packageClinic={1}
+                      packageClinicSpecialty={packageClinicSpecialty}
                     />
                   );
                 })}
@@ -187,8 +213,9 @@ const ClinicCarouselMore = ({ pageClinicDoctors }) => {
               show={state.isOpenModalBooking}
               onHide={() => handleModal()}
               doctorId={state.doctorId ? state.doctorId : ""}
-              doctorData={!_.isEmpty(dataModal) && state.doctorId ? dataModal : {}}
-              packageData={!_.isEmpty(dataModal) && state.packageId ? dataModal : {}}
+              packageId={state.packageId ? state.packageId : ""}
+              doctorData={dataModalBooking(language, state.doctorData, "doctor")}
+              packageData={dataModalBooking(language, state.packageData, "package")}
               hourClicked={state.hourClicked && !_.isEmpty(state.hourClicked) && state.hourClicked}
               remote={0}
             />

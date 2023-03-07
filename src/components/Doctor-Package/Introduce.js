@@ -8,7 +8,16 @@ import { Link } from "react-router-dom";
 import { path } from "../../utils/constants";
 import "../../styles/Introduce.scss";
 
-const Introduce = ({ doctorData, id, small, buttonSeeMore, packageData, packageClinicSpecialty, remote }) => {
+const Introduce = ({
+  doctorData,
+  id,
+  small,
+  buttonSeeMore,
+  packageData,
+  packageClinic,
+  packageClinicSpecialty,
+  remote,
+}) => {
   const { language } = useSelector((store) => store.app);
   const { t } = useTranslation();
 
@@ -47,13 +56,16 @@ const Introduce = ({ doctorData, id, small, buttonSeeMore, packageData, packageC
               <>
                 {packageClinicSpecialty ? (
                   <Link
-                    to={`/${path.CLINIC}/${packageData.clinicId}/specialties/${packageData.specialtyId}/package/${packageData.id}`}
+                    to={`/${path.CLINIC}/${packageData.clinicId}/${path.SPECIALTIES}/${packageData.specialtyId}/${path.PACKAGE}s/${packageData.id}`}
                     className="info-left__button"
                   >
                     {t("button.see-more")}
                   </Link>
                 ) : (
-                  <Link to={`/package-clinic/${id}`} className="info-left__button">
+                  <Link
+                    to={`/${path.CLINIC}/${packageData.clinicId}/${path.PACKAGE}s/${packageData.id}`}
+                    className="info-left__button"
+                  >
                     {t("button.see-more")}
                   </Link>
                 )}
@@ -84,7 +96,7 @@ const Introduce = ({ doctorData, id, small, buttonSeeMore, packageData, packageC
           {buttonSeeMore && (
             <>
               {remote ? (
-                <Link to={`/doctor/remote/${id}`} className="info-left__button">
+                <Link to={`/doctor/remote/${doctorData.doctorId}`} className="info-left__button">
                   {t("button.see-more")}
                 </Link>
               ) : (

@@ -35,36 +35,3 @@ export const useFetchDataBaseId = (id, type, functionDispatch, remote = undefine
 
   return data;
 };
-
-export const useDataModal = (language, data, dataOf, hourClicked) => {
-  const dataModal = useMemo(() => {
-    if (_.isEmpty(data)) return;
-    if (dataOf === "package") {
-      const { nameVi, nameEn, imageUrl, pricePackage, clinicData } = data;
-      return {
-        packageName: language === "vi" ? nameVi : nameEn,
-        image: imageUrl,
-        price: pricePackage,
-        clinicName: language === "vi" ? clinicData.nameVi : clinicData.nameEn,
-      };
-    } else {
-      const {
-        priceData,
-        clinic,
-        moreData: { firstName, lastName, imageUrl, positionData, roleData },
-      } = data;
-      return {
-        doctorName: language === "vi" ? `${lastName} ${firstName}` : `${firstName} ${lastName}`,
-        imageUrl: imageUrl,
-        price: priceData,
-        clinicName: language === "vi" ? clinic.nameVi : clinic.nameEn,
-        position: language === "vi" ? positionData.valueVi : positionData.valueEn,
-        role: language === "vi" ? roleData.valueVi : roleData.valueEn,
-        positionId: positionData.keyMap,
-      };
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hourClicked]);
-  return dataModal;
-};

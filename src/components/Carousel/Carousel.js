@@ -66,13 +66,13 @@ const Slider = ({
           <h2 className="carousel-top__title">{mainTitle}</h2>
 
           {doctorRemote && (
-            <Link to={`/${path.SPECIALTY}/${path.REMOTE}`} className="button button-main">
+            <Link to={`/${path.SPECIALTIES}/${path.REMOTE}`} className="button button-main">
               {buttonText}
             </Link>
           )}
 
           {popularSpecialty && (
-            <Link to={`/${path.SPECIALTY}`} className="button button-main">
+            <Link to={`/${path.SPECIALTIES}`} className="button button-main">
               {buttonText}
             </Link>
           )}
@@ -104,7 +104,14 @@ const Slider = ({
           )}
 
           {clinicPackage && (
-            <Link to={`/${path.CLINIC}/${clinicId}/${path.PACKAGE}s`} className="button button-main">
+            <Link
+              to={
+                pageClinicSpecialty
+                  ? `/${path.CLINIC}/${clinicId}/${path.SPECIALTIES}/${specialtyId}/${path.PACKAGE}s`
+                  : `/${path.CLINIC}/${clinicId}/${path.PACKAGE}s`
+              }
+              className="button button-main"
+            >
               {buttonText}
             </Link>
           )}

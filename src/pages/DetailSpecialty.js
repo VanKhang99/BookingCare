@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { getInfoSpecialty } from "../slices/specialtySlice";
-import { useDataModal } from "../utils/CustomHook";
+import { dataModalBooking } from "../utils/helpers";
 import { getDoctor, getAllDoctorsById } from "../slices/doctorSlice";
 
 import { IntroSpecialty, Doctor, ModalBooking, ProvinceOptions, RoleBookingCare } from "../components";
@@ -26,7 +26,6 @@ const DetailSpecialty = ({ remote }) => {
   const { t } = useTranslation();
   const { specialtyId } = useParams();
   const { language } = useSelector((store) => store.app);
-  const dataModal = useDataModal(language, state.doctorData, "doctor", state.hourClicked);
 
   const doctorsFilter = useMemo(async () => {
     const res = await dispatch(
@@ -53,7 +52,6 @@ const DetailSpecialty = ({ remote }) => {
           })
         ),
       ]);
-      console.log(data);
 
       return setState({
         ...state,
@@ -69,20 +67,15 @@ const DetailSpecialty = ({ remote }) => {
     return setState({ ...state, isOpenFullIntro: !state.isOpenFullIntro });
   };
 
-  const handleModal = async (hourClicked, doctorId) => {
+  const handleModal = async (hourClicked, doctorId = null, packageId = null) => {
     // (Why get doctorId)
     //pass DoctorId --> Doctor --> BookingHours
-    /// --> Run function (handleClick) to get "doctorId" pass reverse to DetailSpecialty
+    /// --> Run function (handleClick) to get "doctorId" pass reverse to parentComponent
     ////////via function handleModal --> run get dataDoctor and price to ModalBooking
 
     try {
-      if (!doctorId)
-        return setState({
-          ...state,
-          isOpenModalBooking: !state.isOpenModalBooking,
-        });
-
       const res = await dispatch(getDoctor(+doctorId));
+
       if (res?.payload?.data) {
         return setState({
           ...state,
@@ -92,8 +85,14 @@ const DetailSpecialty = ({ remote }) => {
           hourClicked: { ...hourClicked },
         });
       }
+
+      return setState({
+        ...state,
+        isOpenModalBooking: !state.isOpenModalBooking,
+        hourClicked: { ...hourClicked },
+      });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -179,8 +178,8 @@ const DetailSpecialty = ({ remote }) => {
         <ModalBooking
           show={state.isOpenModalBooking}
           onHide={handleModal}
-          doctorId={state.doctorId ? state.doctorId : ""}
-          doctor={state.doctorData ? state.doctorData : {}}
+          doctorId={state.doctorId}
+          doctorData={dataModalBooking(language, state.doctorData, "doctor")}
           hourClicked={state.hourClicked && !_.isEmpty(state.hourClicked) && state.hourClicked}
           remote={remote}
         />

@@ -26,37 +26,38 @@
       display: flex;
       gap: 2.4rem;
 
-      select {
-        width: 100%;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-        padding: 0.8rem 1.2rem 0.6rem;
+      &-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 50%;
+        padding: 0.6rem 1.8rem;
+        background-color: #fff;
         border: 1px solid $rgba-black-1;
         border-radius: 0.6rem;
-        font-size: $base-size + 0.4rem;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         outline: none;
         cursor: pointer;
 
-        background: url("data:image/svg+xml;utf8,<svg stroke='%23000000' fill='%23000000' stroke-width='0' viewBox='0 0 24 24' height='20px' width='20px' xmlns='http://www.w3.org/2000/svg'><g><path fill='none' d='M0 0h24v24H0z'></path><path d='M12 13.172l4.95-4.95 1.414 1.414L12 16 5.636 9.636 7.05 8.222z'></path></g></svg>")
-          no-repeat;
-        background-position: calc(100% - 0.75rem) center;
-        background-color: #fff;
-      }
+        &__category,
+        &__price {
+          font-weight: 600;
+          font-size: $base-size + 0.4rem;
+        }
 
-      &-category,
-      &-price {
-        width: 50%;
+        &__icon {
+          svg {
+            opacity: 0.7;
+          }
+        }
       }
     }
 
     .refresh {
-      width: 4.2rem;
+      flex: 0 0 4.2rem;
       height: 4.2rem;
       border-radius: 0.6rem;
       background-color: $color-yellow;
-      // background-color: #fff;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 
       display: flex;

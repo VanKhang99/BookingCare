@@ -34,10 +34,10 @@ const ClinicInfo = ({
     let name;
     let address;
     let price;
-    let priceEn;
+    let priceForeigner;
     let payment;
     if (!_.isEmpty(packageData)) {
-      const { pricePackage, paymentPackage, specialty, clinicData } = packageData;
+      const { paymentPackage, specialty, clinicData } = packageData;
       address = packageData.address;
       if (packageClinicSpecialty) {
         name =
@@ -47,30 +47,24 @@ const ClinicInfo = ({
       } else {
         name = language === "vi" ? `${clinicData.nameVi}` : `${clinicData.nameEn}`;
       }
-      price =
-        language === "vi"
-          ? formatterPrice(language).format(pricePackage.valueVi)
-          : formatterPrice(language).format(pricePackage.valueEn);
-      priceEn = pricePackage.valueEn;
+      price = formatterPrice(language, packageData.price);
+      priceForeigner = formatterPrice("en", packageData.price);
       payment = language === "vi" ? paymentPackage?.valueVi : paymentPackage?.valueEn;
     }
 
     if (!_.isEmpty(doctorData)) {
-      const { clinic, priceData, paymentData } = doctorData;
+      const { clinic, paymentData } = doctorData;
       name = language === "vi" ? clinic.nameVi : clinic.nameEn;
       address = clinic.address;
-      price =
-        language === "vi"
-          ? formatterPrice(language).format(priceData.valueVi)
-          : formatterPrice(language).format(priceData.valueEn);
-      priceEn = priceData.valueEn;
+      price = formatterPrice(language, doctorData.price);
+      priceForeigner = formatterPrice("en", doctorData.price);
       payment = language === "vi" ? paymentData.valueVi : paymentData.valueEn;
     }
     return {
       name,
       address,
       price,
-      priceEn,
+      priceForeigner,
       payment,
     };
   };
@@ -118,7 +112,8 @@ const ClinicInfo = ({
                     <span>{handleDisplayInterface().price}</span>
                   </h5>
                   <p className="more-info-top__note">
-                    {t("detail-doctor.price-note")} <span>{`$${handleDisplayInterface().priceEn}`}</span>
+                    {t("detail-doctor.price-note")}{" "}
+                    <span>{`$${handleDisplayInterface().priceForeigner}`}</span>
                   </p>
                 </div>
 

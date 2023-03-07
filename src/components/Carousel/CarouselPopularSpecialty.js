@@ -34,7 +34,7 @@ const CarouselPopularSpecialty = ({ onChange, settings }) => {
         specialties.map((specialty) => {
           const { imageUrl, id: specialtyId } = specialty;
           return (
-            <Link to={`/${path.SPECIALTY}/${specialtyId}`} key={specialtyId} className="slide">
+            <Link to={`/${path.SPECIALTIES}/${specialtyId}`} key={specialtyId} className="slide">
               <div className="slide-content">
                 <div className="slide-content__img">
                   <img src={imageUrl} alt={language === "vi" ? specialty.nameVi : specialty.nameEn} />

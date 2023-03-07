@@ -47,7 +47,6 @@ const ProvinceOptions = ({ specialtyId, onProvinceChange, remote }) => {
           typeRemote: remote ? "includeOnlyTrue" : "includeOnlyFalse",
         })
       );
-      console.log(res);
 
       const provinces = res.payload?.data.doctors.map((doctor) => {
         return {
@@ -77,8 +76,6 @@ const ProvinceOptions = ({ specialtyId, onProvinceChange, remote }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
-
-  console.log(state);
 
   return (
     <>

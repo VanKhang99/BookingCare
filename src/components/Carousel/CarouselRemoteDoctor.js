@@ -32,9 +32,14 @@ const CarouselRemoteDoctor = ({ onChange, settings, doctorRemote }) => {
     <Carousel className="slides" afterChange={onChange} {...settings}>
       {specialtiesRemote?.length > 0 &&
         specialtiesRemote.map((specialty) => {
+          console.log();
           const { imageRemoteUrl, id: specialtyId } = specialty;
           return (
-            <Link to={`/${path.SPECIALTY}/${path.REMOTE}/${specialtyId}`} key={specialtyId} className="slide">
+            <Link
+              to={`/${path.SPECIALTIES}/${path.REMOTE}/${specialtyId}`}
+              key={specialtyId}
+              className="slide"
+            >
               <div className="slide-content">
                 {doctorRemote && (
                   <div className="slide-content__icon">

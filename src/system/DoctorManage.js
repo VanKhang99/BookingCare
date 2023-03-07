@@ -26,12 +26,13 @@ const initialState = {
   aboutMarkdown: "",
 
   selectedDoctor: "",
-  selectedPrice: "",
+  // selectedPrice: "",
   selectedPayment: "",
   selectedProvince: "",
   selectedSpecialty: "",
   selectedClinic: "",
 
+  price: "",
   addressClinic: "",
   note: "",
 
@@ -81,12 +82,6 @@ const AddInfoDoctor = () => {
         } else if (typeInfo === "province" || typeInfo === "payment") {
           label = language === "vi" ? `${valueVi}` : `${valueEn}`;
           value = keyMap;
-        } else if (typeInfo === "price") {
-          label =
-            language === "vi"
-              ? `${formatterPrice(language).format(valueVi)}`
-              : `${formatterPrice(language).format(valueEn)}`;
-          value = keyMap;
         }
 
         return { value, label };
@@ -111,7 +106,6 @@ const AddInfoDoctor = () => {
     try {
       const propArrKey = [
         "selectedDoctor",
-        "selectedPrice",
         "selectedPayment",
         "selectedProvince",
         "selectedSpecialty",
@@ -121,26 +115,27 @@ const AddInfoDoctor = () => {
       const validate = checkData(state, propArrKey);
       if (!validate) throw new Error("Input data not enough");
 
-      const info = await dispatch(
-        postInfoDoctor({
-          doctorId: state.selectedDoctor.value,
-          priceId: state.selectedPrice.value,
-          paymentId: state.selectedPayment.value,
-          provinceId: state.selectedProvince.value,
-          specialtyId: state.selectedSpecialty.value,
-          clinicId: state.selectedClinic?.value,
-          addressClinic: state.addressClinic || "",
-          popular: state.popular,
-          remote: state.remote,
-          note: state.note,
-          action: state.action || "create",
+      const dataSendToServer = {
+        doctorId: state.selectedDoctor.value,
+        paymentId: state.selectedPayment.value,
+        provinceId: state.selectedProvince.value,
+        specialtyId: state.selectedSpecialty.value,
+        clinicId: state.selectedClinic?.value,
 
-          introductionHTML: state.introductionHTML,
-          introductionMarkdown: state.introductionMarkdown,
-          aboutHTML: state.aboutHTML,
-          aboutMarkdown: state.aboutMarkdown,
-        })
-      );
+        price: state.price,
+        addressClinic: state.addressClinic || "",
+        popular: state.popular,
+        remote: state.remote,
+        note: state.note,
+        action: state.action || "create",
+
+        introductionHTML: state.introductionHTML,
+        introductionMarkdown: state.introductionMarkdown,
+        aboutHTML: state.aboutHTML,
+        aboutMarkdown: state.aboutMarkdown,
+      };
+
+      const info = await dispatch(postInfoDoctor(dataSendToServer));
 
       if (info.payload.status === "success") {
         toast.success("Doctor's info is saved successfully!");
@@ -154,14 +149,12 @@ const AddInfoDoctor = () => {
   const handleUpdateDoctor = async (selectedOption) => {
     try {
       const res = await dispatch(getDoctor(+selectedOption?.value || +state.oldIdDoctor));
-      console.log(res);
 
       if (!res.payload.data) return toast.error("Get data doctor failed. Please check and try again!");
       const doctor = res.payload.data;
-      const { priceData, paymentData, provinceData, specialtyData } = doctor;
+      const { paymentData, provinceData, specialtyData } = doctor;
 
       const doctorSelected = findItemSelectedById("doctor", doctors, doctor.doctorId);
-      const priceInDB = findItemSelectedById("price", priceArr, priceData.keyMap);
       const paymentInDB = findItemSelectedById("payment", paymentArr, paymentData.keyMap);
       const provinceInDB = findItemSelectedById("province", provinceArr, provinceData.keyMap);
       const specialtyInDB = findItemSelectedById("specialty", specialties, specialtyData.id);
@@ -169,24 +162,15 @@ const AddInfoDoctor = () => {
 
       return setState({
         ...state,
-        introductionHTML: doctor.introductionHTML,
-        introductionMarkdown: doctor.introductionMarkdown,
-        aboutHTML: doctor.aboutHTML,
-        aboutMarkdown: doctor.aboutMarkdown,
-
         selectedDoctor: doctorSelected,
-        selectedPrice: priceInDB,
         selectedPayment: paymentInDB,
         selectedProvince: provinceInDB,
         selectedSpecialty: specialtyInDB,
         selectedClinic: clinicInDB,
-        addressClinic: doctor.addressClinic ?? "",
-        popular: doctor.popular ?? 0,
-        remote: doctor.remote ?? 0,
-        note: doctor.note ?? "",
         isHaveInfo: true,
         action: "edit",
         oldIdDoctor: doctor.doctorId,
+        ...doctor,
       });
     } catch (error) {
       console.log(error);
@@ -198,7 +182,7 @@ const AddInfoDoctor = () => {
       if (!state.selectedDoctor) throw new Error("Doctor is not selected");
       alert("Are you sure you want to delete?");
 
-      console.log(state.selectedDoctor);
+      // console.log(state.selectedDoctor);
 
       const res = await dispatch(deleteDoctor(state.selectedDoctor.value));
       if (res.payload === "") {
@@ -213,7 +197,6 @@ const AddInfoDoctor = () => {
 
   useEffect(() => {
     dispatch(getAllDoctors("all"));
-    dispatch(getAllCodes("PRICE"));
     dispatch(getAllCodes("PAYMENT"));
     dispatch(getAllCodes("PROVINCE"));
     dispatch(getAllSpecialties("all"));
@@ -241,7 +224,7 @@ const AddInfoDoctor = () => {
           </button>
         </h2>
         <div className="row">
-          <div className="col-4">
+          <div className="col-6">
             <label className="u-input-label">{t("doctor-manage.choose-doctor")}</label>
 
             <div className="mt-3">
@@ -259,22 +242,7 @@ const AddInfoDoctor = () => {
             </div>
           </div>
 
-          <div className="col-4">
-            <label className="u-input-label">{t("common.choose-price")}</label>
-
-            <div className="mt-3">
-              {priceArr?.length > 0 && (
-                <Select
-                  value={state.selectedPrice}
-                  onChange={(option) => handleInfos(option, "selectedPrice")}
-                  options={handleOptions("price", priceArr)}
-                  placeholder={t("common.placeholder-price")}
-                />
-              )}
-            </div>
-          </div>
-
-          <div className="col-4">
+          <div className="col-6">
             <label className="u-input-label">{t("common.choose-clinic")}</label>
 
             <div className="mt-3">
@@ -334,7 +302,18 @@ const AddInfoDoctor = () => {
             </div>
           </div>
 
-          <Form.Group className="mt-5 col-6" controlId="formClinicAddress">
+          <Form.Group className="mt-5 col-4" controlId="formPrice">
+            <label className="u-input-label">{t("common.choose-price")}</label>
+
+            <Form.Control
+              type="text"
+              value={state.price}
+              className="u-input"
+              onChange={(e, id) => handleInfos(e, "price")}
+            />
+          </Form.Group>
+
+          <Form.Group className="mt-5 col-4" controlId="formClinicAddress">
             <label className="u-input-label">{t("doctor-manage.clinic-address")}</label>
 
             <Form.Control
@@ -345,7 +324,7 @@ const AddInfoDoctor = () => {
             />
           </Form.Group>
 
-          <Form.Group className="mt-5 col-6" controlId="formNote">
+          <Form.Group className="mt-5 col-4" controlId="formNote">
             <label className="u-input-label">{t("doctor-manage.note")}</label>
 
             <Form.Control

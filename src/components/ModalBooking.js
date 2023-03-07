@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, memo } from "react";
 import _ from "lodash";
 import HtmlReactParser from "html-react-parser";
 import Button from "react-bootstrap/Button";
@@ -155,7 +155,7 @@ const ModalBooking = ({
         clinicName,
         packageName,
         packageId: +packageId,
-        priceId: doctorData?.price.keyMap || packageData?.price.keyMap,
+        priceId: doctorData?.price || packageData?.price,
         remote: remote ?? false,
       };
       delete dataSendServer["errorInput"];
@@ -187,34 +187,24 @@ const ModalBooking = ({
   const handleDisplayInterface = () => {
     let name;
     let price;
-    let timeFrame;
     let date;
     let image;
+    const timeFrame =
+      language === "vi" ? hourClicked?.timeTypeData?.valueVi : hourClicked?.timeTypeData?.valueEn;
 
+    // console.log(doctorData);
     if (!_.isEmpty(doctorData)) {
       const { imageUrl, doctorName, position, positionId, role } = doctorData;
 
       image = imageUrl;
       name = positionId !== "P0" ? `${position} - ${role} - ${doctorName}` : `${role} - ${doctorName}`;
-      if (language === "vi") {
-        timeFrame = hourClicked?.timeTypeData?.valueVi;
-        price = formatterPrice(language).format(doctorData.price.valueVi);
-      } else {
-        timeFrame = hourClicked?.timeTypeData?.valueEn;
-        price = formatterPrice(language).format(doctorData.price.valueEn);
-      }
+      price = formatterPrice(language, doctorData.price);
     }
 
     if (!_.isEmpty(packageData)) {
       image = packageData.image;
       name = packageData.packageName;
-      if (language === "vi") {
-        timeFrame = hourClicked?.timeTypeData?.valueVi;
-        price = formatterPrice(language).format(packageData.price?.valueVi);
-      } else {
-        timeFrame = hourClicked?.timeTypeData?.valueEn;
-        price = formatterPrice(language).format(packageData.price?.valueEn);
-      }
+      price = formatterPrice(language, packageData.price);
     }
 
     date = hourClicked && formatDate(new Date(+hourClicked.date), language);
@@ -428,4 +418,4 @@ const ModalBooking = ({
   );
 };
 
-export default ModalBooking;
+export default memo(ModalBooking);

@@ -3,8 +3,9 @@ import HtmlReactParser from "html-react-parser";
 import _ from "lodash";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useFetchDataBaseId, useDataModal } from "../utils/CustomHook";
+import { useFetchDataBaseId } from "../utils/CustomHook";
 import { getPackage } from "../slices/packageSlice";
+import { dataModalBooking } from "../utils/helpers";
 import { DateOptions, BookingHours, ClinicInfo, ModalBooking, Introduce, Loading } from "../components";
 
 import "../styles/PackageDetail.scss";
@@ -20,7 +21,6 @@ const PackageDetail = ({ packageOfClinic }) => {
   const { packageId } = useParams();
   const { language } = useSelector((store) => store.app);
   const packageData = useFetchDataBaseId(packageId, "package", getPackage);
-  const dataModal = useDataModal(language, packageData, "package", state.hourClicked);
 
   const handleModal = (hourClicked) => {
     return setState({
@@ -82,7 +82,7 @@ const PackageDetail = ({ packageOfClinic }) => {
               show={state.isOpenModalBooking}
               onHide={() => handleModal()}
               packageId={packageId ? packageId : ""}
-              packageData={!_.isEmpty(dataModal) ? dataModal : {}}
+              packageData={dataModalBooking(language, packageData, "package")}
               hourClicked={!_.isEmpty(state.hourClicked) && state.hourClicked}
             />
           </div>

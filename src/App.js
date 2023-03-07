@@ -61,11 +61,12 @@ function App() {
 
           <Route path="/" element={<SharedLayout clientInterface={1} />}>
             <Route index element={<Home />} />
-            <Route path={path.SPECIALTY} element={<Specialties remote={0} />} />
-            <Route path={`${path.SPECIALTY}/${path.REMOTE}`} element={<Specialties remote={1} />} />
-            <Route path={`${path.SPECIALTY}/:specialtyId`} element={<DetailSpecialty remote={0} />} />
+
+            <Route path={path.SPECIALTIES} element={<Specialties remote={0} />} />
+            <Route path={`${path.SPECIALTIES}/:specialtyId`} element={<DetailSpecialty remote={0} />} />
+            <Route path={`${path.SPECIALTIES}/${path.REMOTE}`} element={<Specialties remote={1} />} />
             <Route
-              path={`${path.SPECIALTY}/${path.REMOTE}/:specialtyId`}
+              path={`${path.SPECIALTIES}/${path.REMOTE}/:specialtyId`}
               element={<DetailSpecialty remote={1} />}
             />
 
@@ -84,9 +85,8 @@ function App() {
               path={`${path.CLINIC}/:clinicId/${path.PACKAGE}s`}
               element={<ClinicCarouselMore pageClinicDoctors={0} />}
             />
-
             <Route
-              path={`${path.CLINIC}/:clinicId/${path.PACKAGE}/:packageId`}
+              path={`${path.CLINIC}/:clinicId/${path.PACKAGE}s/:packageId`}
               element={<PackageDetail packageOfClinic={1} />}
             />
             <Route path={`${path.CLINIC}/:clinicId/${path.SPECIALTIES}`} element={<ClinicSpecialties />} />
@@ -95,7 +95,11 @@ function App() {
               element={<DetailClinicSpecialty />}
             />
             <Route
-              path={`${path.CLINIC}/:clinicId/${path.SPECIALTIES}/:specialtyId/${path.PACKAGE}/:packageId`}
+              path={`${path.CLINIC}/:clinicId/${path.SPECIALTIES}/:specialtyId/${path.PACKAGE}s`}
+              element={<ClinicCarouselMore packageClinicSpecialty={1} />}
+            />
+            <Route
+              path={`${path.CLINIC}/:clinicId/${path.SPECIALTIES}/:specialtyId/${path.PACKAGE}s/:packageId`}
               element={<PackageDetail />}
             />
 

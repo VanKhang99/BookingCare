@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useInView, InView } from "react-intersection-observer";
 import { Element, Link as LinkScroll } from "react-scroll";
-import { InputSearch } from "../components";
+import { InputSearch, ScrollToTop } from "../components";
 import { GoSearch } from "react-icons/go";
 import { getAllClinics } from "../slices/clinicSlice";
 import { helperFilterSearch } from "../utils/helpers";
@@ -213,6 +213,8 @@ const Clinics = () => {
           })}
         </div>
       </div>
+
+      <ScrollToTop />
     </div>
   );
 };

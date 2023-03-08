@@ -8,10 +8,10 @@ import { getClinic } from "../slices/clinicSlice";
 import { getAllPackages, getPackage } from "../slices/packageSlice";
 import { getAllDoctorsById, getDoctor } from "../slices/doctorSlice";
 import { useFetchDataBaseId } from "../utils/CustomHook";
-import { dataModalBooking } from "../utils/helpers";
+import { dataModalBooking, formatterPrice } from "../utils/helpers";
 import { GoSearch } from "react-icons/go";
 import { SlRefresh } from "react-icons/sl";
-import { BsCaretDown } from "react-icons/bs";
+import { TbFilter } from "react-icons/tb";
 // import { RxChevronDown } from "react-icons/rx";
 import "../styles/ClinicCarouselMore.scss";
 
@@ -25,13 +25,18 @@ const initialState = {
   packageId: "",
   packageData: {},
 
-  filterDoctors: [],
-  filterPackages: [],
+  packagesFiltered: [],
+  optionsCategory: [],
+  optionsPrice: [],
+
+  categorySelected: [],
+  isOpenCategory: false,
+  isOpenPrice: false,
   action: "init",
 };
 
 const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
-  const [state, setState] = useState(initialState);
+  const [state, setState] = useState({ ...initialState });
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { clinicId } = useParams();
@@ -91,7 +96,104 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
   const handleOptionFilter = () => {
     if (!doctorsById.length && !packageArr.length) return;
 
-    console.log(packageArr);
+    const categoriesFilter = packageArr.reduce(
+      (acc, pk) => {
+        const categoryName = language === "vi" ? pk.packageType.nameVi : pk.packageType.nameEn;
+        if (pk.packageType.id && !acc.includes(categoryName)) {
+          acc.push(categoryName);
+        }
+        return acc;
+      },
+      [language === "vi" ? "Tất cả" : "All"]
+    );
+
+    const rangePrice = ["1000000", "5000000", "10000000"].map((price) => formatterPrice(language, price));
+    const rangePriceFilter =
+      language === "vi"
+        ? [
+            `Dưới ${rangePrice[0]}`,
+            `Từ ${rangePrice[0]} đến ${rangePrice[1]}`,
+            `Từ ${rangePrice[1]} đến ${rangePrice[2]}`,
+            `Trên ${rangePrice[2]}`,
+          ]
+        : [
+            `Under ${rangePrice[0]}`,
+            `From ${rangePrice[0]} to ${rangePrice[1]}`,
+            `From ${rangePrice[1]} to ${rangePrice[2]}`,
+            `Over ${rangePrice[2]}`,
+          ];
+
+    return setState({
+      ...state,
+      packagesFiltered: packageArr,
+      optionsCategory: categoriesFilter,
+      optionsPrice: rangePriceFilter,
+    });
+  };
+
+  const handleDisplayOptions = (e, optionsOf) => {
+    // All elements is don't have parent element class "filter-item"
+    //will not be show "filter-select". Element "filter-select" stopPropagation
+    // to prevent condition e.target.closest(".filter-item") => not hide "filter-select"
+    if (!e.target.closest(".filter-item")) {
+      return setState({
+        ...initialState,
+        optionsCategory: state.optionsCategory,
+        optionsPrice: state.optionsPrice,
+      });
+    }
+
+    setState((prevState) => {
+      const { isOpenCategory, isOpenPrice } = prevState;
+      switch (optionsOf) {
+        case "Category":
+          return { ...prevState, isOpenCategory: !isOpenCategory, isOpenPrice: false };
+        case "Price":
+          return { ...prevState, isOpenPrice: !isOpenPrice, isOpenCategory: false };
+        default:
+          return prevState;
+      }
+    });
+  };
+
+  const handleSelectedCategory = (category) => {
+    console.log(state);
+    if (state.categorySelected.includes(category)) {
+      const resetCategorySelected = state.categorySelected.filter((cate) => cate !== category);
+      return setState({
+        ...state,
+        categorySelected: resetCategorySelected,
+        action: resetCategorySelected.length ? "filter" : "init",
+      });
+    }
+
+    if (category === "Tất cả" || category === "All") {
+      return setState({ ...state, categorySelected: [category], action: "init" });
+    }
+
+    const filterCategoryAll = [...state.categorySelected, category].filter(
+      (cate) => cate !== (language === "vi" ? "Tất cả" : "All")
+    );
+
+    return setState({ ...state, categorySelected: [...new Set(filterCategoryAll)], action: "filter" });
+  };
+
+  const handleRefresh = () => {
+    return setState({ ...state, categorySelected: [], action: "init" });
+  };
+
+  const handleFilter = (filterOf) => {
+    const packagesFiltered = packageArr.filter((pk) =>
+      state.categorySelected.includes(pk.packageType[language === "vi" ? "nameVi" : "nameEN"])
+    );
+
+    return setState({ ...state, [`isOpen${filterOf}`]: false, packagesFiltered });
+  };
+
+  const handleRender = (arr) => {
+    if (!arr.length) return [];
+
+    return arr;
   };
 
   useEffect(() => {
@@ -107,17 +209,20 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
 
   useEffect(() => {
     handleOptionFilter();
-  }, [doctorsById.length, packageArr.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [doctorsById.length, packageArr.length, language]);
+
+  // console.log(state);
 
   return (
-    <div className="clinic-carousel-container">
+    <div className="clinic-carousel-container" onClick={(e) => handleDisplayOptions(e)}>
       {!_.isEmpty(dataClinic) && (
         <>
           <ClinicTop clinicId={+clinicId} dataClinic={dataClinic} />
 
           <div style={{ borderTop: "1px solid #eee" }}></div>
 
-          <div className="filter u-wrapper">
+          <div className="filters u-wrapper">
             <div className="filter-search">
               <InputSearch
                 placeholder={language === "vi" ? "Tìm kiếm cơ sở y tế" : "Search for medical facilities"}
@@ -128,14 +233,19 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
               />
             </div>
 
-            <div className="filter-select">
-              <div className="filter-select-item">
-                <span className="filter-select-item__category">Danh mục</span>
-                <span className="filter-select-item__icon">
+            <div className="filter">
+              <div
+                className="filter-item filter-item--category"
+                onClick={(e) => handleDisplayOptions(e, "Category")}
+              >
+                <span className="filter-item__name">
+                  {state.action === "filter" ? state.categorySelected.join(", ") : "Danh mục"}
+                </span>
+                <span className="filter-item__icon">
                   <svg
                     stroke="%23000000"
                     fill="%23000000"
-                    stroke-width="0"
+                    strokeWidth="0"
                     viewBox="0 0 24 24"
                     height="20px"
                     width="20px"
@@ -147,15 +257,54 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
                     </g>
                   </svg>
                 </span>
+
+                <div
+                  className={`${state.isOpenCategory ? "filter-select open" : "filter-select"}`}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <strong className="filter-select__title">Lựa chọn danh mục</strong>
+
+                  <div className="filter-options">
+                    {state.optionsCategory.length > 0 &&
+                      state.optionsCategory.map((category) => {
+                        return (
+                          <span
+                            key={category}
+                            className={
+                              state.categorySelected.includes(category)
+                                ? "filter-options__item filter-options__item--selected"
+                                : "filter-options__item"
+                            }
+                            onClick={(e) => handleSelectedCategory(category)}
+                          >
+                            {category}
+                          </span>
+                        );
+                      })}
+                  </div>
+
+                  <div className="filter-buttons">
+                    <button className="filter-button" onClick={handleRefresh}>
+                      <SlRefresh />
+                    </button>
+
+                    <button className="filter-button" onClick={() => handleFilter("Category")}>
+                      <TbFilter />
+                    </button>
+                  </div>
+                </div>
               </div>
 
-              <div className="filter-select-item">
-                <span className="filter-select-item__price">Mức giá</span>
-                <span className="filter-select-item__icon">
+              <div
+                className="filter-item filter-item--price"
+                onClick={(e) => handleDisplayOptions(e, "Price")}
+              >
+                <span className="filter-item__name">Mức giá</span>
+                <span className="filter-item__icon">
                   <svg
                     stroke="%23000000"
                     fill="%23000000"
-                    stroke-width="0"
+                    strokeWidth="0"
                     viewBox="0 0 24 24"
                     height="20px"
                     width="20px"
@@ -167,6 +316,38 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
                     </g>
                   </svg>
                 </span>
+
+                <div
+                  className={`${state.isOpenPrice ? "filter-select open" : "filter-select"}`}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <strong className="filter-select__title">Tìm theo khoảng giá</strong>
+                  <div className="filter-select__inputs">
+                    <input type="number" placeholder="Từ" />
+                    <span> - </span>
+                    <input type="number" placeholder="Đến" />
+                  </div>
+                  <strong className="filter-select__title">Hoặc lựa chọn mức giá</strong>
+                  <div className="filter-options">
+                    {state.optionsPrice.length > 0 &&
+                      state.optionsPrice.map((price, index) => {
+                        return (
+                          <span key={index} className="filter-options__item">
+                            {price}
+                          </span>
+                        );
+                      })}
+                  </div>
+                  <div className="filter-buttons">
+                    <button className="filter-button">
+                      <SlRefresh />
+                    </button>
+
+                    <button className="filter-button">
+                      <TbFilter />
+                    </button>
+                  </div>
+                </div>
               </div>
 
               <div className="refresh">
@@ -191,8 +372,7 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
                     />
                   );
                 })
-              : packageArr.length > 0 &&
-                packageArr.map((pk) => {
+              : handleRender(state.action === "init" ? packageArr : state.packagesFiltered).map((pk) => {
                   return (
                     <Package
                       key={pk.id}

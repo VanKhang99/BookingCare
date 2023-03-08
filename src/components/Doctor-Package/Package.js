@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import { useSelector } from "react-redux";
 import { MdLocationOn } from "react-icons/md";
 import { Introduce, DateOptions, BookingHours, ClinicInfo } from "../index";
@@ -73,4 +73,4 @@ const Package = ({
   );
 };
 
-export default Package;
+export default memo(Package);

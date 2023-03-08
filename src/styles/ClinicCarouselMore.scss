@@ -3,7 +3,7 @@
 .clinic-carousel-container {
   flex: 1;
 
-  .filter {
+  .filters {
     margin-top: 2rem;
     padding: 2.5rem 5rem;
     border-radius: 0.6rem;
@@ -13,7 +13,7 @@
     flex-direction: column;
     gap: 2.4rem;
 
-    &-search {
+    .filter-search {
       .input-search {
         width: 100%;
         input {
@@ -22,7 +22,7 @@
       }
     }
 
-    &-select {
+    .filter {
       display: flex;
       gap: 2.4rem;
 
@@ -39,8 +39,9 @@
         outline: none;
         cursor: pointer;
 
-        &__category,
-        &__price {
+        position: relative;
+
+        &__name {
           font-weight: 600;
           font-size: $base-size + 0.4rem;
         }
@@ -48,6 +49,108 @@
         &__icon {
           svg {
             opacity: 0.7;
+          }
+        }
+      }
+
+      &-item--price {
+        .filter-select__inputs {
+          margin-bottom: 1rem;
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          width: 100%;
+
+          input {
+            width: 50%;
+            padding: 0.4rem 0.6rem;
+            border-radius: 0.6rem;
+            border: 2px solid $grey-8;
+            font-size: $base-size + 0.2rem;
+          }
+        }
+      }
+
+      &-select {
+        position: absolute;
+        top: 115%;
+        right: 0;
+        z-index: 1;
+        cursor: default;
+
+        width: 44rem;
+        padding: 2rem;
+        background-color: #fff;
+        box-shadow: $shadow-3;
+        border-radius: 0.6rem;
+        opacity: 0;
+        visibility: hidden;
+        transition: $transition;
+
+        &.open {
+          opacity: 1;
+          visibility: visible;
+        }
+
+        &__title {
+          font-size: $base-size + 0.4rem;
+          font-weight: 600;
+          margin-bottom: 0.5rem;
+          display: block;
+        }
+
+        .filter-options {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          column-gap: 0.6rem;
+          row-gap: 0.6rem;
+
+          &__item {
+            font-size: $base-size + 0.2rem;
+            padding: 1rem;
+            border-radius: 0.6rem;
+            background-color: $grey-2;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+
+            &--selected {
+              font-weight: 700;
+              color: #fff;
+              background-color: $color-blue-2;
+            }
+          }
+        }
+
+        .filter-buttons {
+          border-top: 1px solid $grey-2;
+          margin-top: 1rem;
+          padding-top: 1rem;
+
+          display: flex;
+          justify-content: flex-end;
+          gap: 1.2rem;
+
+          .filter-button {
+            outline: none;
+            border: none;
+            width: 3.6rem;
+            height: 3.6rem;
+            border-radius: 0.6rem;
+            background-color: $color-yellow-dark-2;
+            opacity: 0.6;
+            transition: $transition;
+
+            &:hover {
+              opacity: 1;
+            }
+
+            svg {
+              width: 2.4rem;
+              height: 2.4rem;
+            }
           }
         }
       }

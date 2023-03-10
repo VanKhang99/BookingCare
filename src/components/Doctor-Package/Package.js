@@ -20,6 +20,8 @@ const Package = ({
   const [state, setState] = useState({ ...initialState });
   const { language } = useSelector((store) => store.app);
 
+  console.log("test");
+
   const handleUpdateSchedules = (schedulesArr) => {
     return setState({ ...state, schedules: schedulesArr });
   };

@@ -3,33 +3,33 @@
 .input-search {
   position: relative;
   width: 36rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 0.8rem 1.8rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 100px;
+  border: 1.5px solid $rgba-black-1;
+
+  &:focus-within {
+    border: 1px solid $color-blue;
+  }
 
   input {
+    flex: 1;
     font-size: $base-size + 0.2rem;
-    width: 100%;
-    color: r$rgba-black-3;
-    padding: 0.8rem 1.8rem;
-    border: 1.5px solid $rgba-black-1;
-
-    border-radius: 100px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    color: $main-color-text;
+    border: none;
     outline: none;
 
     &::placeholder {
       color: $rgba-black-2;
     }
-
-    &:focus {
-      border: 1px solid $color-blue;
-    }
   }
 
   &__icon {
-    position: absolute;
-    top: 50%;
-    right: 1.6rem;
-    transform: translateY(-50%);
-    margin-top: -1px;
+    margin-top: -2px;
     transition: $transition;
     opacity: 0.8;
 

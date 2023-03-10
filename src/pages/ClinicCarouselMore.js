@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import _ from "lodash";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -7,12 +7,12 @@ import { ClinicTop, InputSearch, Doctor, Package, ModalBooking } from "../compon
 import { getClinic } from "../slices/clinicSlice";
 import { getAllPackages, getPackage } from "../slices/packageSlice";
 import { getAllDoctorsById, getDoctor } from "../slices/doctorSlice";
+import { getAllPackagesType } from "../slices/packageTypeSlice";
 import { useFetchDataBaseId } from "../utils/CustomHook";
-import { dataModalBooking, formatterPrice } from "../utils/helpers";
+import { dataModalBooking, formatterPrice, helperFilterSearch } from "../utils/helpers";
 import { GoSearch } from "react-icons/go";
 import { SlRefresh } from "react-icons/sl";
 import { TbFilter } from "react-icons/tb";
-// import { RxChevronDown } from "react-icons/rx";
 import "../styles/ClinicCarouselMore.scss";
 
 const initialState = {
@@ -25,51 +25,73 @@ const initialState = {
   packageId: "",
   packageData: {},
 
-  packagesFiltered: [],
+  // packagesFiltered: [],
   optionsCategory: [],
   optionsPrice: [],
 
   categorySelected: [],
   isOpenCategory: false,
   isOpenPrice: false,
-  action: "init",
 };
 
 const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
-  const [state, setState] = useState({ ...initialState });
+  const [state, setState] = useState(initialState);
+  const [packagesFiltered, setPackagesFiltered] = useState([]);
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { clinicId } = useParams();
   const { language } = useSelector((store) => store.app);
   const { doctorsById } = useSelector((store) => store.doctor);
   const { packageArr } = useSelector((store) => store.package);
+  const { packagesType } = useSelector((store) => store.packageType);
   const dataClinic = useFetchDataBaseId(clinicId ? +clinicId : "", "clinic", getClinic);
 
   const handleOnChangeSearch = (e) => {
     return setState({ ...state, inputSearch: e.target.value });
   };
 
-  const handleSearchClinics = (inputToActions, type) => {};
+  const handleSearchPackages = (inputSearch) => {
+    const isOptionAllSelected =
+      state.categorySelected.includes("All") ||
+      state.categorySelected.includes("Tất cả") ||
+      !state.categorySelected.length;
+
+    console.log(state.categorySelected.length);
+
+    let newPackagesFiltered = packageArr.filter((pk) => {
+      const { targetName, input } = helperFilterSearch(inputSearch, pk.nameVi);
+      return targetName.includes(input);
+    });
+
+    if (!isOptionAllSelected && state.categorySelected.length) {
+      newPackagesFiltered = newPackagesFiltered.filter((pk) => {
+        const typePk = pk.packageType[language === "vi" ? "nameVi" : "nameEn"];
+        return state.categorySelected.includes(typePk);
+      });
+
+      setPackagesFiltered(newPackagesFiltered);
+      return;
+    }
+
+    console.log(newPackagesFiltered);
+    setPackagesFiltered(inputSearch ? newPackagesFiltered : packageArr);
+  };
 
   const handlePressEnter = (e) => {
     if (e.key !== "Enter") return;
 
-    handleSearchClinics(state.inputSearch, "search");
+    handleSearchPackages(state.inputSearch);
   };
 
-  const handleModal = async (hourClicked, doctorId = null, packageId = null) => {
+  const handleModal = useCallback(async (hourClicked, doctorId = null, packageId = null) => {
     // (Why get doctorId)
     //pass DoctorId --> Doctor --> BookingHours
     /// --> Run function (handleClick) to get "doctorId" pass reverse to parentComponent
     ////////via function handleModal --> run get dataDoctor and price to ModalBooking
-
     try {
-      let res;
-      if (pageClinicDoctors) {
-        res = await dispatch(getDoctor(+doctorId));
-      } else {
-        res = await dispatch(getPackage(+packageId));
-      }
+      const res = pageClinicDoctors
+        ? await dispatch(getDoctor(+doctorId))
+        : await dispatch(getPackage(+packageId));
 
       if (res?.payload?.data) {
         return setState({
@@ -91,15 +113,14 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
     } catch (error) {
       console.error(error);
     }
-  };
+  }, []);
 
-  const handleOptionFilter = () => {
-    if (!doctorsById.length && !packageArr.length) return;
-
-    const categoriesFilter = packageArr.reduce(
-      (acc, pk) => {
-        const categoryName = language === "vi" ? pk.packageType.nameVi : pk.packageType.nameEn;
-        if (pk.packageType.id && !acc.includes(categoryName)) {
+  const optionsFilter = () => {
+    //option category
+    const categoriesFilter = packagesType.reduce(
+      (acc, pkType) => {
+        const categoryName = language === "vi" ? pkType.nameVi : pkType.nameEn;
+        if (!acc.includes(categoryName)) {
           acc.push(categoryName);
         }
         return acc;
@@ -107,6 +128,7 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
       [language === "vi" ? "Tất cả" : "All"]
     );
 
+    // option prices
     const rangePrice = ["1000000", "5000000", "10000000"].map((price) => formatterPrice(language, price));
     const rangePriceFilter =
       language === "vi"
@@ -123,12 +145,19 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
             `Over ${rangePrice[2]}`,
           ];
 
-    return setState({
+    return { categoriesFilter, rangePriceFilter };
+  };
+
+  const handleOptions = () => {
+    const { categoriesFilter, rangePriceFilter } = optionsFilter();
+
+    setState({
       ...state,
-      packagesFiltered: packageArr,
       optionsCategory: categoriesFilter,
       optionsPrice: rangePriceFilter,
     });
+    setPackagesFiltered(packagesFiltered.length > 0 ? packagesFiltered : packageArr);
+    return;
   };
 
   const handleDisplayOptions = (e, optionsOf) => {
@@ -137,9 +166,11 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
     // to prevent condition e.target.closest(".filter-item") => not hide "filter-select"
     if (!e.target.closest(".filter-item")) {
       return setState({
-        ...initialState,
+        ...state,
         optionsCategory: state.optionsCategory,
         optionsPrice: state.optionsPrice,
+        isOpenCategory: false,
+        isOpenPrice: false,
       });
     }
 
@@ -157,43 +188,101 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
   };
 
   const handleSelectedCategory = (category) => {
-    console.log(state);
-    if (state.categorySelected.includes(category)) {
+    if (!category) {
+      const { categoriesFilter, rangePriceFilter } = optionsFilter();
+      const isOptionAllSelected =
+        state.categorySelected.includes("All") || state.categorySelected.includes("Tất cả");
+
+      const categorySelected = packageArr.reduce((acc, pk) => {
+        const checkOldSelectedCategory = state.categorySelected.includes(
+          pk.packageType[language === "vi" ? "nameEn" : "nameVi"]
+        );
+
+        if (checkOldSelectedCategory) {
+          acc.push(pk.packageType[language === "vi" ? "nameVi" : "nameEn"]);
+        }
+        return acc;
+      }, []);
+
+      setState({
+        ...state,
+        categorySelected: isOptionAllSelected
+          ? [language === "vi" ? "Tất cả" : "All"]
+          : [...new Set(categorySelected)],
+        optionsCategory: categoriesFilter,
+        optionsPrice: rangePriceFilter,
+      });
+      return;
+    }
+
+    const { categorySelected } = state;
+    const isCategorySelected = categorySelected.includes(category);
+
+    if (isCategorySelected) {
       const resetCategorySelected = state.categorySelected.filter((cate) => cate !== category);
-      return setState({
+      setState({
         ...state,
         categorySelected: resetCategorySelected,
-        action: resetCategorySelected.length ? "filter" : "init",
       });
+      return;
     }
 
     if (category === "Tất cả" || category === "All") {
-      return setState({ ...state, categorySelected: [category], action: "init" });
+      setState({ ...state, categorySelected: [category] });
+      return;
     }
 
     const filterCategoryAll = [...state.categorySelected, category].filter(
       (cate) => cate !== (language === "vi" ? "Tất cả" : "All")
     );
-
-    return setState({ ...state, categorySelected: [...new Set(filterCategoryAll)], action: "filter" });
+    return setState({ ...state, categorySelected: [...new Set(filterCategoryAll)] });
   };
 
-  const handleRefresh = () => {
-    return setState({ ...state, categorySelected: [], action: "init" });
+  const handleSelectedPrice = (price) => {
+    console.log(price);
+  };
+
+  const handleRefresh = (filterOf) => {
+    const newState = {
+      ...state,
+      [`isOpen${filterOf}`]: false,
+      categorySelected: [],
+    };
+
+    const newPackagesFiltered = packageArr.filter((pk) => {
+      const { targetName, input } = helperFilterSearch(state.inputSearch, pk.nameVi);
+      return targetName.includes(input);
+    });
+
+    setState(newState);
+    setPackagesFiltered(state.inputSearch ? newPackagesFiltered : packageArr);
   };
 
   const handleFilter = (filterOf) => {
-    const packagesFiltered = packageArr.filter((pk) =>
-      state.categorySelected.includes(pk.packageType[language === "vi" ? "nameVi" : "nameEN"])
-    );
+    const isOptionAllSelected =
+      state.categorySelected.includes("All") ||
+      state.categorySelected.includes("Tất cả") ||
+      !state.categorySelected.length;
 
-    return setState({ ...state, [`isOpen${filterOf}`]: false, packagesFiltered });
-  };
+    const newState = {
+      ...state,
+      [`isOpen${filterOf}`]: false,
+    };
 
-  const handleRender = (arr) => {
-    if (!arr.length) return [];
+    if (state.inputSearch) {
+      setState(newState);
+      handleSearchPackages(state.inputSearch);
+      return;
+    }
 
-    return arr;
+    const newPackagesFiltered = isOptionAllSelected
+      ? packageArr
+      : packageArr.filter((pk) => {
+          const typePk = pk.packageType[language === "vi" ? "nameVi" : "nameEn"];
+          return state.categorySelected.includes(typePk);
+        });
+    setState(newState);
+    setPackagesFiltered(newPackagesFiltered);
   };
 
   useEffect(() => {
@@ -204,15 +293,24 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
     } else {
       dispatch(getAllPackages({ clinicId: +clinicId, specialId: null }));
     }
+    dispatch(getAllPackagesType());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    handleOptionFilter();
+    if (packagesType.length > 0) {
+      handleOptions();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [doctorsById.length, packageArr.length, language]);
+  }, [packagesType.length]);
+
+  useEffect(() => {
+    handleSelectedCategory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language]);
 
   // console.log(state);
+  console.log(packagesFiltered);
 
   return (
     <div className="clinic-carousel-container" onClick={(e) => handleDisplayOptions(e)}>
@@ -225,10 +323,10 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
           <div className="filters u-wrapper">
             <div className="filter-search">
               <InputSearch
-                placeholder={language === "vi" ? "Tìm kiếm cơ sở y tế" : "Search for medical facilities"}
+                placeholder={language === "vi" ? "Tìm kiếm gói khám bệnh" : "Search for packages examination"}
                 icon={<GoSearch />}
                 onSearch={handleOnChangeSearch}
-                onClickSearch={() => handleSearchClinics(state.inputSearch, "search")}
+                onClickSearch={() => handleSearchPackages(state.inputSearch)}
                 onEnterKey={handlePressEnter}
               />
             </div>
@@ -238,9 +336,7 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
                 className="filter-item filter-item--category"
                 onClick={(e) => handleDisplayOptions(e, "Category")}
               >
-                <span className="filter-item__name">
-                  {state.action === "filter" ? state.categorySelected.join(", ") : "Danh mục"}
-                </span>
+                <span className="filter-item__name">{state.categorySelected.join(", ") || "Danh mục"}</span>
                 <span className="filter-item__icon">
                   <svg
                     stroke="%23000000"
@@ -284,7 +380,7 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
                   </div>
 
                   <div className="filter-buttons">
-                    <button className="filter-button" onClick={handleRefresh}>
+                    <button className="filter-button" onClick={() => handleRefresh("Category")}>
                       <SlRefresh />
                     </button>
 
@@ -332,7 +428,11 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
                     {state.optionsPrice.length > 0 &&
                       state.optionsPrice.map((price, index) => {
                         return (
-                          <span key={index} className="filter-options__item">
+                          <span
+                            key={index}
+                            className="filter-options__item"
+                            onClick={() => handleSelectedPrice(price)}
+                          >
                             {price}
                           </span>
                         );
@@ -372,7 +472,8 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
                     />
                   );
                 })
-              : handleRender(state.action === "init" ? packageArr : state.packagesFiltered).map((pk) => {
+              : packagesFiltered.length > 0 &&
+                packagesFiltered.map((pk) => {
                   return (
                     <Package
                       key={pk.id}

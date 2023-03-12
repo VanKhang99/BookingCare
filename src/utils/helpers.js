@@ -1,5 +1,6 @@
 import axios from "axios";
 import _ from "lodash";
+import { TO_USD } from "../utils/constants";
 import { toast } from "react-toastify";
 import { API_APP_BACKEND_URL } from "./constants";
 
@@ -73,12 +74,17 @@ export const formatterPrice = (language, priceData) => {
 
   if (priceData.includes("-")) {
     const splitPrice = priceData.split(" - ").map((p) => {
-      p = formatter.format(language === "vi" ? p : Math.ceil(+p / 25000));
+      p =
+        language === "vi"
+          ? formatter.format(p)
+          : formatter.format(Math.ceil(+p / TO_USD).toFixed(0)).replace(/\.0+$/, "");
       return p;
     });
     return splitPrice.join(" - ");
   }
-  return formatter.format(language === "vi" ? priceData : Math.ceil(+priceData / 25000));
+  return language === "vi"
+    ? formatter.format(priceData)
+    : formatter.format(Math.ceil(+priceData / TO_USD).toFixed(0)).replace(/\.0+$/, "");
 };
 
 export const checkData = (data, propsArrInfo) => {

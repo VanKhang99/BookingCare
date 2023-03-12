@@ -10,6 +10,7 @@ import { getAllDoctorsById, getDoctor } from "../slices/doctorSlice";
 import { getAllPackagesType } from "../slices/packageTypeSlice";
 import { useFetchDataBaseId } from "../utils/CustomHook";
 import { dataModalBooking, formatterPrice, helperFilterSearch } from "../utils/helpers";
+import { TO_USD } from "../utils/constants";
 import { GoSearch } from "react-icons/go";
 import { SlRefresh } from "react-icons/sl";
 import { TbFilter } from "react-icons/tb";
@@ -32,6 +33,10 @@ const initialState = {
   categorySelected: [],
   isOpenCategory: false,
   isOpenPrice: false,
+
+  priceFrom: "",
+  priceTo: "",
+  priceSelected: "",
 };
 
 const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
@@ -56,8 +61,6 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
       state.categorySelected.includes("Tất cả") ||
       !state.categorySelected.length;
 
-    console.log(state.categorySelected.length);
-
     let newPackagesFiltered = packageArr.filter((pk) => {
       const { targetName, input } = helperFilterSearch(inputSearch, pk.nameVi);
       return targetName.includes(input);
@@ -70,17 +73,39 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
       });
 
       setPackagesFiltered(newPackagesFiltered);
-      return;
+      return newPackagesFiltered;
     }
 
-    console.log(newPackagesFiltered);
     setPackagesFiltered(inputSearch ? newPackagesFiltered : packageArr);
+    return inputSearch ? newPackagesFiltered : packageArr;
+  };
+
+  const doFilterPrice = (arr) => {
+    const { priceFrom, priceTo, priceSelected } = state;
+    const newPackagesFiltered = arr.filter((pk) => {
+      const { price } = pk;
+      const priceBaseLanguage = language === "vi" ? +price : +price / 25000;
+      console.log(priceBaseLanguage);
+      const prices = price.includes("-") ? price.split(" - ") : [price];
+
+      if (priceSelected.includes("Under") || priceSelected.includes("Dưới")) {
+        return prices.every((price) => +priceBaseLanguage <= +priceTo);
+      }
+
+      if (priceSelected.includes("Over") || priceSelected.includes("Trên")) {
+        return prices.every((price) => +priceBaseLanguage > +priceFrom);
+      }
+
+      return prices.every((price) => +priceBaseLanguage > +priceFrom && +priceBaseLanguage <= +priceTo);
+    });
+    return newPackagesFiltered;
   };
 
   const handlePressEnter = (e) => {
     if (e.key !== "Enter") return;
 
-    handleSearchPackages(state.inputSearch);
+    const packagesSearched = handleSearchPackages(state.inputSearch);
+    setPackagesFiltered(packagesSearched);
   };
 
   const handleModal = useCallback(async (hourClicked, doctorId = null, packageId = null) => {
@@ -193,7 +218,7 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
       const isOptionAllSelected =
         state.categorySelected.includes("All") || state.categorySelected.includes("Tất cả");
 
-      const categorySelected = packageArr.reduce((acc, pk) => {
+      const changeCategorySelected = packageArr.reduce((acc, pk) => {
         const checkOldSelectedCategory = state.categorySelected.includes(
           pk.packageType[language === "vi" ? "nameEn" : "nameVi"]
         );
@@ -204,15 +229,16 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
         return acc;
       }, []);
 
-      setState({
+      console.log(changeCategorySelected);
+
+      return setState({
         ...state,
         categorySelected: isOptionAllSelected
           ? [language === "vi" ? "Tất cả" : "All"]
-          : [...new Set(categorySelected)],
+          : [...new Set(changeCategorySelected)],
         optionsCategory: categoriesFilter,
         optionsPrice: rangePriceFilter,
       });
-      return;
     }
 
     const { categorySelected } = state;
@@ -239,7 +265,135 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
   };
 
   const handleSelectedPrice = (price) => {
-    console.log(price);
+    const { priceSelected } = state;
+    const { categoriesFilter, rangePriceFilter } = optionsFilter();
+    const filterPrice = (arr) => {
+      return arr
+        .filter((price) => price.includes("₫") || price.includes("$"))
+        .map((part) => parseInt(part.replace(/[^\d]/g, ""), 10));
+    };
+
+    if (!price) {
+      const indexPriceSelected = state.optionsPrice.findIndex((price) => price === state.priceSelected);
+      const newPriceSelected = rangePriceFilter[indexPriceSelected];
+      const splitPrice = newPriceSelected?.split(" ");
+
+      if (!splitPrice) {
+        return setState({ ...state, optionsCategory: categoriesFilter, optionsPrice: rangePriceFilter });
+      }
+
+      const pricesArr = filterPrice(splitPrice);
+
+      if (splitPrice.includes("Dưới") || splitPrice.includes("Under")) {
+        return setState({
+          ...state,
+          priceSelected: newPriceSelected,
+          priceFrom: "",
+          priceTo: pricesArr[0],
+          optionsCategory: categoriesFilter,
+          optionsPrice: rangePriceFilter,
+        });
+      }
+
+      if (splitPrice.includes("Trên") || splitPrice.includes("Over")) {
+        return setState({
+          ...state,
+          priceSelected: newPriceSelected,
+          priceFrom: pricesArr[0],
+          priceTo: "",
+          optionsCategory: categoriesFilter,
+          optionsPrice: rangePriceFilter,
+        });
+      }
+
+      return setState({
+        ...state,
+        priceSelected: newPriceSelected,
+        priceFrom: pricesArr[0],
+        priceTo: pricesArr[1],
+        optionsCategory: categoriesFilter,
+        optionsPrice: rangePriceFilter,
+      });
+    }
+
+    if (priceSelected === price) {
+      return setState({
+        ...state,
+        priceSelected: "",
+        priceFrom: "",
+        priceTo: "",
+      });
+    }
+
+    const splitPrice = price.split(" ");
+    const pricesArr = filterPrice(splitPrice);
+    if (pricesArr.length <= 1) {
+      if (splitPrice.includes("Dưới") || splitPrice.includes("Under")) {
+        return setState({
+          ...state,
+          priceTo: pricesArr[0],
+          priceFrom: "",
+          priceSelected: price,
+        });
+      } else if (splitPrice.includes("Trên") || splitPrice.includes("Over")) {
+        return setState({
+          ...state,
+          priceFrom: pricesArr[0],
+          priceTo: "",
+          priceSelected: price,
+        });
+      }
+    }
+
+    setState({
+      ...state,
+      priceFrom: pricesArr[0],
+      priceTo: pricesArr[1],
+      priceSelected: price,
+    });
+  };
+
+  const handleOnChangePriceInput = (e, typePrice) => {
+    const { value } = e.target;
+    const { priceTo, priceFrom } = state;
+    const formatter = new Intl.NumberFormat(`${language === "vi" ? "vi-VN" : "en-US"}`, {
+      style: "currency",
+      currency: `${language === "vi" ? "VND" : "USD"}`,
+    });
+
+    const wordFrom = language === "vi" ? "Từ" : "From";
+    const wordTo = language === "vi" ? "đến" : "to";
+    const wordUnder = language === "vi" ? "Dưới" : "Under";
+    const wordOver = language === "vi" ? "Trên" : "Over";
+
+    let formatPriceSelectedToShow;
+    if (typePrice === "priceFrom") {
+      if (!value && priceTo) {
+        formatPriceSelectedToShow = `${wordUnder} ${formatter.format(priceTo)}`;
+      } else if (value && !priceTo) {
+        formatPriceSelectedToShow = `${wordOver} ${formatter.format(value)}`;
+      } else {
+        formatPriceSelectedToShow = `${wordFrom} ${formatter.format(value)} ${wordTo} ${formatter.format(
+          priceTo
+        )}`;
+      }
+    } else if (typePrice === "priceTo") {
+      if (!value && priceFrom) {
+        formatPriceSelectedToShow = `${wordOver} ${formatter.format(priceFrom)}`;
+      } else if (value && !priceFrom) {
+        formatPriceSelectedToShow = `${wordUnder} ${formatter.format(value)}`;
+      } else {
+        formatPriceSelectedToShow = `${wordFrom} ${formatter.format(priceFrom)} ${wordTo} ${formatter.format(
+          value
+        )}`;
+      }
+    }
+
+    setState({
+      ...state,
+      [typePrice]: value,
+      priceSelected: formatPriceSelectedToShow,
+    });
   };
 
   const handleRefresh = (filterOf) => {
@@ -258,7 +412,7 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
     setPackagesFiltered(state.inputSearch ? newPackagesFiltered : packageArr);
   };
 
-  const handleFilter = (filterOf) => {
+  const handleFilterByCategory = () => {
     const isOptionAllSelected =
       state.categorySelected.includes("All") ||
       state.categorySelected.includes("Tất cả") ||
@@ -266,13 +420,14 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
 
     const newState = {
       ...state,
-      [`isOpen${filterOf}`]: false,
+      isOpenCategory: false,
     };
 
     if (state.inputSearch) {
+      const packagesSearched = handleSearchPackages(state.inputSearch);
       setState(newState);
-      handleSearchPackages(state.inputSearch);
-      return;
+      setPackagesFiltered(packagesSearched);
+      return packagesSearched;
     }
 
     const newPackagesFiltered = isOptionAllSelected
@@ -283,7 +438,36 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
         });
     setState(newState);
     setPackagesFiltered(newPackagesFiltered);
+    return newPackagesFiltered;
   };
+
+  const handleFilterByPrice = () => {
+    console.log(state);
+
+    // if(state.categorySelected && state.inputSearch)
+    if (state.inputSearch) {
+      let newPackagesFiltered = handleSearchPackages(state.inputSearch);
+      newPackagesFiltered = doFilterPrice(newPackagesFiltered);
+      setState({ ...state, isOpenPrice: false });
+      setPackagesFiltered(newPackagesFiltered);
+    }
+
+    if (state.categorySelected.length) {
+      let newPackagesFiltered = handleFilterByCategory();
+      newPackagesFiltered = doFilterPrice(newPackagesFiltered);
+      setState({ ...state, isOpenPrice: false });
+      setPackagesFiltered(newPackagesFiltered);
+      return;
+    }
+
+    if (!state.priceSelected) {
+      setState({ ...state, isOpenPrice: false });
+      setPackagesFiltered(packageArr);
+      return;
+    }
+  };
+
+  console.log(state);
 
   useEffect(() => {
     if (pageClinicDoctors) {
@@ -306,11 +490,9 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
 
   useEffect(() => {
     handleSelectedCategory();
+    handleSelectedPrice();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
-
-  // console.log(state);
-  console.log(packagesFiltered);
 
   return (
     <div className="clinic-carousel-container" onClick={(e) => handleDisplayOptions(e)}>
@@ -384,7 +566,7 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
                       <SlRefresh />
                     </button>
 
-                    <button className="filter-button" onClick={() => handleFilter("Category")}>
+                    <button className="filter-button" onClick={() => handleFilterByCategory("Category")}>
                       <TbFilter />
                     </button>
                   </div>
@@ -395,7 +577,9 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
                 className="filter-item filter-item--price"
                 onClick={(e) => handleDisplayOptions(e, "Price")}
               >
-                <span className="filter-item__name">Mức giá</span>
+                <span className="filter-item__name">
+                  {!state.priceFrom && !state.priceTo ? "Mức giá" : state.priceSelected}
+                </span>
                 <span className="filter-item__icon">
                   <svg
                     stroke="%23000000"
@@ -419,9 +603,19 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
                 >
                   <strong className="filter-select__title">Tìm theo khoảng giá</strong>
                   <div className="filter-select__inputs">
-                    <input type="number" placeholder="Từ" />
+                    <input
+                      type="number"
+                      placeholder="Từ"
+                      value={state.priceFrom}
+                      onChange={(e) => handleOnChangePriceInput(e, "priceFrom")}
+                    />
                     <span> - </span>
-                    <input type="number" placeholder="Đến" />
+                    <input
+                      type="number"
+                      placeholder="Đến"
+                      value={state.priceTo}
+                      onChange={(e) => handleOnChangePriceInput(e, "priceTo")}
+                    />
                   </div>
                   <strong className="filter-select__title">Hoặc lựa chọn mức giá</strong>
                   <div className="filter-options">
@@ -430,7 +624,11 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
                         return (
                           <span
                             key={index}
-                            className="filter-options__item"
+                            className={
+                              state.priceSelected === price
+                                ? "filter-options__item filter-options__item--selected"
+                                : "filter-options__item"
+                            }
                             onClick={() => handleSelectedPrice(price)}
                           >
                             {price}
@@ -443,7 +641,7 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
                       <SlRefresh />
                     </button>
 
-                    <button className="filter-button">
+                    <button className="filter-button" onClick={() => handleFilterByPrice("Price")}>
                       <TbFilter />
                     </button>
                   </div>

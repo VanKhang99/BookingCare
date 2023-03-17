@@ -4,6 +4,40 @@ import { TO_USD } from "../utils/constants";
 import { toast } from "react-toastify";
 import { API_APP_BACKEND_URL } from "./constants";
 
+export const postImageToS3 = async (fileImage) => {
+  try {
+    const formData = new FormData();
+    formData.append("uploaded_file", fileImage);
+
+    const res = await axios.post(`${API_APP_BACKEND_URL}/api/awsS3/post-image`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    if (res.status !== 201) return toast.error("Something went wrong when post image to S3 bucket!");
+    return res;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deleteImageOnS3 = async (imageName) => {
+  try {
+    const deleteImageFromS3 = await axios.delete(
+      `${API_APP_BACKEND_URL}/api/awsS3/delete-image/${imageName}`
+    );
+
+    if (deleteImageFromS3.status !== 204) {
+      return toast.error("Delete image in s3 bucket failed. Please check and try again!");
+    }
+
+    return;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const isValidEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
 export const isValidPassword = (password) => {
@@ -147,38 +181,23 @@ export const helperFilterSearch = (input, targetName) => {
   return { targetName, input };
 };
 
-export const postImageToS3 = async (fileImage) => {
-  try {
-    const formData = new FormData();
-    formData.append("uploaded_file", fileImage);
+export const helperDisplayNameDoctor = (data, language) => {
+  let finalName;
+  const {
+    moreData: { positionData, roleData, firstName, lastName, positionId, roleId },
+  } = data;
 
-    const res = await axios.post(`${API_APP_BACKEND_URL}/api/awsS3/post-image`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-
-    if (res.status !== 201) return toast.error("Something went wrong when post image to S3 bucket!");
-    return res;
-  } catch (error) {
-    console.error(error);
+  if (language === "vi") {
+    finalName = `${positionId !== "P0" ? `${positionData.valueVi} - ` : ""}${
+      roleId !== "R8" ? `${roleData.valueVi} - ` : ""
+    }${lastName} ${firstName}`;
+  } else {
+    finalName = `${positionId !== "P0" ? `${positionData.valueEn} - ` : ""}${
+      roleId !== "R8" ? `${roleData.valueEn} - ` : ""
+    }${lastName} ${firstName}`;
   }
-};
 
-export const deleteImageOnS3 = async (imageName) => {
-  try {
-    const deleteImageFromS3 = await axios.delete(
-      `${API_APP_BACKEND_URL}/api/awsS3/delete-image/${imageName}`
-    );
-
-    if (deleteImageFromS3.status !== 204) {
-      return toast.error("Delete image in s3 bucket failed. Please check and try again!");
-    }
-
-    return;
-  } catch (error) {
-    console.log(error);
-  }
+  return finalName;
 };
 
 export const dataModalBooking = (language, data, dataOf) => {
@@ -206,4 +225,27 @@ export const dataModalBooking = (language, data, dataOf) => {
     role: language === "vi" ? roleData.valueVi : roleData.valueEn,
     positionId: positionData.keyMap,
   };
+};
+
+export const helperCreateCategory = (arr, type, language) => {
+  return arr.reduce(
+    (acc, item) => {
+      let categoryName;
+      if (type === "doctor") {
+        const { specialtyData } = item;
+        categoryName = language === "vi" ? specialtyData.nameVi : specialtyData.nameEn;
+      } else if (type === "clinicSpecialty") {
+        const { specialty } = item;
+        categoryName = language === "vi" ? specialty.nameVi : specialty.nameEn;
+      } else {
+        categoryName = language === "vi" ? item.nameVi : item.nameEn;
+      }
+
+      if (!acc.includes(categoryName)) {
+        acc.push(categoryName);
+      }
+      return acc;
+    },
+    [language === "vi" ? "Tất cả" : "All"]
+  );
 };

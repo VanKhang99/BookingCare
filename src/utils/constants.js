@@ -10,6 +10,7 @@ export const path = {
   PACKAGE: "package",
   PACKAGE_CLINIC: "package-clinic",
   PACKAGE_SPECIALTY: "package-specialty",
+  CATEGORIES: "categories",
   LOGIN: "login",
   SUPPORT: "support",
   ERROR: "*",

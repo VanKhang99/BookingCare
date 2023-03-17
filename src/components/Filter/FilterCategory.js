@@ -1,103 +1,161 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
 import { getAllPackagesType } from "../../slices/packageTypeSlice";
-import { helperFilterSearch } from "../../utils/helpers";
+import { helperFilterSearch, helperDisplayNameDoctor, helperCreateCategory } from "../../utils/helpers";
+import { IoClose } from "react-icons/io5";
 import { SlRefresh } from "react-icons/sl";
 import { TbFilter } from "react-icons/tb";
 
-const FilterCategory = (packageArr, inputSearch, onDisplayOptions, isOpenCategory, onRefresh, onFilter) => {
-  const [categorySelected, setCategorySelected] = useState([]);
-  const [optionsCategory, setOptionsCategory] = useState([]);
+const initialState = {
+  optionsCategory: [],
+  isOpenCategory: false,
+};
+
+const FilterCategory = ({
+  pageClinicDoctors,
+  doctorsById,
+  packageArr,
+  categorySelected,
+  onSetSelectedOption,
+  onFilter,
+  onRefresh,
+  onRefreshAll,
+  filterBySearch,
+  inputSearch,
+}) => {
+  const [categoryState, setCategoryState] = useState(initialState);
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { language } = useSelector((store) => store.app);
   const { packagesType } = useSelector((store) => store.packageType);
 
   const optionsFilter = () => {
-    //option category
-    const categoriesFilter = packagesType.reduce(
-      (acc, pkType) => {
-        const categoryName = language === "vi" ? pkType.nameVi : pkType.nameEn;
-        if (!acc.includes(categoryName)) {
-          acc.push(categoryName);
-        }
-        return acc;
-      },
-      [language === "vi" ? "Tất cả" : "All"]
-    );
+    console.log("test");
+    let categoriesFilter;
+    if (pageClinicDoctors) {
+      categoriesFilter = helperCreateCategory(doctorsById, "doctor", language);
+    } else {
+      categoriesFilter = helperCreateCategory(packagesType, "package", language);
+    }
     return categoriesFilter;
   };
 
+  const handleOptionsCategory = () => {
+    const categoriesFilter = optionsFilter();
+    console.log(categoriesFilter);
+
+    return setCategoryState({
+      ...categoryState,
+      optionsCategory: categoriesFilter,
+    });
+  };
+
+  const handleDisplayOptionsCategory = () => {
+    setCategoryState({ ...categoryState, isOpenCategory: true });
+  };
+
   const handleSelectedCategory = (category) => {
-    if (!category) {
-      const isOptionAllSelected = categorySelected.includes("All") || categorySelected.includes("Tất cả");
-
-      const categorySelectedChangeLanguage = packageArr.reduce((acc, pk) => {
-        const checkOldSelectedCategory = categorySelected.includes(
-          pk.packageType[language === "vi" ? "nameEn" : "nameVi"]
-        );
-
-        if (checkOldSelectedCategory) {
-          acc.push(pk.packageType[language === "vi" ? "nameVi" : "nameEn"]);
-        }
-        return acc;
-      }, []);
-
-      setCategorySelected(
-        isOptionAllSelected
-          ? [language === "vi" ? "Tất cả" : "All"]
-          : [...new Set(categorySelectedChangeLanguage)]
-      );
-      setOptionsCategory(optionsFilter());
-      return;
-    }
-
     const isCategorySelected = categorySelected.includes(category);
 
     if (isCategorySelected) {
       const resetCategorySelected = categorySelected.filter((cate) => cate !== category);
-      setCategorySelected(resetCategorySelected);
-      // setState({
-      //   ...state,
-      //   categorySelected: resetCategorySelected,
-      // });
-      return;
+      return onSetSelectedOption("category", resetCategorySelected);
     }
 
     if (category === "Tất cả" || category === "All") {
-      setCategorySelected([category]);
-      // setState({ ...state, categorySelected: [category] });
-      return;
+      return onSetSelectedOption("category", [category]);
     }
 
     const filterCategoryAll = [...categorySelected, category].filter(
       (cate) => cate !== (language === "vi" ? "Tất cả" : "All")
     );
-    setCategorySelected([...new Set(filterCategoryAll)]);
-    return;
-    // return setState({ ...state, categorySelected: [...new Set(filterCategoryAll)] });
+    return onSetSelectedOption("category", [...new Set(filterCategoryAll)]);
   };
 
-  const handleRefresh = () => {
-    const newPackagesFiltered = packageArr.filter((pk) => {
-      const { targetName, input } = helperFilterSearch(inputSearch, pk.nameVi);
-      return targetName.includes(input);
+  const helperFilterCategory = (arr) => {
+    const propBaseLanguage = language === "vi" ? "nameVi" : "nameEn";
+    return arr.filter((data) => {
+      let category;
+      if (pageClinicDoctors) {
+        const { specialtyData } = data;
+        category = specialtyData[propBaseLanguage];
+      } else {
+        category = data.packageType[propBaseLanguage];
+      }
+      return categorySelected.includes(category);
     });
-
-    setCategorySelected([]);
-    onRefresh("Category", { newPackagesFiltered });
   };
 
-  const handleFilter = () => {
+  const filterByCategory = () => {
+    const arrBaseLanguage = pageClinicDoctors ? doctorsById : packageArr;
     const isOptionAllSelected =
       categorySelected.includes("All") || categorySelected.includes("Tất cả") || !categorySelected.length;
 
-    const newPackagesFiltered = isOptionAllSelected
-      ? packageArr
-      : packageArr.filter((pk) => {
-          const typePk = pk.packageType[language === "vi" ? "nameVi" : "nameEn"];
-          return categorySelected.includes(typePk);
-        });
-    onFilter("Category", { newPackagesFiltered });
+    if (inputSearch) {
+      const packagesSearched = filterBySearch(inputSearch);
+      return packagesSearched;
+    }
+
+    if (isOptionAllSelected) {
+      return arrBaseLanguage;
+    }
+
+    const newPackagesFiltered = helperFilterCategory(arrBaseLanguage);
+    return newPackagesFiltered;
+  };
+
+  const handleFilterCategory = () => {
+    setCategoryState({ ...categoryState, isOpenCategory: false });
+    onFilter({ filterByCategory: filterByCategory });
+  };
+
+  const handleRefreshAll = () => {
+    onRefreshAll();
+    setCategoryState({ ...categoryState, isOpenCategory: false });
+  };
+
+  const handleRefreshCategory = () => {
+    setCategoryState({ ...categoryState, isOpenCategory: false });
+    onSetSelectedOption("category", []);
+    onRefresh("Category");
+  };
+
+  const handleStateChangeLanguage = () => {
+    const categoriesFilter = optionsFilter();
+
+    const languageKey = language === "vi" ? "nameVi" : "nameEn";
+    const arrBaseLanguage = pageClinicDoctors ? doctorsById : packageArr;
+
+    const changeCategorySelected = (arr) => {
+      const selectedCategories = [];
+      const languageKeyReverse = language === "vi" ? "nameEn" : "nameVi";
+      const propsBaseLanguage = pageClinicDoctors ? "specialtyData" : "packageType";
+
+      for (const data of arr) {
+        const condition = data[propsBaseLanguage][languageKeyReverse];
+        const checkOldSelectedCategory = categorySelected.includes(condition);
+
+        if (checkOldSelectedCategory) {
+          selectedCategories.push(data[propsBaseLanguage][languageKey]);
+        }
+      }
+
+      return selectedCategories;
+    };
+
+    // CATEGORY
+    const isOptionAllSelected = categorySelected.includes("All") || categorySelected.includes("Tất cả");
+    const newCategorySelected = isOptionAllSelected
+      ? [language === "vi" ? "Tất cả" : "All"]
+      : [...new Set(changeCategorySelected(arrBaseLanguage))];
+
+    setCategoryState({
+      ...categoryState,
+      optionsCategory: categoriesFilter,
+    });
+    onSetSelectedOption("category", newCategorySelected);
+    return;
   };
 
   useEffect(() => {
@@ -105,9 +163,25 @@ const FilterCategory = (packageArr, inputSearch, onDisplayOptions, isOpenCategor
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (packagesType.length > 0) {
+      handleOptionsCategory();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [packagesType.length]);
+
+  useEffect(() => {
+    handleStateChangeLanguage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language]);
+
+  console.log(categoryState);
+
   return (
-    <div className="filter-item filter-item--category" onClick={onDisplayOptions}>
-      <span className="filter-item__name">{categorySelected.join(", ") || "Danh mục"}</span>
+    <div className="filter-item filter-item--category" onClick={handleDisplayOptionsCategory}>
+      <div className="filter-item__name">
+        {categorySelected?.join(", ") || t("clinic-carousel-more.category")}
+      </div>
       <span className="filter-item__icon">
         <svg
           stroke="%23000000"
@@ -126,14 +200,17 @@ const FilterCategory = (packageArr, inputSearch, onDisplayOptions, isOpenCategor
       </span>
 
       <div
-        className={`${isOpenCategory ? "filter-select open" : "filter-select"}`}
+        className={`${categoryState.isOpenCategory ? "filter-select open" : "filter-select"}`}
         onClick={(e) => e.stopPropagation()}
       >
-        <strong className="filter-select__title">Lựa chọn danh mục</strong>
+        <div className="filter-select__title">
+          <span>{t("clinic-carousel-more.choose-category")}</span>
+          <IoClose onClick={() => setCategoryState({ ...categoryState, isOpenCategory: false })} />
+        </div>
 
         <div className="filter-options">
-          {optionsCategory.length > 0 &&
-            optionsCategory.map((category) => {
+          {categoryState.optionsCategory.length > 0 &&
+            categoryState.optionsCategory.map((category) => {
               return (
                 <span
                   key={category}
@@ -151,11 +228,10 @@ const FilterCategory = (packageArr, inputSearch, onDisplayOptions, isOpenCategor
         </div>
 
         <div className="filter-buttons">
-          <button className="filter-button" onClick={() => handleRefresh("Category")}>
+          <button className="filter-buttons__refresh" onClick={handleRefreshCategory}>
             <SlRefresh />
           </button>
-
-          <button className="filter-button" onClick={() => handleFilter("Category")}>
+          <button className="filter-buttons__filter" onClick={handleFilterCategory}>
             <TbFilter />
           </button>
         </div>
@@ -165,3 +241,18 @@ const FilterCategory = (packageArr, inputSearch, onDisplayOptions, isOpenCategor
 };
 
 export default FilterCategory;
+
+{
+  /* <FilterCategory
+          pageClinicDoctors={pageClinicDoctors}
+          doctorsById={doctorsById}
+          packageArr={packageArr}
+          categorySelected={state.categorySelected}
+          onSetSelectedOption={handleSetSelectedOptions}
+          onRefresh={handleRefresh}
+          onFilter={handleFilter}
+          onRefreshAll={handleRefreshAll}
+          filterBySearch={filterBySearch}
+          inputSearch={state.inputSearch}
+        /> */
+}

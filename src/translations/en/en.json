@@ -51,6 +51,15 @@
     "see-question": "See frequently asked questions"
   },
 
+  "clinic-carousel-more": {
+    "category": "Category",
+    "choose-category": "Select a category",
+
+    "price": "Price",
+    "find-by-range": "Find by price range",
+    "or-choose-price": "Or choose a price"
+  },
+
   "footer": {
     "company-name": "BookingCare Technology Joint Stock Company",
     "business-registration-number": "Business registration number: 0106790291. Hanoi Department of Planning and Investment issued on March 16, 2015",

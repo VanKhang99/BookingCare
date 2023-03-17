@@ -12,6 +12,7 @@ import {
   CarouselDoctorAndFacilities,
   CarouselPackageClinic,
   CarouselDoctorClinic,
+  CarouselPackagesCategories,
 } from "./index.js";
 import "../../styles/Carousel.scss";
 // import Specialties from "./../../pages/Specialties";
@@ -21,10 +22,13 @@ const Slider = ({
   specialtyId,
   pageClinicSpecialty,
 
+  packagesType,
+
   mainTitle,
   buttonText,
   buttonText2,
   buttonText3,
+
   doctorRemote,
   popularSpecialty,
   outstandingFacilities,
@@ -33,6 +37,8 @@ const Slider = ({
   doctorAndFacilities,
   clinicPackage,
   clinicDoctor,
+  packagesCategories,
+  packagesClinics,
 }) => {
   const slidesToShow = 4;
 
@@ -58,7 +64,9 @@ const Slider = ({
         handbook ||
         doctorAndFacilities ||
         clinicPackage ||
-        clinicDoctor
+        clinicDoctor ||
+        packagesCategories ||
+        packagesClinics
       }`}
     >
       <div className="carousel-content u-wrapper">
@@ -77,7 +85,7 @@ const Slider = ({
             </Link>
           )}
 
-          {outstandingFacilities && (
+          {(outstandingFacilities || packagesClinics) && (
             <Link to={`/${path.CLINIC}s`} className="button button-main">
               {buttonText}
             </Link>
@@ -121,6 +129,12 @@ const Slider = ({
               {buttonText}
             </Link>
           )}
+
+          {packagesCategories && (
+            <Link to={`/${path.PACKAGE}s/${path.CATEGORIES}`} className="button button-main">
+              {buttonText}
+            </Link>
+          )}
         </div>
 
         {doctorRemote && <CarouselRemoteDoctor doctorRemote={doctorRemote} settings={settings} />}
@@ -128,6 +142,13 @@ const Slider = ({
         {popularSpecialty && <CarouselPopularSpecialty settings={settings} />}
 
         {outstandingFacilities && <CarouselOutstandingFacilities settings={settings} />}
+
+        {packagesClinics && (
+          <CarouselOutstandingFacilities
+            settings={{ ...settings, infinite: false, slidesToShow: 5 }}
+            packagesClinics={1}
+          />
+        )}
 
         {doctors && (
           <CarouselDoctor
@@ -167,6 +188,13 @@ const Slider = ({
 
         {clinicDoctor && (
           <CarouselDoctorClinic settings={{ ...settings, infinite: false }} clinicId={clinicId} />
+        )}
+
+        {packagesCategories && (
+          <CarouselPackagesCategories
+            settings={{ ...settings, infinite: false, slidesToShow: 6 }}
+            packagesType={packagesType}
+          />
         )}
       </div>
     </div>

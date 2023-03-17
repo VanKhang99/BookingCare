@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import _ from "lodash";
 
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { useFetchDataBaseId } from "../utils/CustomHook";
 import { Element } from "react-scroll";
-import { Slider, Doctor, Package, ModalBooking } from "../components";
-import { getDoctor, getDoctorsBaseKeyMap } from "../slices/doctorSlice";
+import { Slider, ModalBooking } from "../components";
+import { getDoctor } from "../slices/doctorSlice";
 import { getPackage } from "../slices/packageSlice";
 import "../styles/ClinicBooking.scss";
-import Language from "./Language";
 
 const initialState = {
   doctorId: "",
@@ -23,9 +21,7 @@ const initialState = {
 const ClinicBooking = ({ title, clinicId, pageClinicSpecialty, specialtyId }) => {
   const [state, setState] = useState({ ...initialState });
   const { t } = useTranslation();
-  const { language } = useSelector((store) => store.app);
   const dispatch = useDispatch();
-  const doctors = useFetchDataBaseId(clinicId, "doctors", getDoctorsBaseKeyMap, 0);
 
   const handleModal = async (hourClicked, doctorId, packageId) => {
     // (Why get doctorId)

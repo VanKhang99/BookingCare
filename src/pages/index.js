@@ -15,6 +15,7 @@ import Error from "./Error";
 import System from "./System";
 import VerifyBooking from "./VerifyBooking";
 import PackageDetail from "./PackageDetail";
+import Packages from "./Packages";
 
 //BANNER
 import RemoteExam from "./RemoteExam";
@@ -46,6 +47,7 @@ export {
   Error,
   System,
   VerifyBooking,
+  Packages,
   PackageDetail,
   RemoteExam,
   MedicalTest,

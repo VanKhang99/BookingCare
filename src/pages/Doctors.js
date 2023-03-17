@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { InputSearch } from "../components";
 import { getAllDoctors } from "../slices/doctorSlice";
-import { helperFilterSearch } from "../utils/helpers";
+import { helperFilterSearch, helperDisplayNameDoctor } from "../utils/helpers";
 import "../styles/Doctors.scss";
 
 const Doctors = () => {
@@ -27,32 +27,13 @@ const Doctors = () => {
   const handleSearchDoctors = (e) => {
     let doctorsCopy = [...doctors];
     const newDoctors = doctorsCopy.filter((doctor) => {
-      const targetCompare = handleDisplayNameDoctor(doctor);
+      const targetCompare = helperDisplayNameDoctor(doctor);
       const { targetName, input } = helperFilterSearch(e.target.value, targetCompare);
 
       return targetName.includes(input);
     });
 
     return setFilterDoctors(newDoctors);
-  };
-
-  const handleDisplayNameDoctor = (data) => {
-    let finalName;
-    const {
-      moreData: { positionData, roleData, firstName, lastName, positionId, roleId },
-    } = data;
-
-    if (language === "vi") {
-      finalName = `${positionId !== "P0" ? `${positionData.valueVi} - ` : ""}${
-        roleId !== "R8" ? `${roleData.valueVi} - ` : ""
-      }${lastName} ${firstName}`;
-    } else {
-      finalName = `${positionId !== "P0" ? `${positionData.valueEn} - ` : ""}${
-        roleId !== "R8" ? `${roleData.valueEn} - ` : ""
-      }${lastName} ${firstName}`;
-    }
-
-    return finalName;
   };
 
   useEffect(() => {
@@ -94,7 +75,7 @@ const Doctors = () => {
                   </div>
 
                   <div className="doctors-popular-info">
-                    <span className="doctors-popular-info__name">{handleDisplayNameDoctor(doctor)}</span>
+                    <span className="doctors-popular-info__name">{helperDisplayNameDoctor(doctor)}</span>
 
                     <div className="doctors-popular-info__specialty">
                       <span>{language === "vi" ? specialtyData.nameVi : specialtyData.nameEn}</span>

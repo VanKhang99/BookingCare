@@ -1,0 +1,29 @@
+@import "./sass/variables";
+
+.packages {
+  &-head {
+    margin-top: $height-header;
+    &-image {
+      background-image: linear-gradient(to right, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.2)),
+        url(https://bookingcare.vn/assets/anh/bookingcare-cover-4.jpg);
+      background-position: left 15%;
+      background-repeat: no-repeat;
+      background-size: cover;
+      box-shadow: $shadow-4;
+
+      h2 {
+        margin: 0;
+        padding: 12rem 0;
+        color: #fff;
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        font-weight: 700;
+        font-size: $base-size + 2rem;
+      }
+    }
+  }
+
+  .packages-filter {
+    margin-top: -10rem;
+  }
+}

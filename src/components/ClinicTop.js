@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { MdLocationOn } from "react-icons/md";
 import "../styles/ClinicTop.scss";
 
-const ClinicTop = ({ refObserver, dataClinic, clinicId }) => {
+const ClinicTop = ({ refObserver, dataClinic, clinicId, clinicCarouselMore }) => {
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
 
@@ -40,7 +40,7 @@ const ClinicTop = ({ refObserver, dataClinic, clinicId }) => {
                 spy={true}
                 smooth={true}
                 duration={500}
-                offset={-160}
+                offset={clinicCarouselMore ? -100 : -160}
               >
                 {t("button.booking-examination")}
               </LinkScroll>

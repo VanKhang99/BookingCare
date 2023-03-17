@@ -24,6 +24,7 @@ import InputSearch from "./InputSearch";
 import Loading from "./Loading";
 import ClinicTop from "./ClinicTop";
 import ScrollToTop from "./ScrollToTop";
+import Filter from "./Filter/Filter";
 
 export {
   Header,
@@ -52,4 +53,5 @@ export {
   Loading,
   ClinicTop,
   ScrollToTop,
+  Filter,
 };

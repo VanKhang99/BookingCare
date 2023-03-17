@@ -51,6 +51,15 @@
     "see-question": "Xem các câu hỏi thường gặp"
   },
 
+  "clinic-carousel-more": {
+    "category": "Danh mục",
+    "choose-category": "Lựa chọn danh mục",
+
+    "price": "Mức giá",
+    "find-by-range": "Tìm theo khoảng giá",
+    "or-choose-price": "Hoặc lựa chọn mức giá"
+  },
+
   "footer": {
     "company-name": "Công ty Cổ phần Công nghệ BookingCare",
     "business-registration-number": "ĐKKD số: 0106790291. Sở KHĐT Hà Nội cấp ngày 16/03/2015",

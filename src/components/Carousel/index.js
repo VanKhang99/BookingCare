@@ -8,6 +8,7 @@ import CarouselHandbook from "./CarouselHandbook";
 import CarouselDoctorAndFacilities from "./CarouselDoctorAndFacilities";
 import CarouselPackageClinic from "./CarouselPackageClinic";
 import CarouselDoctorClinic from "./CarouselDoctorClinic";
+import CarouselPackagesCategories from "./CarouselPackagesCategories";
 
 export {
   PrevArrow,
@@ -20,4 +21,5 @@ export {
   CarouselDoctorAndFacilities,
   CarouselPackageClinic,
   CarouselDoctorClinic,
+  CarouselPackagesCategories,
 };

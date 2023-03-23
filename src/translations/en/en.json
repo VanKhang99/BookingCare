@@ -52,12 +52,18 @@
   },
 
   "clinic-carousel-more": {
+    "placeholder-search-doctor": "Search doctor",
+    "placeholder-search-package": "Search package",
     "category": "Category",
     "choose-category": "Select a category",
 
     "price": "Price",
     "find-by-range": "Find by price range",
-    "or-choose-price": "Or choose a price"
+    "or-choose-price": "Or choose a price",
+
+    "clinic": "Health facilities",
+    "find-by-name": "Search by name",
+    "or-choose-clinic": "Or choose health facilities"
   },
 
   "footer": {
@@ -252,7 +258,7 @@
     "main-title": "INFORMATION MANAGEMENT OF MEDICAL EXAMINATION PACKAGE",
     "package-create": "PACKAGE CREATED",
     "place-holder": "Choose a package",
-    "package-type": "Type",
+    "category": "Categories",
     "place-holder-package-type": "Chọn loại cho package",
     "name-en": "Name (ENG)",
     "name-vi": "Name (VN)",

@@ -74,8 +74,14 @@ const DetailSpecialty = ({ remote }) => {
     ////////via function handleModal --> run get dataDoctor and price to ModalBooking
 
     try {
-      const res = await dispatch(getDoctor(+doctorId));
+      if (!doctorId)
+        return setState({
+          ...state,
+          isOpenModalBooking: !state.isOpenModalBooking,
+          hourClicked: { ...hourClicked },
+        });
 
+      const res = await dispatch(getDoctor(+doctorId));
       if (res?.payload?.data) {
         return setState({
           ...state,
@@ -85,12 +91,6 @@ const DetailSpecialty = ({ remote }) => {
           hourClicked: { ...hourClicked },
         });
       }
-
-      return setState({
-        ...state,
-        isOpenModalBooking: !state.isOpenModalBooking,
-        hourClicked: { ...hourClicked },
-      });
     } catch (error) {
       console.error(error);
     }

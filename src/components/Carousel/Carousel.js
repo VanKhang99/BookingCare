@@ -22,7 +22,7 @@ const Slider = ({
   specialtyId,
   pageClinicSpecialty,
 
-  packagesType,
+  category,
 
   mainTitle,
   buttonText,
@@ -37,8 +37,6 @@ const Slider = ({
   doctorAndFacilities,
   clinicPackage,
   clinicDoctor,
-  packagesCategories,
-  packagesClinics,
 }) => {
   const slidesToShow = 4;
 
@@ -64,9 +62,7 @@ const Slider = ({
         handbook ||
         doctorAndFacilities ||
         clinicPackage ||
-        clinicDoctor ||
-        packagesCategories ||
-        packagesClinics
+        clinicDoctor
       }`}
     >
       <div className="carousel-content u-wrapper">
@@ -85,7 +81,7 @@ const Slider = ({
             </Link>
           )}
 
-          {(outstandingFacilities || packagesClinics) && (
+          {outstandingFacilities && (
             <Link to={`/${path.CLINIC}s`} className="button button-main">
               {buttonText}
             </Link>
@@ -129,12 +125,6 @@ const Slider = ({
               {buttonText}
             </Link>
           )}
-
-          {packagesCategories && (
-            <Link to={`/${path.PACKAGE}s/${path.CATEGORIES}`} className="button button-main">
-              {buttonText}
-            </Link>
-          )}
         </div>
 
         {doctorRemote && <CarouselRemoteDoctor doctorRemote={doctorRemote} settings={settings} />}
@@ -142,13 +132,6 @@ const Slider = ({
         {popularSpecialty && <CarouselPopularSpecialty settings={settings} />}
 
         {outstandingFacilities && <CarouselOutstandingFacilities settings={settings} />}
-
-        {packagesClinics && (
-          <CarouselOutstandingFacilities
-            settings={{ ...settings, infinite: false, slidesToShow: 5 }}
-            packagesClinics={1}
-          />
-        )}
 
         {doctors && (
           <CarouselDoctor
@@ -188,13 +171,6 @@ const Slider = ({
 
         {clinicDoctor && (
           <CarouselDoctorClinic settings={{ ...settings, infinite: false }} clinicId={clinicId} />
-        )}
-
-        {packagesCategories && (
-          <CarouselPackagesCategories
-            settings={{ ...settings, infinite: false, slidesToShow: 6 }}
-            packagesType={packagesType}
-          />
         )}
       </div>
     </div>

@@ -13,9 +13,9 @@ const CarouselPackage = ({ clinicId, specialtyId, settings, pageClinicSpecialty 
 
   useEffect(() => {
     if (!specialtyId) {
-      dispatch(getAllPackages({ specialtyId: null, clinicId }));
+      dispatch(getAllPackages({ specialtyId: null, clinicId, getAll: false }));
     } else {
-      dispatch(getAllPackages({ specialtyId, clinicId }));
+      dispatch(getAllPackages({ specialtyId, clinicId, getAll: false }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

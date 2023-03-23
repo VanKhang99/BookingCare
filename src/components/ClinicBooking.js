@@ -30,6 +30,10 @@ const ClinicBooking = ({ title, clinicId, pageClinicSpecialty, specialtyId }) =>
     ////////via function handleModal --> run get dataDoctor and price to ModalBooking
 
     try {
+      if (!packageId && !doctorId) {
+        return setState({ ...state, isOpenModalBooking: !state.isOpenModalBooking });
+      }
+
       let res;
       if (doctorId && !packageId) {
         res = await dispatch(getDoctor(+doctorId));
@@ -38,8 +42,8 @@ const ClinicBooking = ({ title, clinicId, pageClinicSpecialty, specialtyId }) =>
           return setState({
             ...state,
             doctorData: res.payload.data,
-            packageData: null,
             doctorId,
+            packageData: null,
             packageId: null,
             isOpenModalBooking: !state.isOpenModalBooking,
             hourClicked: { ...hourClicked },
@@ -51,7 +55,6 @@ const ClinicBooking = ({ title, clinicId, pageClinicSpecialty, specialtyId }) =>
         res = await dispatch(getPackage(packageId));
         if (res?.payload?.data) {
           const pk = res.payload.data;
-          console.log(pk);
           const dataPackageModal = {
             nameEn: pk.nameEn,
             nameVi: pk.nameVi,
@@ -71,8 +74,6 @@ const ClinicBooking = ({ title, clinicId, pageClinicSpecialty, specialtyId }) =>
           });
         }
       }
-
-      return setState({ ...state, isOpenModalBooking: !state.isOpenModalBooking });
     } catch (error) {
       console.log(error);
     }

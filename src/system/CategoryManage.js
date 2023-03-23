@@ -10,14 +10,9 @@ import { toast } from "react-toastify";
 import { FaUpload } from "react-icons/fa";
 import { IoReload } from "react-icons/io5";
 import { checkData, postImageToS3, deleteImageOnS3 } from "../utils/helpers";
-import {
-  saveInfoPackageType,
-  getAllPackagesType,
-  getPackageType,
-  deletePackageType,
-} from "../slices/packageTypeSlice";
+import { saveInfoCategory, getAllCategories, getCategory, deleteCategory } from "../slices/categorySlice";
 import "react-image-lightbox/style.css";
-import "./styles/PackageTypeManage.scss";
+import "./styles/CategoryManage.scss";
 
 const initialState = {
   typesCreated: [],
@@ -35,12 +30,12 @@ const initialState = {
   oldSelectedType: "",
 };
 
-const PackageTypeManage = () => {
+const CategoryManage = () => {
   const [state, setState] = useState({ ...initialState });
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
-  const { packagesType } = useSelector((store) => store.packageType);
+  const { categories } = useSelector((store) => store.category);
 
   const handleInputs = (e, typeInput) => {
     const stateCopy = JSON.parse(JSON.stringify({ ...state }));
@@ -115,11 +110,11 @@ const PackageTypeManage = () => {
         action: state.action || "create",
         table: "package-type",
       };
-      const info = await dispatch(saveInfoPackageType(packageTypeInfo));
+      const info = await dispatch(saveInfoCategory(packageTypeInfo));
 
       if (info?.payload?.status === "success") {
         toast.success("Package type is saved successfully!");
-        await dispatch(getAllPackagesType());
+        await dispatch(getAllCategories());
       }
       return setState({ ...initialState });
     } catch (error) {
@@ -130,9 +125,9 @@ const PackageTypeManage = () => {
 
   const handleUpdatePackageType = async (selectedOption) => {
     try {
-      const res = await dispatch(getPackageType(selectedOption?.value || state.oldSelectedClinic));
+      const res = await dispatch(getCategory(selectedOption?.value || state.oldSelectedClinic));
       const packageTypeData = res.payload.data.data;
-      const packageTypeSelected = handleInfoOptions(packagesType).find(
+      const packageTypeSelected = handleInfoOptions(categories).find(
         (item) => item.value === packageTypeData.id
       );
 
@@ -159,10 +154,10 @@ const PackageTypeManage = () => {
 
       await deleteImageOnS3(state.image);
 
-      const res = await dispatch(deletePackageType(state.selectedType.value));
+      const res = await dispatch(deleteCategory(state.selectedType.value));
       if (res.payload === "") {
         toast.success("Package type is deleted successfully!");
-        await dispatch(getAllPackagesType());
+        await dispatch(getAllCategories());
         return setState({ ...initialState });
       }
     } catch (error) {
@@ -171,9 +166,9 @@ const PackageTypeManage = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllPackagesType());
+    dispatch(getAllCategories());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [packagesType.length]);
+  }, [categories.length]);
 
   useEffect(() => {
     if (!state.previewImageUrl) return;
@@ -200,14 +195,14 @@ const PackageTypeManage = () => {
                   <IoReload />
                 </button>
               </h2>
-              {packagesType.length > 0 ? (
+              {categories.length > 0 ? (
                 <Select
                   value={state.selectedType}
                   onChange={(option) => {
                     handleInputs(option, "selectedType");
                     handleUpdatePackageType(option);
                   }}
-                  options={handleInfoOptions(packagesType)}
+                  options={handleInfoOptions(categories)}
                   placeholder={t("package-type-manage.place-holder")}
                 />
               ) : (
@@ -295,4 +290,4 @@ const PackageTypeManage = () => {
   );
 };
 
-export default PackageTypeManage;
+export default CategoryManage;

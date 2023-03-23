@@ -11,7 +11,7 @@ import specialtyReducer from "./slices/specialtySlice";
 import clinicReducer from "./slices/clinicSlice";
 import clinicSpecialtyReducer from "./slices/clinicSpecialtySlice";
 import allcodeReducer from "./slices/allcodeSlice";
-import packageTypeReducer from "./slices/packageTypeSlice";
+import categoryReducer from "./slices/categorySlice";
 import packageReducer from "./slices/packageSlice";
 import scheduleReducer from "./slices/scheduleSlice";
 
@@ -24,7 +24,7 @@ const rootReducer = combineReducers({
   clinic: clinicReducer,
   clinicSpecialty: clinicSpecialtyReducer,
   allcode: allcodeReducer,
-  packageType: packageTypeReducer,
+  category: categoryReducer,
   package: packageReducer,
   schedule: scheduleReducer,
 });

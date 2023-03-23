@@ -39,7 +39,7 @@ const CarouselOutstandingFacilities = ({ onChange, settings, packagesClinics }) 
                   <img
                     src={logoUrl}
                     alt={language === "vi" ? clinic.nameVi : clinic.nameEn}
-                    style={{ objectFit: "contain", width: "100%", height: "100%" }}
+                    style={{ objectFit: "contain" }}
                   />
                 </div>
                 <span className="slide-content--name-clinic">

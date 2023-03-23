@@ -13,7 +13,7 @@ const ScheduleWrapper = ({ isDoctorAccount, scheduleOf }) => {
     if (scheduleOf === "doctor") {
       dispatch(getAllDoctors("all"));
     } else {
-      dispatch(getAllPackages({ clinicId: null, specialId: null }));
+      dispatch(getAllPackages({ clinicId: null, specialId: null, getAll: false }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scheduleOf]);

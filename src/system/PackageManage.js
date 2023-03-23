@@ -6,13 +6,13 @@ import MdEditor from "react-markdown-editor-lite";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
-import { Radio } from "antd";
+import { Radio, Select as SelectAntd, Space } from "antd";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { getAllCodes } from "../slices/allcodeSlice";
 import { getAllPackages, saveInfoPackage, getPackage, deletePackage } from "../slices/packageSlice";
-import { getAllPackagesType } from "../slices/packageTypeSlice";
+import { getAllCategories } from "../slices/categorySlice";
 import { getAllClinics } from "../slices/clinicSlice";
 import { getAllSpecialties } from "../slices/specialtySlice";
 import { checkData, formatterPrice, postImageToS3, deleteImageOnS3 } from "../utils/helpers";
@@ -34,7 +34,7 @@ const initialState = {
   selectedSpecialty: "",
   selectedProvince: "",
   selectedPayment: "",
-  selectedPackageType: "",
+  selectedCategory: [],
 
   price: "",
   address: "",
@@ -49,6 +49,8 @@ const initialState = {
   isHaveInfo: false,
   action: "create",
   oldSelectedPackage: "",
+
+  test: [],
 };
 
 const mdParser = new MarkdownIt();
@@ -59,10 +61,10 @@ const PackageManage = () => {
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
   const { packageArr } = useSelector((store) => store.package);
-  const { priceArr, paymentArr, provinceArr } = useSelector((store) => store.allcode);
+  const { paymentArr, provinceArr } = useSelector((store) => store.allcode);
   const { clinics } = useSelector((store) => store.clinic);
   const { specialties } = useSelector((store) => store.specialty);
-  const { packagesType } = useSelector((store) => store.packageType);
+  const { categories } = useSelector((store) => store.category);
 
   const handleInputs = (e, type) => {
     const stateCopy = JSON.parse(JSON.stringify({ ...state }));
@@ -84,7 +86,7 @@ const PackageManage = () => {
         typeInfo === "package" ||
         typeInfo === "specialty" ||
         typeInfo === "clinic" ||
-        typeInfo === "packageType"
+        typeInfo === "category"
       ) {
         label = language === "vi" ? `${item.nameVi}` : `${item.nameEn}`;
         value = item.id;
@@ -164,7 +166,7 @@ const PackageManage = () => {
         specialtyId: state.selectedSpecialty?.value,
         provinceId: state.selectedProvince.value,
         paymentId: state.selectedPayment.value,
-        packageTypeId: state.selectedPackageType?.value,
+        categoryId: state.selectedCategory.join(", "),
         image: imageUploadToS3?.data?.data?.image,
         ...(state.action === "edit" && { id: state.selectedPackage?.value }),
         action: state.action || "create",
@@ -174,7 +176,7 @@ const PackageManage = () => {
 
       if (res?.payload?.status === "success") {
         toast.success("Package's info is saved successfully!");
-        await dispatch(getAllPackages({ clinicId: null, specialId: null }));
+        await dispatch(getAllPackages({ clinicId: null, specialId: null, getAll: true }));
         setState({ ...initialState });
       }
     } catch (error) {
@@ -188,17 +190,25 @@ const PackageManage = () => {
       const res = await dispatch(getPackage(selectedOption?.value || state.oldSelectedClinic));
       if (_.isEmpty(res.payload.data)) return toast.error("Get data package failed!!!");
       const packageData = res.payload.data;
+      console.log(packageData);
       const packageSelected = findItemSelectedById("package", packageArr, +packageData.id);
-      const packageTypeInDB = findItemSelectedById("packageType", packagesType, +packageData?.packageTypeId);
       const specialtyInDB = findItemSelectedById("specialty", specialties, +packageData?.specialtyId);
       const clinicInDB = findItemSelectedById("clinic", clinics, packageData.clinicId);
       const paymentInDB = findItemSelectedById("payment", paymentArr, packageData.paymentPackage.keyMap);
       const provinceInDB = findItemSelectedById("province", provinceArr, packageData.provincePackage.keyMap);
+      const packageTypeInDB = !packageData.categoryId
+        ? []
+        : handleOption("category", categories).filter((cate) => {
+            return packageData.categoryId
+              .split(", ")
+              .map((id) => +id)
+              .includes(cate.value);
+          });
 
       return setState({
         ...state,
         selectedPackage: packageSelected,
-        selectedPackageType: packageTypeInDB ?? "",
+        selectedCategory: packageTypeInDB ?? [],
         selectedSpecialty: specialtyInDB ?? "",
         selectedClinic: clinicInDB,
         selectedPayment: paymentInDB,
@@ -225,7 +235,7 @@ const PackageManage = () => {
       const res = await dispatch(deletePackage(state.selectedPackage.value));
       if (res.payload === "") {
         toast.success("Package is deleted successfully!");
-        await dispatch(getAllPackages({ clinicId: null, specialId: null }));
+        await dispatch(getAllPackages({ clinicId: null, specialId: null, getAll: true }));
         return setState({ ...initialState });
       }
     } catch (error) {
@@ -233,13 +243,17 @@ const PackageManage = () => {
     }
   };
 
+  const handleSelectMultipleCategory = (value) => {
+    setState({ ...state, selectedCategory: value });
+  };
+
   useEffect(() => {
     dispatch(getAllCodes("PAYMENT"));
     dispatch(getAllCodes("PROVINCE"));
     dispatch(getAllSpecialties("all"));
     dispatch(getAllClinics("all"));
-    dispatch(getAllPackagesType());
-    dispatch(getAllPackages({ clinicId: null, specialId: null }));
+    dispatch(getAllCategories());
+    dispatch(getAllPackages({ clinicId: null, specialId: null, getAll: true }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -258,7 +272,7 @@ const PackageManage = () => {
         <div className="row mt-4">
           <div className="col-4">
             <div className="select-packages">
-              {packageArr.length > 0 ? (
+              {packageArr?.length > 0 ? (
                 <Select
                   value={state.selectedPackage}
                   onChange={(option) => {
@@ -357,7 +371,7 @@ const PackageManage = () => {
         </div>
 
         <div className="row mt-5">
-          <div className="col-4">
+          <div className="col-6">
             <h4 className="u-input-label">{t("common.choose-clinic")}</h4>
 
             <div className="select-clinic mt-3">
@@ -372,7 +386,7 @@ const PackageManage = () => {
             </div>
           </div>
 
-          <div className="col-4">
+          <div className="col-6">
             <h4 className="u-input-label">{t("common.choose-specialty")}</h4>
 
             <div className="select-specialty mt-3">
@@ -387,19 +401,45 @@ const PackageManage = () => {
             </div>
           </div>
 
-          <div className="col-4">
-            <h4 className="u-input-label">{t("package-manage.package-type")}</h4>
+          {/* <div className="col-4">
+            <h4 className="u-input-label mb-3">{t("package-manage.category")}</h4>
 
             <div className="select-specialty mt-3">
-              {packagesType?.length > 0 && (
+              {categories?.length > 0 && (
                 <Select
-                  value={state.selectedPackageType}
-                  onChange={(option) => handleInputs(option, "selectedPackageType")}
-                  options={handleOption("packageType", packagesType)}
+                  value={state.selectedCategory}
+                  onChange={(option) => handleInputs(option, "selectedCategory")}
+                  options={handleOption("category", categories)}
                   placeholder={t("package-manage.place-holder-package-type")}
                 />
               )}
             </div>
+          </div> */}
+        </div>
+
+        <div className="row mt-5">
+          <div className="col-12">
+            <h4 className="u-input-label mb-3">{t("package-manage.category")}</h4>
+
+            <Space
+              direction="vertical"
+              style={{
+                width: "100%",
+              }}
+            >
+              <SelectAntd
+                mode="multiple"
+                allowClear
+                style={{
+                  width: "100%",
+                }}
+                placeholder="Please select"
+                // defaultValue={["a10", "c12"]}
+                value={state.selectedCategory}
+                onChange={handleSelectMultipleCategory}
+                options={handleOption("category", categories)}
+              />
+            </Space>
           </div>
         </div>
 

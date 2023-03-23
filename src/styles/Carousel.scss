@@ -347,46 +347,6 @@
     }
   }
 
-  &.carousel-packages-categories {
-    border-bottom: unset;
-    .carousel-top {
-      border-bottom: 1px solid $grey-2;
-      margin-bottom: 0;
-      padding-bottom: 1.5rem;
-    }
-
-    .slides {
-      .slick-list {
-        margin: 2rem 0 1rem;
-      }
-
-      .slide {
-        user-select: none;
-        &-content {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 2rem;
-          &__img {
-            width: 15rem;
-            height: 15rem;
-            border-radius: 50%;
-            background-image: linear-gradient(rgb(250, 242, 217), rgb(190, 230, 244));
-          }
-
-          &__name {
-            display: block;
-            text-align: center;
-            font-family: $font-main;
-            font-size: $base-size + 0.4rem;
-            font-weight: 700;
-            color: $main-color-text;
-          }
-        }
-      }
-    }
-  }
-
   &.carousel-packages-clinics {
     .carousel-top {
       border-bottom: 1px solid $grey-2;
@@ -408,6 +368,10 @@
             border-radius: 0.6rem;
             width: 22rem;
             height: 12rem;
+
+            img {
+              height: 100% !important;
+            }
           }
 
           &--name-clinic {
@@ -419,6 +383,10 @@
             color: $main-color-text;
           }
         }
+      }
+
+      .slick-arrow {
+        transform: translateY(-140%);
       }
     }
   }

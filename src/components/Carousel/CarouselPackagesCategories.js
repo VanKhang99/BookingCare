@@ -5,14 +5,14 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { path } from "../../utils/constants";
 
-const CarouselPackagesCategories = ({ settings, packagesType }) => {
+const CarouselPackagesCategories = ({ settings, category }) => {
   const dispatch = useDispatch();
   const { language } = useSelector((store) => store.app);
 
   return (
     <Carousel className="slides" {...settings}>
-      {packagesType?.length > 0 &&
-        packagesType.map((pType) => {
+      {category?.length > 0 &&
+        category.map((pType) => {
           const { imageUrl, id: packageId, nameVi, nameEn, id } = pType;
           return (
             <Link to={`/`} key={id} className="slide">

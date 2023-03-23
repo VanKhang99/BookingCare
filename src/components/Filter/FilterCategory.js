@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllPackagesType } from "../../slices/packageTypeSlice";
+import { getAllCategories } from "../../slices/categorySlice";
 import { helperFilterSearch, helperDisplayNameDoctor, helperCreateCategory } from "../../utils/helpers";
 import { IoClose } from "react-icons/io5";
 import { SlRefresh } from "react-icons/sl";
@@ -28,7 +28,7 @@ const FilterCategory = ({
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { language } = useSelector((store) => store.app);
-  const { packagesType } = useSelector((store) => store.packageType);
+  const { category } = useSelector((store) => store.packageType);
 
   const optionsFilter = () => {
     console.log("test");
@@ -36,7 +36,7 @@ const FilterCategory = ({
     if (pageClinicDoctors) {
       categoriesFilter = helperCreateCategory(doctorsById, "doctor", language);
     } else {
-      categoriesFilter = helperCreateCategory(packagesType, "package", language);
+      categoriesFilter = helperCreateCategory(category, "package", language);
     }
     return categoriesFilter;
   };
@@ -159,16 +159,16 @@ const FilterCategory = ({
   };
 
   useEffect(() => {
-    dispatch(getAllPackagesType());
+    dispatch(getAllCategories());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (packagesType.length > 0) {
+    if (category.length > 0) {
       handleOptionsCategory();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [packagesType.length]);
+  }, [category.length]);
 
   useEffect(() => {
     handleStateChangeLanguage();

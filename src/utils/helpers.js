@@ -227,25 +227,31 @@ export const dataModalBooking = (language, data, dataOf) => {
   };
 };
 
-export const helperCreateCategory = (arr, type, language) => {
+export const helperCreateCategory = (arr, type) => {
   return arr.reduce(
-    (acc, item) => {
-      let categoryName;
-      if (type === "doctor") {
-        const { specialtyData } = item;
-        categoryName = language === "vi" ? specialtyData.nameVi : specialtyData.nameEn;
+    (acc, item, index) => {
+      let propContainName;
+      if (type === "clinicDoctor") {
+        propContainName = item.specialtyData;
       } else if (type === "clinicSpecialty") {
-        const { specialty } = item;
-        categoryName = language === "vi" ? specialty.nameVi : specialty.nameEn;
-      } else {
-        categoryName = language === "vi" ? item.nameVi : item.nameEn;
+        propContainName = item.specialty;
+      } else if (type === "clinicPackage") {
+        propContainName = item;
+      } else if (type === "clinic") {
+        propContainName = item.clinicData;
       }
 
-      if (!acc.includes(categoryName)) {
-        acc.push(categoryName);
+      const checkNameExisted = acc.some((name) => name.nameVi === propContainName.nameVi);
+
+      if (!checkNameExisted) {
+        acc.push({
+          id: index + 1,
+          nameEn: propContainName.nameEn,
+          nameVi: propContainName.nameVi,
+        });
       }
       return acc;
     },
-    [language === "vi" ? "Tất cả" : "All"]
+    [{ id: 0, nameEn: "All", nameVi: "Tất cả" }]
   );
 };

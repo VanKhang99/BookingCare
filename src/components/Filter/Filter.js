@@ -10,7 +10,7 @@ import { GoSearch } from "react-icons/go";
 import { SlRefresh } from "react-icons/sl";
 import { TbFilter } from "react-icons/tb";
 import { TO_USD } from "../../utils/constants";
-import { getAllPackagesType } from "../../slices/packageTypeSlice";
+import { getAllCategories } from "../../slices/categorySlice";
 import {
   formatterPrice,
   helperFilterSearch,
@@ -31,21 +31,29 @@ const initialState = {
   priceFrom: "",
   priceTo: "",
   isOpenPrice: false,
+
+  inputSearchClinic: "",
+  clinicSelected: [],
+  optionsClinic: [],
+  isOpenClinic: false,
 };
 
 const Filter = ({
   packageClinicSpecialty,
   pageClinicDoctors,
+  categoryId,
   doctorsById,
   packageArr,
   dataFiltered,
   onFilteredData,
+  onHideCategoryIntro,
+  haveFilterByClinicsAndCity,
 }) => {
   const [state, setState] = useState({ ...initialState });
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
-  const { packagesType } = useSelector((store) => store.packageType);
+  const { categories } = useSelector((store) => store.category);
   const formatter = useMemo(
     () =>
       new Intl.NumberFormat(`${language === "vi" ? "vi-VN" : "en-US"}`, {
@@ -58,11 +66,11 @@ const Filter = ({
   const optionsFilter = () => {
     let categoriesFilter;
     if (pageClinicDoctors) {
-      categoriesFilter = helperCreateCategory(doctorsById, "doctor", language);
+      categoriesFilter = helperCreateCategory(doctorsById, "clinicDoctor");
     } else if (packageClinicSpecialty) {
-      categoriesFilter = helperCreateCategory(packageArr, "clinicSpecialty", language);
+      categoriesFilter = helperCreateCategory(packageArr, "clinicSpecialty");
     } else {
-      categoriesFilter = helperCreateCategory(packagesType, "package", language);
+      categoriesFilter = helperCreateCategory(categories, "clinicPackage");
     }
 
     // option prices
@@ -81,13 +89,67 @@ const Filter = ({
             `From ${rangePrice[1]} to ${rangePrice[2]}`,
             `Over ${rangePrice[2]}`,
           ];
-    return { categoriesFilter, rangePriceFilter };
+
+    // option clinics and city,district
+    let clinicsFilter;
+    let citiesFilter;
+    if (haveFilterByClinicsAndCity) {
+      //CLINICS
+      clinicsFilter = helperCreateCategory(packageArr, "clinic");
+
+      //CITIES
+      citiesFilter = [
+        {
+          id: 1,
+          nameEn: "Ho Chi Minh City",
+          nameVi: "Thành phố Hồ Chí Minh",
+          districtEn: [],
+          districtVi: [],
+        },
+        { id: 2, nameEn: "Ha Noi City", nameVi: "Thành phố Hà Nội", districtEn: [], districtVi: [] },
+      ];
+
+      citiesFilter = packageArr.reduce((acc, pk, index) => {
+        const { clinicData } = pk;
+        const citySplitted = clinicData.address.split(" - ").at(-1);
+        const districtSplitted = clinicData.address.split(" - ").filter((item) => item.includes("Quận"))[0];
+        //Find index city need to add district dynamic
+        const cityIndex = citiesFilter.findIndex((city) => city.nameVi === citySplitted);
+
+        if (cityIndex !== -1) {
+          //Check district is already existed or not
+          const districtIndex = acc[cityIndex].districtVi.indexOf(districtSplitted);
+          if (districtIndex === -1) {
+            acc[cityIndex].districtEn.push(
+              /\d/.test(districtSplitted)
+                ? districtSplitted.replace("Quận", "District")
+                : `${districtSplitted.replace("Quận", "").trim()} District`
+            );
+            acc[cityIndex].districtVi.push(districtSplitted);
+          }
+        }
+        return acc;
+      }, citiesFilter);
+    }
+
+    return { categoriesFilter, rangePriceFilter, clinicsFilter, citiesFilter };
   };
 
   const handleOptions = () => {
-    const { categoriesFilter, rangePriceFilter } = optionsFilter();
+    const { categoriesFilter, rangePriceFilter, citiesFilter, clinicsFilter } = optionsFilter();
 
-    setState({ ...state, optionsCategory: categoriesFilter, optionsPrice: rangePriceFilter });
+    setState({
+      ...state,
+      optionsCategory: categoriesFilter,
+      optionsPrice: rangePriceFilter,
+      optionsClinic: clinicsFilter,
+    });
+
+    if (categoryId) {
+      const packageToRender = packageArr.filter((pk) => pk.categoryId.includes(categoryId));
+      onFilteredData(packageToRender);
+      return;
+    }
 
     pageClinicDoctors
       ? onFilteredData(dataFiltered.length > 0 ? dataFiltered : doctorsById)
@@ -97,12 +159,14 @@ const Filter = ({
 
   const handleDisplayOptions = (optionsOf) => {
     setState((prevState) => {
-      const { isOpenCategory, isOpenPrice } = prevState;
+      const { isOpenCategory, isOpenPrice, isOpenClinic } = prevState;
       switch (optionsOf) {
         case "Category":
-          return { ...prevState, isOpenCategory: !isOpenCategory, isOpenPrice: false };
+          return { ...prevState, isOpenCategory: !isOpenCategory, isOpenPrice: false, isOpenClinic: false };
         case "Price":
-          return { ...prevState, isOpenPrice: !isOpenPrice, isOpenCategory: false };
+          return { ...prevState, isOpenPrice: !isOpenPrice, isOpenCategory: false, isOpenClinic: false };
+        case "Clinic":
+          return { ...prevState, isOpenClinic: !isOpenClinic, isOpenCategory: false, isOpenPrice: false };
         default:
           return prevState;
       }
@@ -110,7 +174,17 @@ const Filter = ({
   };
 
   //SEARCH
-  const handleOnChangeSearch = (e) => {
+  const handleOnChangeSearch = (e, searchOf = undefined) => {
+    if (searchOf === "clinic") {
+      const { clinicsFilter } = optionsFilter();
+      const clinicSearched = clinicsFilter.filter((clinic) => {
+        const targetCompare = language === "vi" ? clinic.nameVi : clinic.nameEn;
+        const { targetName, input } = helperFilterSearch(e.target.value, targetCompare);
+        return targetName.includes(input);
+      });
+
+      return setState({ ...state, optionsClinic: clinicSearched, inputSearchClinic: e.target.value });
+    }
     return setState({ ...state, inputSearch: e.target.value });
   };
 
@@ -121,11 +195,6 @@ const Filter = ({
   };
 
   const filterBySearch = (inputSearch) => {
-    const isOptionAllSelected =
-      state.categorySelected.includes("All") ||
-      state.categorySelected.includes("Tất cả") ||
-      !state.categorySelected.length;
-
     const compare = (arr) => {
       return arr.filter((data) => {
         const targetCompare = pageClinicDoctors ? helperDisplayNameDoctor(data) : data.nameVi;
@@ -134,81 +203,75 @@ const Filter = ({
       });
     };
 
-    let newPackagesFiltered;
-    if (pageClinicDoctors) {
-      newPackagesFiltered = compare(doctorsById);
-    } else {
-      newPackagesFiltered = compare(packageArr);
-    }
-
-    if (!isOptionAllSelected && state.categorySelected.length) {
-      newPackagesFiltered = helperFilterCategory(newPackagesFiltered);
-      return newPackagesFiltered;
-    }
+    const newPackagesFiltered = compare(pageClinicDoctors ? doctorsById : packageArr);
 
     if (inputSearch) {
       return newPackagesFiltered;
     }
+
     return pageClinicDoctors ? doctorsById : packageArr;
   };
 
-  //FILTER BY CATEGORY
-  const handleSelectedCategory = (category) => {
-    const { categorySelected } = state;
-    const isCategorySelected = categorySelected.includes(category);
+  //COMMON FUNCTION FILTER BY CATEGORY AND CLINIC
+  const handleSelectedOption = (data, selectedOf) => {
+    const { categorySelected, clinicSelected } = state;
+    const arrCheck = selectedOf === "clinic" ? clinicSelected : categorySelected;
+    const checkOptionSelectedBefore = () => {
+      return arrCheck.some((oldOptionSelected) => oldOptionSelected.nameVi === data.nameVi);
+    };
 
-    if (isCategorySelected) {
-      const resetCategorySelected = state.categorySelected.filter((cate) => cate !== category);
+    if (checkOptionSelectedBefore()) {
+      const resetOptionsSelected = arrCheck.filter(
+        (oldOptionSelected) => oldOptionSelected.nameVi !== data.nameVi
+      );
       setState({
         ...state,
-        categorySelected: resetCategorySelected,
+        [`${selectedOf}Selected`]: resetOptionsSelected,
       });
       return;
     }
 
-    if (category === "Tất cả" || category === "All") {
-      setState({ ...state, categorySelected: [category] });
+    if (!data.id) {
+      setState({ ...state, [`${selectedOf}Selected`]: [data] });
       return;
     }
 
-    const filterCategoryAll = [...state.categorySelected, category].filter(
-      (cate) => cate !== (language === "vi" ? "Tất cả" : "All")
-    );
-    return setState({ ...state, categorySelected: [...new Set(filterCategoryAll)] });
+    const filterOptionAll = [...arrCheck, data].filter((item) => item.id);
+    return setState({ ...state, [`${selectedOf}Selected`]: [...new Set(filterOptionAll)] });
   };
 
+  //FILTER BY CATEGORY
   const helperFilterCategory = (arr) => {
-    const propBaseLanguage = language === "vi" ? "nameVi" : "nameEn";
-    return arr.filter((data) => {
-      let category;
-      if (pageClinicDoctors) {
-        const { specialtyData } = data;
-        category = specialtyData[propBaseLanguage];
-      } else {
-        category = data.packageType[propBaseLanguage];
-      }
-      return state.categorySelected.includes(category);
+    if (pageClinicDoctors) {
+      const specialtiesName = state.categorySelected.map((specialty) => specialty.nameVi);
+      return arr.filter((data) => {
+        return specialtiesName.includes(data.specialtyData.nameVi);
+      });
+    }
+
+    const newPackagesFiltered = arr.filter((data) => {
+      const categoryIds = data.categoryId.split(", ").map((item) => +item);
+      return state.categorySelected.some((cate) => categoryIds.includes(cate.id));
     });
+
+    return newPackagesFiltered;
   };
 
-  const filterByCategory = () => {
-    const arrBaseLanguage = pageClinicDoctors ? doctorsById : packageArr;
+  const filterByCategory = (arr) => {
     const isOptionAllSelected =
-      state.categorySelected.includes("All") ||
-      state.categorySelected.includes("Tất cả") ||
-      !state.categorySelected.length;
-
-    if (state.inputSearch) {
-      const packagesSearched = filterBySearch(state.inputSearch);
-      return packagesSearched;
-    }
+      state.categorySelected.some((cate) => !cate.id) || !state.categorySelected.length;
 
     if (isOptionAllSelected) {
-      return arrBaseLanguage;
+      return arr;
     }
 
-    const newPackagesFiltered = helperFilterCategory(arrBaseLanguage);
+    const newPackagesFiltered = helperFilterCategory(arr || (pageClinicDoctors ? doctorsById : packageArr));
     return newPackagesFiltered;
+  };
+
+  const displayCategory = () => {
+    if (!state.categorySelected.length) return null;
+    return state.categorySelected.map((cate) => (language === "vi" ? cate.nameVi : cate.nameEn));
   };
 
   // FILTER BY PRICE
@@ -324,6 +387,33 @@ const Filter = ({
     return newPackagesFiltered;
   };
 
+  // FILTER BY CLINIC
+  const helperFilterClinic = (arr) => {
+    const specialtiesName = state.clinicSelected.map((specialty) => specialty.nameVi);
+    const newPackagesFiltered = arr.filter((data) => {
+      return specialtiesName.includes(data.clinicData.nameVi);
+    });
+
+    return newPackagesFiltered;
+  };
+
+  const filterByClinic = (arr) => {
+    const isOptionAllSelected = state.clinicSelected.some((cate) => !cate.id) || !state.clinicSelected.length;
+
+    if (isOptionAllSelected) {
+      return arr;
+    }
+
+    const newPackagesFiltered = helperFilterClinic(arr);
+    return newPackagesFiltered;
+  };
+
+  const displayClinic = () => {
+    if (!state.clinicSelected.length) return null;
+    return state.clinicSelected.map((cate) => (language === "vi" ? cate.nameVi : cate.nameEn));
+  };
+
+  // EXECUTE FEATURE
   const handleFilter = () => {
     let newPackagesFiltered;
 
@@ -332,7 +422,7 @@ const Filter = ({
     }
 
     if (state.categorySelected.length) {
-      newPackagesFiltered = filterByCategory();
+      newPackagesFiltered = filterByCategory(newPackagesFiltered);
     }
 
     if (state.priceSelected) {
@@ -341,13 +431,18 @@ const Filter = ({
       );
     }
 
-    setState({ ...state, isOpenCategory: false, isOpenPrice: false });
+    if (state.clinicSelected.length) {
+      newPackagesFiltered = filterByClinic(newPackagesFiltered);
+    }
+
+    setState({ ...state, isOpenCategory: false, isOpenPrice: false, isOpenClinic: false });
     onFilteredData(newPackagesFiltered || (pageClinicDoctors ? doctorsById : packageArr));
+    onHideCategoryIntro();
     return;
   };
 
   const handleRefresh = (refreshOf) => {
-    const arrBaseLanguage = pageClinicDoctors ? doctorsById : packageArr;
+    const arrBelongToProps = pageClinicDoctors ? doctorsById : packageArr;
     if (!refreshOf) {
       setState({
         ...state,
@@ -359,9 +454,14 @@ const Filter = ({
         categorySelected: [],
         isOpenCategory: false,
 
+        inputSearchClinic: "",
+        clinicSelected: [],
+        isOpenClinic: false,
+
         inputSearch: "",
       });
-      onFilteredData(arrBaseLanguage);
+      onFilteredData(arrBelongToProps);
+      onHideCategoryIntro();
       return;
     }
 
@@ -372,63 +472,79 @@ const Filter = ({
 
     if (refreshOf === "Category") {
       if (state.priceSelected) {
-        newPackagesFiltered = filterByPrice(newPackagesFiltered || arrBaseLanguage);
+        newPackagesFiltered = filterByPrice(newPackagesFiltered || arrBelongToProps);
       }
 
-      setState({ ...state, isOpenCategory: false, isOpenPrice: false, categorySelected: [] });
-      onFilteredData(newPackagesFiltered?.length ? newPackagesFiltered : arrBaseLanguage);
-      return;
-    }
-
-    if (refreshOf === "Price") {
-      if (state.categorySelected) {
-        newPackagesFiltered = filterByCategory(newPackagesFiltered || arrBaseLanguage);
+      if (state.clinicSelected.length) {
+        newPackagesFiltered = filterByClinic(newPackagesFiltered || arrBelongToProps);
       }
 
       setState({
         ...state,
         isOpenCategory: false,
         isOpenPrice: false,
+        isOpenClinic: false,
+        categorySelected: [],
+      });
+      onFilteredData(newPackagesFiltered?.length ? newPackagesFiltered : arrBelongToProps);
+      onHideCategoryIntro();
+      return;
+    }
+
+    if (refreshOf === "Price") {
+      if (state.categorySelected) {
+        newPackagesFiltered = filterByCategory(newPackagesFiltered || arrBelongToProps);
+      }
+
+      if (state.clinicSelected.length) {
+        newPackagesFiltered = filterByClinic(newPackagesFiltered || arrBelongToProps);
+      }
+
+      setState({
+        ...state,
+        isOpenCategory: false,
+        isOpenPrice: false,
+        isOpenClinic: false,
         priceSelected: "",
         priceTo: "",
         priceFrom: "",
       });
 
-      onFilteredData(newPackagesFiltered?.length ? newPackagesFiltered : arrBaseLanguage);
-
+      onFilteredData(newPackagesFiltered?.length ? newPackagesFiltered : arrBelongToProps);
+      onHideCategoryIntro();
       return;
+    }
+
+    if (refreshOf === "Clinic") {
+      if (state.categorySelected) {
+        newPackagesFiltered = filterByCategory(newPackagesFiltered || arrBelongToProps);
+      }
+
+      if (state.priceSelected) {
+        newPackagesFiltered = filterByPrice(newPackagesFiltered || arrBelongToProps);
+      }
+
+      setState({
+        ...state,
+        isOpenCategory: false,
+        isOpenPrice: false,
+        isOpenClinic: false,
+        inputSearchClinic: "",
+        clinicSelected: [],
+      });
+      onFilteredData(newPackagesFiltered?.length ? newPackagesFiltered : arrBelongToProps);
+      onHideCategoryIntro();
     }
   };
 
   const handleStateChangeLanguage = () => {
-    const { categorySelected, priceSelected } = state;
+    const { priceSelected } = state;
     const { categoriesFilter, rangePriceFilter } = optionsFilter();
 
-    const languageKey = language === "vi" ? "nameVi" : "nameEn";
-    const arrBaseLanguage = pageClinicDoctors ? doctorsById : packageArr;
-
-    // CATEGORY
-    const changeCategorySelected = (arr) => {
-      const selectedCategories = [];
-      const languageKeyReverse = language === "vi" ? "nameEn" : "nameVi";
-      const propsBaseLanguage = pageClinicDoctors ? "specialtyData" : "packageType";
-
-      for (const data of arr) {
-        const condition = data[propsBaseLanguage][languageKeyReverse];
-        const checkOldSelectedCategory = categorySelected.includes(condition);
-
-        if (checkOldSelectedCategory) {
-          selectedCategories.push(data[propsBaseLanguage][languageKey]);
-        }
-      }
-
-      return selectedCategories;
-    };
-
-    const isOptionAllSelected = categorySelected.includes("All") || categorySelected.includes("Tất cả");
-    const newCategorySelected = isOptionAllSelected
-      ? [language === "vi" ? "Tất cả" : "All"]
-      : [...new Set(changeCategorySelected(arrBaseLanguage))];
+    //CATEGORY INITIAL FROM PAGE PACKAGES
+    const checkCategory = categoryId
+      ? categoriesFilter.filter((category) => category.id === +categoryId)
+      : state.categorySelected;
 
     // PRICE
     const indexPriceSelected = state.optionsPrice.findIndex((price) => price === priceSelected);
@@ -439,8 +555,8 @@ const Filter = ({
     if (!splitPrice) {
       return setState({
         ...state,
+        categorySelected: checkCategory,
         optionsCategory: categoriesFilter,
-        categorySelected: newCategorySelected,
         optionsPrice: rangePriceFilter,
         priceSelected: rangePriceFilter,
       });
@@ -470,7 +586,7 @@ const Filter = ({
 
       return setState({
         ...state,
-        categorySelected: newCategorySelected,
+        categorySelected: checkCategory,
         priceSelected: formatSelectedPrice,
         priceFrom: "",
         priceTo: pricePassToState(pricesArr[0]),
@@ -485,7 +601,7 @@ const Filter = ({
 
       return setState({
         ...state,
-        categorySelected: newCategorySelected,
+        categorySelected: checkCategory,
         priceSelected: formatSelectedPrice,
         priceFrom: pricePassToState(pricesArr[0]),
         priceTo: "",
@@ -501,49 +617,60 @@ const Filter = ({
 
     return setState({
       ...state,
-      categorySelected: newCategorySelected,
-      priceSelected: formatSelectedPrice,
-      priceFrom: pricePassToState(pricesArr[0]),
-      priceTo: pricePassToState(pricesArr[1]),
+      categorySelected: checkCategory,
+      priceSelected:
+        !state.priceTo && !state.priceFrom ? t("clinic-carousel-more.price") : state.priceSelected,
+      priceFrom: !state.priceFrom ? "" : pricePassToState(pricesArr[0]),
+      priceTo: !state.priceFrom ? "" : pricePassToState(pricesArr[1]),
       optionsCategory: categoriesFilter,
       optionsPrice: rangePriceFilter,
     });
   };
 
   useEffect(() => {
-    dispatch(getAllPackagesType());
+    dispatch(getAllCategories());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (packagesType.length > 0) {
+    if (categories.length > 0) {
       handleOptions();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [packagesType.length]);
+  }, [categories.length, packageArr.length]);
 
   useEffect(() => {
     handleStateChangeLanguage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [language]);
+  }, [language, categories.length]);
+
+  // console.log(state);
 
   return (
     <div className="filters u-wrapper">
       <div className="filter-search">
         <InputSearch
-          placeholder={language === "vi" ? "Tìm kiếm gói khám bệnh" : "Search for packages examination"}
+          placeholder={
+            pageClinicDoctors
+              ? t("clinic-carousel-more.placeholder-search-doctor")
+              : t("clinic-carousel-more.placeholder-search-package")
+          }
           icon={<GoSearch />}
           onSearch={handleOnChangeSearch}
           onClickSearch={() => handleFilter()}
           onEnterKey={handlePressEnter}
           value={state.inputSearch}
         />
+
+        <button className="refresh" onClick={() => handleRefresh()}>
+          <SlRefresh />
+        </button>
       </div>
 
       <div className="filter">
         <div className="filter-item filter-item--category" onClick={() => handleDisplayOptions("Category")}>
           <div className="filter-item__name">
-            {state.categorySelected?.join(", ") || t("clinic-carousel-more.category")}
+            {displayCategory()?.join(", ") || t("clinic-carousel-more.category")}
           </div>
           <span className="filter-item__icon">
             <svg
@@ -576,15 +703,15 @@ const Filter = ({
                 state.optionsCategory.map((category) => {
                   return (
                     <span
-                      key={category}
+                      key={category.id}
                       className={
-                        state.categorySelected.includes(category)
+                        state.categorySelected.some((cate) => cate.id === category.id)
                           ? "filter-options__item filter-options__item--selected"
                           : "filter-options__item"
                       }
-                      onClick={(e) => handleSelectedCategory(category)}
+                      onClick={() => handleSelectedOption(category, "category")}
                     >
-                      {category}
+                      {language === "vi" ? category.nameVi : category.nameEn}
                     </span>
                   );
                 })}
@@ -603,7 +730,7 @@ const Filter = ({
 
         <div className="filter-item filter-item--price" onClick={() => handleDisplayOptions("Price")}>
           <span className="filter-item__name">
-            {!state.priceFrom && !state.priceTo ? t("clinic-carousel-more.price") : state.priceSelected}
+            {state.priceSelected ? state.priceSelected : t("clinic-carousel-more.price")}
           </span>
           <span className="filter-item__icon">
             <svg
@@ -677,9 +804,76 @@ const Filter = ({
           </div>
         </div>
 
-        <button className="refresh" onClick={() => handleRefresh()}>
-          <SlRefresh />
-        </button>
+        {haveFilterByClinicsAndCity && (
+          <div className="filter-item filter-item--clinic" onClick={() => handleDisplayOptions("Clinic")}>
+            <span className="filter-item__name">
+              {displayClinic()?.join(", ") || t("clinic-carousel-more.clinic")}
+            </span>
+            <span className="filter-item__icon">
+              <svg
+                stroke="%23000000"
+                fill="%23000000"
+                strokeWidth="0"
+                viewBox="0 0 24 24"
+                height="20px"
+                width="20px"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g>
+                  <path fill="none" d="M0 0h24v24H0z"></path>
+                  <path d="M12 13.172l4.95-4.95 1.414 1.414L12 16 5.636 9.636 7.05 8.222z"></path>
+                </g>
+              </svg>
+            </span>
+
+            <div
+              className={`${state.isOpenClinic ? "filter-select open" : "filter-select"}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="filter-select__title">
+                <span>{t("clinic-carousel-more.find-by-name")}</span>
+                <IoClose onClick={() => setState({ ...state, isOpenClinic: false })} />
+              </div>
+
+              <div className="filter-select__inputs">
+                <InputSearch
+                  placeholder={language === "vi" ? "Tìm kiếm" : "Search"}
+                  onSearch={(e) => handleOnChangeSearch(e, "clinic")}
+                  value={state.inputSearchClinic}
+                />
+              </div>
+              <strong className="filter-select__title">{t("clinic-carousel-more.or-choose-clinic")}</strong>
+              <div className="filter-options">
+                {state.optionsClinic.length > 0 &&
+                  state.optionsClinic.map((clinic) => {
+                    const { id, nameEn, nameVi } = clinic;
+                    return (
+                      <span
+                        key={id}
+                        className={
+                          state.clinicSelected.some((oldClinic) => oldClinic.id === clinic.id)
+                            ? "filter-options__item filter-options__item--selected"
+                            : "filter-options__item"
+                        }
+                        onClick={() => handleSelectedOption(clinic, "clinic")}
+                      >
+                        {language === "vi" ? nameVi : nameEn}
+                      </span>
+                    );
+                  })}
+              </div>
+              <div className="filter-buttons">
+                <button className="filter-buttons__refresh" onClick={() => handleRefresh("Clinic")}>
+                  <SlRefresh />
+                </button>
+
+                <button className="filter-buttons__filter" onClick={() => handleFilter()}>
+                  <TbFilter />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

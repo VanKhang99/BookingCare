@@ -31,15 +31,21 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
   const { packageArr } = useSelector((store) => store.package);
   const dataClinic = useFetchDataBaseId(clinicId ? +clinicId : "", "clinic", getClinic);
 
-  console.log(specialtyId);
-
-  const handleModal = useCallback(async (hourClicked, doctorId = null, packageId = null) => {
+  const handleModal = async (hourClicked, doctorId = null, packageId = null) => {
     // console.log("test");
     // (Why get doctorId)
     //pass DoctorId --> Doctor --> BookingHours
     /// --> Run function (handleClick) to get "doctorId" pass reverse to parentComponent
     ////////via function handleModal --> run get dataDoctor and price to ModalBooking
     try {
+      if (!doctorId && !packageId) {
+        return setState({
+          ...state,
+          isOpenModalBooking: !state.isOpenModalBooking,
+          hourClicked: { ...hourClicked },
+        });
+      }
+
       const res = pageClinicDoctors
         ? await dispatch(getDoctor(+doctorId))
         : await dispatch(getPackage(+packageId));
@@ -55,19 +61,17 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
           hourClicked: { ...hourClicked },
         });
       }
-
-      return setState({
-        ...state,
-        isOpenModalBooking: !state.isOpenModalBooking,
-        hourClicked: { ...hourClicked },
-      });
     } catch (error) {
       console.error(error);
     }
-  }, []);
+  };
 
   const handleFilteredData = (arr) => {
     setDataFiltered(arr);
+  };
+
+  const handleHideCategoryIntro = () => {
+    setState({ ...state, hideCategoryIntro: false });
   };
 
   useEffect(() => {
@@ -77,9 +81,9 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
       );
     } else {
       if (packageClinicSpecialty) {
-        dispatch(getAllPackages({ clinicId, specialtyId }));
+        dispatch(getAllPackages({ clinicId, specialtyId, getAll: false }));
       } else {
-        dispatch(getAllPackages({ clinicId: +clinicId, specialtyId: null }));
+        dispatch(getAllPackages({ clinicId: +clinicId, specialtyId: null, getAll: false }));
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -100,6 +104,7 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
             packageArr={packageArr}
             dataFiltered={dataFiltered}
             onFilteredData={handleFilteredData}
+            onHideCategoryIntro={handleHideCategoryIntro}
           />
 
           <Element name={language === "vi" ? "Đặt lịch khám" : "Booking"}>

@@ -16,6 +16,7 @@ import {
   Loading,
   ScrollToTop,
 } from "../components";
+import { path } from "../utils/constants";
 import "../styles/DetailClinic.scss";
 
 const DetailClinic = () => {
@@ -97,7 +98,7 @@ const DetailClinic = () => {
 
                 {dataClinic.haveSpecialtyPage && (
                   <li className="navigator-list__item navigator-list__item--specialty">
-                    <Link to={`/clinic/${clinicId}/specialties`}>
+                    <Link to={`/${path.CLINIC}/${clinicId}/${path.SPECIALTIES}`}>
                       {language === "vi" ? "Chọn chuyên khoa" : "Choose specialty"}
                     </Link>
                   </li>

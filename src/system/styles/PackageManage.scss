@@ -5,4 +5,15 @@
   &-inputs {
     @include image-preview-container;
   }
+
+  .ant-select-selector {
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+
+    .ant-select-selection-item {
+      .ant-select-selection-item-remove {
+        margin-top: -0.4rem;
+      }
+    }
+  }
 }

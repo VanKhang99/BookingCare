@@ -5,6 +5,7 @@ import { InputSearch } from "../components";
 import { getAllSpecialtiesByClinicId } from "../slices/clinicSpecialtySlice";
 import { helperFilterSearch } from "../utils/helpers";
 import { MdLocationOn } from "react-icons/md";
+import { path } from "../utils/constants";
 import "../styles/ClinicSpecialties.scss";
 
 const ClinicSpecialties = () => {
@@ -73,7 +74,7 @@ const ClinicSpecialties = () => {
 
               return (
                 <Link
-                  to={`/clinic/${specialty.clinicId}/specialties/${specialty.specialtyId}`}
+                  to={`/${path.CLINIC}/${specialty.clinicId}/${path.SPECIALTIES}/${specialty.specialtyId}`}
                   key={specialty.specialtyId}
                   className="clinic-specialties-item"
                 >

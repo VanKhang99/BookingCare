@@ -7,9 +7,9 @@ const initialState = {
   packageArr: [],
 };
 
-export const getAllPackages = createAsyncThunk("package/getAllPackages", async (dataIds, thunkAPI) => {
+export const getAllPackages = createAsyncThunk("package/getAllPackages", async (data, thunkAPI) => {
   try {
-    const res = await axios.get(`/api/packages/${dataIds.specialtyId}/${dataIds.clinicId}`);
+    const res = await axios.get(`/api/packages/${data.specialtyId}/${data.clinicId}/${data.getAll}`);
     return res.data;
   } catch (error) {
     return error.response.data;
@@ -35,18 +35,6 @@ export const saveInfoPackage = createAsyncThunk("package/createPackage", async (
     return error.response.data;
   }
 });
-
-// export const getAllPackagesByClinicId = createAsyncThunk(
-//   "package/getAllPackagesByClinicId",
-//   async (valueClinicId, thunkAPI) => {
-//     try {
-//       const res = await axios.get(`/api/packages/clinicId/${valueClinicId}`);
-//       return res.data;
-//     } catch (error) {
-//       return error.response.data;
-//     }
-//   }
-// );
 
 export const deletePackage = createAsyncThunk("package/deletePackage", async (packageId, thunkAPI) => {
   try {

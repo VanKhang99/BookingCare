@@ -11,7 +11,7 @@ import PatientBooking from "./PatientBooking";
 import ClinicManage from "./ClinicManage";
 import ClinicSpecialtyManage from "./ClinicSpecialtyManage";
 import SpecialtyManage from "./SpecialtyManage";
-import PackageTypeManage from "./PackageTypeManage";
+import CategoryManage from "./CategoryManage";
 import PackageManage from "./PackageManage";
 import HandBookManage from "./HandBookManage";
 import AllcodeManage from "./AllcodeManage";
@@ -32,7 +32,7 @@ export {
   ClinicManage,
   ClinicSpecialtyManage,
   SpecialtyManage,
-  PackageTypeManage,
+  CategoryManage,
   PackageManage,
   HandBookManage,
   AllcodeManage,

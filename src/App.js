@@ -10,7 +10,7 @@ import {
   DetailClinicSpecialty,
   Doctors,
   DetailDoctor,
-  MedicalPackage,
+  DetailCategory,
   Login,
   Support,
   System,
@@ -36,7 +36,7 @@ import {
   ClinicManage,
   ClinicSpecialtyManage,
   SpecialtyManage,
-  PackageTypeManage,
+  CategoryManage,
   PackageManage,
   HandBookManage,
   AllcodeManage,
@@ -108,10 +108,11 @@ function App() {
             <Route path={`${path.DOCTOR}/:id`} element={<DetailDoctor remote={0} />} />
             <Route path={`${path.DOCTOR}/${path.REMOTE}/:id`} element={<DetailDoctor remote={1} />} />
 
-            {/* <Route path={path.PACKAGE} element={<MedicalPackage />} /> */}
             <Route path={`${path.PACKAGE}s`} element={<Packages />} />
+            <Route path={`${path.PACKAGE}s/:packageId`} element={<PackageDetail />} />
             <Route path={`${path.PACKAGE_CLINIC}/:packageId`} element={<PackageDetail />} />
-            {/* <Route path={`${path.PACKAGE_SPECIALTY}/:packageId`} element={<PackageDetail />} /> */}
+            <Route path={`${path.PACKAGE}s/${path.CLINIC}s`} element={<Clinics />} />
+            <Route path={`${path.PACKAGE}s/${path.CATEGORIES}/:categoryId`} element={<DetailCategory />} />
 
             <Route path={path.SUPPORT} element={<Support />} />
             <Route path={path.ERROR} element={<Navigate to="/" replace />} />
@@ -148,7 +149,7 @@ function App() {
 
             <Route path="handbook-manage" element={<HandBookManage />} />
 
-            <Route path="package-type" element={<PackageTypeManage />} />
+            <Route path="package-type" element={<CategoryManage />} />
             <Route path="package-manage" element={<PackageManage />} />
             <Route path="package-schedule" element={<ScheduleWrapper scheduleOf="package" />} />
 

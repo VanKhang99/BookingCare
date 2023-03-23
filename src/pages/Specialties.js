@@ -67,8 +67,8 @@ const Specialties = ({ remote }) => {
               <Link
                 to={
                   remote
-                    ? `/${path.SPECIALTY}/${path.REMOTE}/${specialty.id}`
-                    : `/${path.SPECIALTY}/${specialty.id}`
+                    ? `/${path.SPECIALTIES}/${path.REMOTE}/${specialty.id}`
+                    : `/${path.SPECIALTIES}/${specialty.id}`
                 }
                 key={specialty.id}
                 className="specialties-item"

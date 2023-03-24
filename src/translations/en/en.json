@@ -51,9 +51,14 @@
     "see-question": "See frequently asked questions"
   },
 
-  "clinic-carousel-more": {
+  "filter": {
     "placeholder-search-doctor": "Search doctor",
     "placeholder-search-package": "Search package",
+
+    "area": "Area",
+    "choose-city": "Choose city",
+    "choose-district": "Choose district",
+
     "category": "Category",
     "choose-category": "Select a category",
 

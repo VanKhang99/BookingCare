@@ -2,8 +2,6 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 
-// import FilterPrice from "./FilterPrice";
-// import FilterCategory from "./FilterCategory";
 import { InputSearch } from "../../components";
 import { IoClose } from "react-icons/io5";
 import { GoSearch } from "react-icons/go";
@@ -21,6 +19,13 @@ import "../../styles/Filter.scss";
 
 const initialState = {
   inputSearch: "",
+
+  citySelected: {},
+  inputSearchDistrict: "",
+  districtSelected: [],
+  optionsRegion: [],
+  isOpenRegion: false,
+  allowChooseDistrict: false,
 
   optionsCategory: [],
   categorySelected: [],
@@ -103,29 +108,29 @@ const Filter = ({
           id: 1,
           nameEn: "Ho Chi Minh City",
           nameVi: "Thành phố Hồ Chí Minh",
-          districtEn: [],
-          districtVi: [],
+          districts: [],
         },
-        { id: 2, nameEn: "Ha Noi City", nameVi: "Thành phố Hà Nội", districtEn: [], districtVi: [] },
+        { id: 2, nameEn: "Ha Noi City", nameVi: "Thành phố Hà Nội", districts: [] },
       ];
 
       citiesFilter = packageArr.reduce((acc, pk, index) => {
-        const { clinicData } = pk;
-        const citySplitted = clinicData.address.split(" - ").at(-1);
-        const districtSplitted = clinicData.address.split(" - ").filter((item) => item.includes("Quận"))[0];
+        const citySplitted = pk.address.split(" - ").at(-1);
+        const districtSplitted = pk.address.split(" - ").filter((item) => item.includes("Quận"))[0];
+
         //Find index city need to add district dynamic
         const cityIndex = citiesFilter.findIndex((city) => city.nameVi === citySplitted);
 
         if (cityIndex !== -1) {
           //Check district is already existed or not
-          const districtIndex = acc[cityIndex].districtVi.indexOf(districtSplitted);
-          if (districtIndex === -1) {
-            acc[cityIndex].districtEn.push(
-              /\d/.test(districtSplitted)
-                ? districtSplitted.replace("Quận", "District")
-                : `${districtSplitted.replace("Quận", "").trim()} District`
-            );
-            acc[cityIndex].districtVi.push(districtSplitted);
+          const districtIndex = acc[cityIndex].districts.some((dist) => dist.nameVi === districtSplitted);
+          if (!districtIndex) {
+            acc[cityIndex].districts.push({
+              id: index + 1,
+              nameEn: /\d/.test(districtSplitted)
+                ? districtSplitted?.replace("Quận", "District")
+                : `${districtSplitted?.replace("Quận", "").trim()} District`,
+              nameVi: districtSplitted,
+            });
           }
         }
         return acc;
@@ -140,6 +145,7 @@ const Filter = ({
 
     setState({
       ...state,
+      optionsRegion: citiesFilter,
       optionsCategory: categoriesFilter,
       optionsPrice: rangePriceFilter,
       optionsClinic: clinicsFilter,
@@ -159,14 +165,40 @@ const Filter = ({
 
   const handleDisplayOptions = (optionsOf) => {
     setState((prevState) => {
-      const { isOpenCategory, isOpenPrice, isOpenClinic } = prevState;
+      const { isOpenRegion, isOpenCategory, isOpenPrice, isOpenClinic } = prevState;
       switch (optionsOf) {
+        case "Region":
+          return {
+            ...prevState,
+            isOpenRegion: !isOpenRegion,
+            isOpenPrice: false,
+            isOpenClinic: false,
+            isOpenCategory: false,
+          };
         case "Category":
-          return { ...prevState, isOpenCategory: !isOpenCategory, isOpenPrice: false, isOpenClinic: false };
+          return {
+            ...prevState,
+            isOpenCategory: !isOpenCategory,
+            isOpenPrice: false,
+            isOpenClinic: false,
+            isOpenRegion: false,
+          };
         case "Price":
-          return { ...prevState, isOpenPrice: !isOpenPrice, isOpenCategory: false, isOpenClinic: false };
+          return {
+            ...prevState,
+            isOpenPrice: !isOpenPrice,
+            isOpenCategory: false,
+            isOpenClinic: false,
+            isOpenRegion: false,
+          };
         case "Clinic":
-          return { ...prevState, isOpenClinic: !isOpenClinic, isOpenCategory: false, isOpenPrice: false };
+          return {
+            ...prevState,
+            isOpenClinic: !isOpenClinic,
+            isOpenCategory: false,
+            isOpenPrice: false,
+            isOpenRegion: false,
+          };
         default:
           return prevState;
       }
@@ -175,14 +207,29 @@ const Filter = ({
 
   //SEARCH
   const handleOnChangeSearch = (e, searchOf = undefined) => {
-    if (searchOf === "clinic") {
-      const { clinicsFilter } = optionsFilter();
-      const clinicSearched = clinicsFilter.filter((clinic) => {
-        const targetCompare = language === "vi" ? clinic.nameVi : clinic.nameEn;
+    const helperSearch = (arr) => {
+      return arr.filter((data) => {
+        const targetCompare = language === "vi" ? data.nameVi : data.nameEn;
         const { targetName, input } = helperFilterSearch(e.target.value, targetCompare);
         return targetName.includes(input);
       });
+    };
 
+    if (searchOf === "district") {
+      const { citiesFilter } = optionsFilter();
+      const cityToSearchDistrict = citiesFilter.find((city) => city.nameVi === state.citySelected.nameVi);
+      const districtSearched = helperSearch(cityToSearchDistrict.districts);
+
+      return setState({
+        ...state,
+        citySelected: { ...state.citySelected, districts: districtSearched },
+        inputSearchDistrict: e.target.value,
+      });
+    }
+
+    if (searchOf === "clinic") {
+      const { clinicsFilter } = optionsFilter();
+      const clinicSearched = helperSearch(clinicsFilter);
       return setState({ ...state, optionsClinic: clinicSearched, inputSearchClinic: e.target.value });
     }
     return setState({ ...state, inputSearch: e.target.value });
@@ -212,7 +259,7 @@ const Filter = ({
     return pageClinicDoctors ? doctorsById : packageArr;
   };
 
-  //COMMON FUNCTION FILTER BY CATEGORY AND CLINIC
+  //COMMON FUNCTION FILTER BY CATEGORY AND CLINIC, CITY
   const handleSelectedOption = (data, selectedOf) => {
     const { categorySelected, clinicSelected } = state;
     const arrCheck = selectedOf === "clinic" ? clinicSelected : categorySelected;
@@ -240,6 +287,35 @@ const Filter = ({
     return setState({ ...state, [`${selectedOf}Selected`]: [...new Set(filterOptionAll)] });
   };
 
+  const displayOptionsSelected = (displayOf) => {
+    const { categorySelected, clinicSelected, citySelected } = state;
+
+    if (!categorySelected.length && !clinicSelected.length && !Object.keys(citySelected).length) {
+      return null;
+    }
+
+    if (displayOf === "city") {
+      return language === "vi" ? citySelected.nameVi : citySelected.nameEn;
+    }
+
+    return state[`${displayOf}Selected`].map((data) => (language === "vi" ? data.nameVi : data.nameEn));
+  };
+
+  const filterByCategoryAndClinic = (arr, filterOf) => {
+    const isOptionAllSelected =
+      state[`${filterOf}Selected`].some((data) => !data.id) || !state[`${filterOf}Selected`].length;
+
+    if (isOptionAllSelected) {
+      return arr;
+    }
+
+    const newPackagesFiltered =
+      filterOf === "category"
+        ? helperFilterCategory(arr || (pageClinicDoctors ? doctorsById : packageArr))
+        : helperFilterClinic(arr);
+    return newPackagesFiltered;
+  };
+
   //FILTER BY CATEGORY
   const helperFilterCategory = (arr) => {
     if (pageClinicDoctors) {
@@ -255,23 +331,6 @@ const Filter = ({
     });
 
     return newPackagesFiltered;
-  };
-
-  const filterByCategory = (arr) => {
-    const isOptionAllSelected =
-      state.categorySelected.some((cate) => !cate.id) || !state.categorySelected.length;
-
-    if (isOptionAllSelected) {
-      return arr;
-    }
-
-    const newPackagesFiltered = helperFilterCategory(arr || (pageClinicDoctors ? doctorsById : packageArr));
-    return newPackagesFiltered;
-  };
-
-  const displayCategory = () => {
-    if (!state.categorySelected.length) return null;
-    return state.categorySelected.map((cate) => (language === "vi" ? cate.nameVi : cate.nameEn));
   };
 
   // FILTER BY PRICE
@@ -389,6 +448,7 @@ const Filter = ({
 
   // FILTER BY CLINIC
   const helperFilterClinic = (arr) => {
+    console.log(arr);
     const specialtiesName = state.clinicSelected.map((specialty) => specialty.nameVi);
     const newPackagesFiltered = arr.filter((data) => {
       return specialtiesName.includes(data.clinicData.nameVi);
@@ -397,45 +457,108 @@ const Filter = ({
     return newPackagesFiltered;
   };
 
-  const filterByClinic = (arr) => {
-    const isOptionAllSelected = state.clinicSelected.some((cate) => !cate.id) || !state.clinicSelected.length;
+  // FILTER BY REGION
+  const handleSelectedCity = (city) => {
+    const { citySelected } = state;
+    const citySelectedBefore = citySelected.nameVi === city.nameVi;
 
-    if (isOptionAllSelected) {
-      return arr;
+    if (citySelectedBefore) {
+      return setState({
+        ...state,
+        citySelected: {},
+        districtSelected: [],
+        allowChooseDistrict: false,
+      });
     }
 
-    const newPackagesFiltered = helperFilterClinic(arr);
-    return newPackagesFiltered;
+    setState({
+      ...state,
+      citySelected: city,
+      districtSelected: [],
+      allowChooseDistrict: true,
+    });
   };
 
-  const displayClinic = () => {
-    if (!state.clinicSelected.length) return null;
-    return state.clinicSelected.map((cate) => (language === "vi" ? cate.nameVi : cate.nameEn));
+  const handleSelectedDistrict = (district) => {
+    const { districtSelected } = state;
+    const districtSelectedBefore = districtSelected.filter((dist) => dist.nameVi !== district.nameVi);
+
+    if (districtSelectedBefore.length !== districtSelected.length) {
+      return setState({
+        ...state,
+        districtSelected: districtSelectedBefore,
+      });
+    }
+
+    setState({
+      ...state,
+      districtSelected: [...state.districtSelected, district],
+    });
+  };
+
+  const filterByRegion = (arr, filterBy) => {
+    const { citySelected, districtSelected } = state;
+
+    let newPackagesFiltered;
+    // console.log(arr);
+    // console.log(filterBy);
+    // console.log(state.citySelected);
+
+    if (filterBy === "city") {
+      newPackagesFiltered = arr.filter((data) => {
+        return data.address.includes(citySelected.nameVi);
+      });
+    }
+
+    if (filterBy === "district") {
+      const splitDistrictToFilter = districtSelected.map((district) => district.nameVi);
+
+      newPackagesFiltered = arr.filter((data) => {
+        const districtSplitted = data.address.split(" - ").filter((item) => item.includes("Quận"))[0];
+        return splitDistrictToFilter.includes(districtSplitted) && data.address.includes(citySelected.nameVi);
+      });
+    }
+
+    return newPackagesFiltered;
   };
 
   // EXECUTE FEATURE
   const handleFilter = () => {
+    const { inputSearch, citySelected, districtSelected, categorySelected, priceSelected, clinicSelected } =
+      state;
     let newPackagesFiltered;
 
-    if (state.inputSearch) {
-      newPackagesFiltered = filterBySearch(state.inputSearch);
+    if (inputSearch) {
+      newPackagesFiltered = filterBySearch(inputSearch);
     }
 
-    if (state.categorySelected.length) {
-      newPackagesFiltered = filterByCategory(newPackagesFiltered);
+    if (Object.keys(citySelected).length && !districtSelected.length) {
+      newPackagesFiltered = filterByRegion(newPackagesFiltered || packageArr, "city");
+    } else if (Object.keys(citySelected).length && districtSelected.length) {
+      newPackagesFiltered = filterByRegion(newPackagesFiltered || packageArr, "district");
     }
 
-    if (state.priceSelected) {
+    if (categorySelected.length) {
+      newPackagesFiltered = filterByCategoryAndClinic(newPackagesFiltered || packageArr, "category");
+    }
+
+    if (priceSelected) {
       newPackagesFiltered = filterByPrice(
         newPackagesFiltered || (pageClinicDoctors ? doctorsById : packageArr)
       );
     }
 
-    if (state.clinicSelected.length) {
-      newPackagesFiltered = filterByClinic(newPackagesFiltered);
+    if (clinicSelected.length) {
+      newPackagesFiltered = filterByCategoryAndClinic(newPackagesFiltered || packageArr, "clinic");
     }
 
-    setState({ ...state, isOpenCategory: false, isOpenPrice: false, isOpenClinic: false });
+    setState({
+      ...state,
+      isOpenRegion: false,
+      isOpenCategory: false,
+      isOpenPrice: false,
+      isOpenClinic: false,
+    });
     onFilteredData(newPackagesFiltered || (pageClinicDoctors ? doctorsById : packageArr));
     onHideCategoryIntro();
     return;
@@ -446,13 +569,19 @@ const Filter = ({
     if (!refreshOf) {
       setState({
         ...state,
+        citySelected: {},
+        inputSearchDistrict: "",
+        districtSelected: [],
+        isOpenRegion: false,
+        allowChooseDistrict: false,
+
+        categorySelected: [],
+        isOpenCategory: false,
+
         priceSelected: "",
         priceTo: "",
         priceFrom: "",
         isOpenPrice: false,
-
-        categorySelected: [],
-        isOpenCategory: false,
 
         inputSearchClinic: "",
         clinicSelected: [],
@@ -470,13 +599,45 @@ const Filter = ({
       newPackagesFiltered = filterBySearch(state.inputSearch);
     }
 
-    if (refreshOf === "Category") {
+    if (refreshOf === "Region") {
+      if (state.categorySelected) {
+        newPackagesFiltered = filterByCategoryAndClinic(newPackagesFiltered || arrBelongToProps, "category");
+      }
+
       if (state.priceSelected) {
         newPackagesFiltered = filterByPrice(newPackagesFiltered || arrBelongToProps);
       }
 
       if (state.clinicSelected.length) {
-        newPackagesFiltered = filterByClinic(newPackagesFiltered || arrBelongToProps);
+        newPackagesFiltered = filterByCategoryAndClinic(newPackagesFiltered || arrBelongToProps, "clinic");
+      }
+
+      setState({
+        ...state,
+        citySelected: {},
+        inputSearchDistrict: "",
+        districtSelected: [],
+        isOpenRegion: false,
+        allowChooseDistrict: false,
+      });
+      onFilteredData(newPackagesFiltered?.length ? newPackagesFiltered : arrBelongToProps);
+      onHideCategoryIntro();
+      return;
+    }
+
+    if (refreshOf === "Category") {
+      if (Object.keys(state.citySelected).length && !state.districtSelected.length) {
+        newPackagesFiltered = filterByRegion(newPackagesFiltered || packageArr, "city");
+      } else if (Object.keys(state.citySelected).length && state.districtSelected.length) {
+        newPackagesFiltered = filterByRegion(newPackagesFiltered || packageArr, "district");
+      }
+
+      if (state.priceSelected) {
+        newPackagesFiltered = filterByPrice(newPackagesFiltered || arrBelongToProps);
+      }
+
+      if (state.clinicSelected.length) {
+        newPackagesFiltered = filterByCategoryAndClinic(newPackagesFiltered || arrBelongToProps, "clinic");
       }
 
       setState({
@@ -492,12 +653,18 @@ const Filter = ({
     }
 
     if (refreshOf === "Price") {
+      if (Object.keys(state.citySelected).length && !state.districtSelected.length) {
+        newPackagesFiltered = filterByRegion(newPackagesFiltered || packageArr, "city");
+      } else if (Object.keys(state.citySelected).length && state.districtSelected.length) {
+        newPackagesFiltered = filterByRegion(newPackagesFiltered || packageArr, "district");
+      }
+
       if (state.categorySelected) {
-        newPackagesFiltered = filterByCategory(newPackagesFiltered || arrBelongToProps);
+        newPackagesFiltered = filterByCategoryAndClinic(newPackagesFiltered || arrBelongToProps, "category");
       }
 
       if (state.clinicSelected.length) {
-        newPackagesFiltered = filterByClinic(newPackagesFiltered || arrBelongToProps);
+        newPackagesFiltered = filterByCategoryAndClinic(newPackagesFiltered || arrBelongToProps, "clinic");
       }
 
       setState({
@@ -516,8 +683,14 @@ const Filter = ({
     }
 
     if (refreshOf === "Clinic") {
+      if (Object.keys(state.citySelected).length && !state.districtSelected.length) {
+        newPackagesFiltered = filterByRegion(newPackagesFiltered || packageArr, "city");
+      } else if (Object.keys(state.citySelected).length && state.districtSelected.length) {
+        newPackagesFiltered = filterByRegion(newPackagesFiltered || packageArr, "district");
+      }
+
       if (state.categorySelected) {
-        newPackagesFiltered = filterByCategory(newPackagesFiltered || arrBelongToProps);
+        newPackagesFiltered = filterByCategoryAndClinic(newPackagesFiltered || arrBelongToProps, "category");
       }
 
       if (state.priceSelected) {
@@ -618,8 +791,7 @@ const Filter = ({
     return setState({
       ...state,
       categorySelected: checkCategory,
-      priceSelected:
-        !state.priceTo && !state.priceFrom ? t("clinic-carousel-more.price") : state.priceSelected,
+      priceSelected: !state.priceTo && !state.priceFrom ? t("filter.price") : state.priceSelected,
       priceFrom: !state.priceFrom ? "" : pricePassToState(pricesArr[0]),
       priceTo: !state.priceFrom ? "" : pricePassToState(pricesArr[1]),
       optionsCategory: categoriesFilter,
@@ -644,16 +816,14 @@ const Filter = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language, categories.length]);
 
-  // console.log(state);
+  console.log(state);
 
   return (
     <div className="filters u-wrapper">
       <div className="filter-search">
         <InputSearch
           placeholder={
-            pageClinicDoctors
-              ? t("clinic-carousel-more.placeholder-search-doctor")
-              : t("clinic-carousel-more.placeholder-search-package")
+            pageClinicDoctors ? t("filter.placeholder-search-doctor") : t("filter.placeholder-search-package")
           }
           icon={<GoSearch />}
           onSearch={handleOnChangeSearch}
@@ -668,9 +838,106 @@ const Filter = ({
       </div>
 
       <div className="filter">
+        {haveFilterByClinicsAndCity && (
+          <div className="filter-item filter-item--region" onClick={() => handleDisplayOptions("Region")}>
+            <div className="filter-item__name">{displayOptionsSelected("city") || t("filter.area")}</div>
+            <span className="filter-item__icon">
+              <svg
+                stroke="%23000000"
+                fill="%23000000"
+                strokeWidth="0"
+                viewBox="0 0 24 24"
+                height="20px"
+                width="20px"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g>
+                  <path fill="none" d="M0 0h24v24H0z"></path>
+                  <path d="M12 13.172l4.95-4.95 1.414 1.414L12 16 5.636 9.636 7.05 8.222z"></path>
+                </g>
+              </svg>
+            </span>
+
+            <div
+              className={`${state.isOpenRegion ? "filter-select open" : "filter-select"}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="filter-select__title">
+                <span>{t("filter.choose-city")}</span>
+                <IoClose onClick={() => setState({ ...state, isOpenRegion: false })} />
+              </div>
+
+              <div className="filter-options">
+                {state.optionsRegion.length > 0 &&
+                  state.optionsRegion.map((region) => {
+                    return (
+                      <span
+                        key={region.id}
+                        className={
+                          state.citySelected.id === region.id
+                            ? "filter-options__item filter-options__item--selected"
+                            : "filter-options__item"
+                        }
+                        onClick={() => handleSelectedCity(region)}
+                      >
+                        {language === "vi" ? region.nameVi : region.nameEn}
+                      </span>
+                    );
+                  })}
+              </div>
+
+              {state.allowChooseDistrict && (
+                <>
+                  <strong className="filter-select__title filter-select__title--district">
+                    {t("filter.choose-district")}
+                  </strong>
+
+                  <div className="filter-select__inputs">
+                    <InputSearch
+                      placeholder={language === "vi" ? "Tìm kiếm" : "Search"}
+                      onSearch={(e) => handleOnChangeSearch(e, "district")}
+                      value={state.inputSearchDistrict}
+                    />
+                  </div>
+
+                  <div className="filter-options">
+                    {state.citySelected.districts.length > 0 &&
+                      state.citySelected.districts.map((district) => {
+                        const { id, nameVi, nameEn } = district;
+                        return (
+                          <span
+                            key={id}
+                            className={
+                              state.districtSelected.some((dist) => dist.nameVi === nameVi)
+                                ? "filter-options__item filter-options__item--selected"
+                                : "filter-options__item"
+                            }
+                            onClick={() => handleSelectedDistrict(district)}
+                          >
+                            {language === "vi" ? nameVi : nameEn}
+                          </span>
+                        );
+                      })}
+                  </div>
+                </>
+              )}
+
+              <div className="filter-buttons">
+                <button className="filter-buttons__refresh" onClick={() => handleRefresh("Region")}>
+                  <SlRefresh />
+                </button>
+                <button className="filter-buttons__filter" onClick={() => handleFilter()}>
+                  <TbFilter />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="filter-item filter-item--category" onClick={() => handleDisplayOptions("Category")}>
           <div className="filter-item__name">
-            {displayCategory()?.join(", ") || t("clinic-carousel-more.category")}
+            {displayOptionsSelected("category")?.join(", ") || t("filter.category")}
+            {/* {t("filter.category")} */}
           </div>
           <span className="filter-item__icon">
             <svg
@@ -694,7 +961,7 @@ const Filter = ({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="filter-select__title">
-              <span>{t("clinic-carousel-more.choose-category")}</span>
+              <span>{t("filter.choose-category")}</span>
               <IoClose onClick={() => setState({ ...state, isOpenCategory: false })} />
             </div>
 
@@ -730,7 +997,7 @@ const Filter = ({
 
         <div className="filter-item filter-item--price" onClick={() => handleDisplayOptions("Price")}>
           <span className="filter-item__name">
-            {state.priceSelected ? state.priceSelected : t("clinic-carousel-more.price")}
+            {state.priceSelected ? state.priceSelected : t("filter.price")}
           </span>
           <span className="filter-item__icon">
             <svg
@@ -754,7 +1021,7 @@ const Filter = ({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="filter-select__title">
-              <span>{t("clinic-carousel-more.find-by-range")}</span>
+              <span>{t("filter.find-by-range")}</span>
               <IoClose onClick={() => setState({ ...state, isOpenPrice: false })} />
             </div>
 
@@ -773,7 +1040,7 @@ const Filter = ({
                 onChange={(e) => handleOnChangePriceInput(e, "priceTo")}
               />
             </div>
-            <strong className="filter-select__title">{t("clinic-carousel-more.or-choose-price")}</strong>
+            <strong className="filter-select__title">{t("filter.or-choose-price")}</strong>
             <div className="filter-options">
               {state.optionsPrice.length > 0 &&
                 state.optionsPrice.map((price, index) => {
@@ -807,7 +1074,7 @@ const Filter = ({
         {haveFilterByClinicsAndCity && (
           <div className="filter-item filter-item--clinic" onClick={() => handleDisplayOptions("Clinic")}>
             <span className="filter-item__name">
-              {displayClinic()?.join(", ") || t("clinic-carousel-more.clinic")}
+              {displayOptionsSelected("clinic")?.join(", ") || t("filter.clinic")}
             </span>
             <span className="filter-item__icon">
               <svg
@@ -831,7 +1098,7 @@ const Filter = ({
               onClick={(e) => e.stopPropagation()}
             >
               <div className="filter-select__title">
-                <span>{t("clinic-carousel-more.find-by-name")}</span>
+                <span>{t("filter.find-by-name")}</span>
                 <IoClose onClick={() => setState({ ...state, isOpenClinic: false })} />
               </div>
 
@@ -842,7 +1109,7 @@ const Filter = ({
                   value={state.inputSearchClinic}
                 />
               </div>
-              <strong className="filter-select__title">{t("clinic-carousel-more.or-choose-clinic")}</strong>
+              <strong className="filter-select__title">{t("filter.or-choose-clinic")}</strong>
               <div className="filter-options">
                 {state.optionsClinic.length > 0 &&
                   state.optionsClinic.map((clinic) => {

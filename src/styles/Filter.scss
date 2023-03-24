@@ -42,7 +42,7 @@
 
   .filter {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
     column-gap: 2rem;
 
     &-item {
@@ -77,36 +77,49 @@
       }
     }
 
+    &-item--region {
+    }
+
     &-item--price {
-      .filter-select__inputs {
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-        width: 100%;
+      .filter-select {
+        width: 40rem;
 
-        input {
-          width: 50%;
-          padding: 0.4rem 0.6rem;
-          border-radius: 0.6rem;
-          border: 2px solid $grey-8;
-          font-size: $base-size + 0.2rem;
-          outline: none;
-          -moz-appearance: textfield;
+        &__inputs {
+          margin-bottom: 1rem;
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          width: 100%;
 
-          &::-webkit-inner-spin-button,
-          &::-webkit-outer-spin-button {
-            -webkit-appearance: none;
+          input {
+            width: 50%;
+            padding: 0.4rem 0.6rem;
+            border-radius: 0.6rem;
+            border: 2px solid $grey-8;
+            font-size: $base-size + 0.2rem;
+            outline: none;
+            -moz-appearance: textfield;
+
+            &::-webkit-inner-spin-button,
+            &::-webkit-outer-spin-button {
+              -webkit-appearance: none;
+            }
+
+            &:focus {
+              border: 2px solid $color-blue-2;
+            }
           }
+        }
 
-          &:focus {
-            border: 2px solid $color-blue-2;
-          }
+        .filter-options {
+          overflow-y: unset;
+          padding-right: 0;
         }
       }
     }
 
-    &-item--clinic {
+    &-item--clinic,
+    &-item--region {
       .filter-select__inputs {
         .input-search {
           border-radius: 0.6rem;
@@ -115,6 +128,13 @@
           padding: 0.8rem;
           box-shadow: none;
         }
+      }
+    }
+
+    &-item--clinic {
+      .filter-select {
+        right: 0;
+        left: unset;
       }
     }
 
@@ -148,6 +168,10 @@
         align-items: center;
         justify-content: space-between;
 
+        &--district {
+          margin-top: 1rem;
+        }
+
         svg {
           width: 2.2rem;
           height: 2.2rem;
@@ -174,7 +198,6 @@
         row-gap: 0.6rem;
         max-height: 20rem;
         overflow-y: scroll;
-        padding-right: 0.5rem;
 
         &::-webkit-scrollbar {
           width: 0.5rem;
@@ -185,7 +208,7 @@
         }
 
         &::-webkit-scrollbar-thumb {
-          background-color: $rgba-black-1;
+          background-color: rgba(0, 0, 0, 0.2);
           border-radius: 1rem;
         }
 

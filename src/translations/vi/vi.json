@@ -51,9 +51,14 @@
     "see-question": "Xem các câu hỏi thường gặp"
   },
 
-  "clinic-carousel-more": {
+  "filter": {
     "placeholder-search-doctor": "Tìm kiếm bác sĩ",
     "placeholder-search-package": "Tìm kiếm gói khám bệnh",
+
+    "area": "Khu vực",
+    "choose-city": "Lựa chọn thành phố",
+    "choose-district": "Lựa chọn quận",
+
     "category": "Danh mục",
     "choose-category": "Lựa chọn danh mục",
 

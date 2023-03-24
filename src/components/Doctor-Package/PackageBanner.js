@@ -14,6 +14,7 @@ const PackageBanner = ({ packageArr, dataFiltered, onFilteredData, categoryId })
           dataFiltered={dataFiltered}
           onFilteredData={onFilteredData}
           categoryId={categoryId}
+          // haveFilterByClinicsAndCity={1}
         />
       </div>
     </>

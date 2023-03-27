@@ -25,7 +25,6 @@ import Loading from "./Loading";
 import ClinicTop from "./ClinicTop";
 import ScrollToTop from "./ScrollToTop";
 import Filter from "./Filter/Filter";
-import PackageBanner from "./Doctor-Package/PackageBanner";
 
 export {
   Header,
@@ -55,5 +54,4 @@ export {
   ClinicTop,
   ScrollToTop,
   Filter,
-  PackageBanner,
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import _ from "lodash";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -15,30 +15,18 @@ const initialState = {
   isOpenFullIntro: false,
   isOpenModalBooking: false,
   hourBooked: {},
-  doctors: [],
   doctorId: "",
   doctorData: {},
+  doctors: [],
+  doctorsToFilter: [],
 };
 
 const DetailSpecialty = ({ remote }) => {
-  const [state, setState] = useState({ ...initialState });
+  const [specialtyState, setSpecialtyState] = useState({ ...initialState });
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { specialtyId } = useParams();
   const { language } = useSelector((store) => store.app);
-
-  const doctorsFilter = useMemo(async () => {
-    const res = await dispatch(
-      getAllDoctorsById({
-        nameColumnMap: "specialtyId",
-        id: +specialtyId,
-        typeRemote: "includeOnlyFalse",
-      })
-    );
-
-    if (res?.payload?.data.doctors.length > 0) return res.payload.data.doctors;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const handleFetchData = async (id) => {
     try {
@@ -53,10 +41,11 @@ const DetailSpecialty = ({ remote }) => {
         ),
       ]);
 
-      return setState({
-        ...state,
+      return setSpecialtyState({
+        ...specialtyState,
         specialtyData: { ...data[0].payload.data },
         doctors: data[1].payload.status === "error" ? [] : [...data[1].payload.data.doctors],
+        doctorsToFilter: data[1].payload.status === "error" ? [] : [...data[1].payload.data.doctors],
       });
     } catch (error) {
       console.log(error);
@@ -64,7 +53,7 @@ const DetailSpecialty = ({ remote }) => {
   };
 
   const handleShowMoreDataIntro = () => {
-    return setState({ ...state, isOpenFullIntro: !state.isOpenFullIntro });
+    return setSpecialtyState({ ...specialtyState, isOpenFullIntro: !specialtyState.isOpenFullIntro });
   };
 
   const handleModal = async (hourClicked, doctorId = null, packageId = null) => {
@@ -75,19 +64,19 @@ const DetailSpecialty = ({ remote }) => {
 
     try {
       if (!doctorId)
-        return setState({
-          ...state,
-          isOpenModalBooking: !state.isOpenModalBooking,
+        return setSpecialtyState({
+          ...specialtyState,
+          isOpenModalBooking: !specialtyState.isOpenModalBooking,
           hourClicked: { ...hourClicked },
         });
 
       const res = await dispatch(getDoctor(+doctorId));
       if (res?.payload?.data) {
-        return setState({
-          ...state,
+        return setSpecialtyState({
+          ...specialtyState,
           doctorData: res.payload.data,
           doctorId,
-          isOpenModalBooking: !state.isOpenModalBooking,
+          isOpenModalBooking: !specialtyState.isOpenModalBooking,
           hourClicked: { ...hourClicked },
         });
       }
@@ -97,17 +86,15 @@ const DetailSpecialty = ({ remote }) => {
   };
 
   const handleProvinceChange = async (option) => {
-    console.log(option);
-    const doctorsCopy = await doctorsFilter;
-    console.log(doctorsCopy);
-
     if (option.value === "*") {
-      return setState({ ...state, doctors: doctorsCopy });
+      return setSpecialtyState({ ...specialtyState, doctors: specialtyState.doctorsToFilter });
     }
 
     if (option.value !== "*") {
-      const newDoctors = doctorsCopy.filter((doctor) => doctor.provinceData.keyMap === option.value);
-      return setState({ ...state, doctors: newDoctors });
+      const newDoctors = specialtyState.doctorsToFilter.filter(
+        (doctor) => doctor.provinceData.keyMap === option.value
+      );
+      return setSpecialtyState({ ...specialtyState, doctors: newDoctors });
     }
   };
 
@@ -118,14 +105,24 @@ const DetailSpecialty = ({ remote }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (!_.isEmpty(specialtyState.specialtyData)) {
+      document.title =
+        language === "vi"
+          ? `${specialtyState.specialtyData.nameVi} ${remote ? "từ xa" : ""}`
+          : `${remote ? "Remote" : ""} ${specialtyState.specialtyData.nameEn} `;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language, _.isEmpty(specialtyState.specialtyData)]);
+
   return (
     <div className="specialty-container">
       <div className="specialty">
         <div className="specialty-content ">
           <div className="specialty-intro">
             <IntroSpecialty
-              isOpenFullIntro={state.isOpenFullIntro}
-              specialtyData={state.specialtyData}
+              isOpenFullIntro={specialtyState.isOpenFullIntro}
+              specialtyData={specialtyState.specialtyData}
               onShowMoreDataIntro={handleShowMoreDataIntro}
               remote={remote}
             />
@@ -137,15 +134,19 @@ const DetailSpecialty = ({ remote }) => {
                 {language === "vi" ? "Các bác sĩ chuyên khoa" : "Specialties Doctors"}
               </h2>
 
-              <ProvinceOptions
-                specialtyId={specialtyId ? specialtyId : ""}
-                onProvinceChange={handleProvinceChange}
-                remote={remote}
-              />
+              {specialtyState.doctors.length > 0 && (
+                <>
+                  <ProvinceOptions
+                    specialtyId={specialtyId ? specialtyId : ""}
+                    onProvinceChange={handleProvinceChange}
+                    remote={remote}
+                  />
+                </>
+              )}
 
               <ul className="doctors">
-                {state?.doctors?.length > 0 &&
-                  state.doctors.map((doctor, index) => {
+                {specialtyState?.doctors?.length > 0 &&
+                  specialtyState.doctors.map((doctor, index) => {
                     const doctorId = doctor.doctorId;
                     return (
                       <Doctor
@@ -176,11 +177,13 @@ const DetailSpecialty = ({ remote }) => {
 
       <div className="modal-booking">
         <ModalBooking
-          show={state.isOpenModalBooking}
+          show={specialtyState.isOpenModalBooking}
           onHide={handleModal}
-          doctorId={state.doctorId}
-          doctorData={dataModalBooking(language, state.doctorData, "doctor")}
-          hourClicked={state.hourClicked && !_.isEmpty(state.hourClicked) && state.hourClicked}
+          doctorId={specialtyState.doctorId}
+          doctorData={dataModalBooking(language, specialtyState.doctorData, "doctor")}
+          hourClicked={
+            specialtyState.hourClicked && !_.isEmpty(specialtyState.hourClicked) && specialtyState.hourClicked
+          }
           remote={remote}
         />
       </div>

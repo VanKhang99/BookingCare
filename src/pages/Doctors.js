@@ -41,6 +41,11 @@ const Doctors = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    document.title =
+      language === "vi" ? "Các bác sĩ nổi bật tuần vừa qua" : "The outstanding doctors of the past week";
+  }, [language]);
+
   return (
     <div className="doctors-popular-container">
       <div className="doctors-popular u-wrapper">
@@ -75,7 +80,9 @@ const Doctors = () => {
                   </div>
 
                   <div className="doctors-popular-info">
-                    <span className="doctors-popular-info__name">{helperDisplayNameDoctor(doctor)}</span>
+                    <span className="doctors-popular-info__name">
+                      {helperDisplayNameDoctor(doctor, language)}
+                    </span>
 
                     <div className="doctors-popular-info__specialty">
                       <span>{language === "vi" ? specialtyData.nameVi : specialtyData.nameEn}</span>

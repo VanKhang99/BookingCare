@@ -92,6 +92,16 @@ const DetailClinicSpecialty = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [specialtyId, language]);
 
+  useEffect(() => {
+    if (!_.isEmpty(state.specialtyData)) {
+      document.title =
+        language === "vi"
+          ? `Đặt lịch khám tại ${state.specialtyData.specialtyName.nameVi}, ${state.specialtyData.clinicInfo.nameVi}`
+          : `Book appointment at ${state.specialtyData.specialtyName.nameEn}, ${state.specialtyData.clinicInfo.nameEn}`;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [_.isEmpty(state.specialtyData), language]);
+
   return (
     <>
       <div className="clinic">

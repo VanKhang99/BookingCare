@@ -62,6 +62,7 @@ const DetailClinic = () => {
   useEffect(() => {
     if (!_.isEmpty(dataClinic)) {
       handleNavigator(dataClinic);
+      document.title = language === "vi" ? dataClinic.nameVi : dataClinic.nameEn;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [_.isEmpty(dataClinic), language]);

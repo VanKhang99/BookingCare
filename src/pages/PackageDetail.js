@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import HtmlReactParser from "html-react-parser";
 import _ from "lodash";
 import { useParams } from "react-router-dom";
@@ -33,6 +33,16 @@ const PackageDetail = ({ packageOfClinic }) => {
   const handleUpdateSchedules = (schedulesArr) => {
     return setState({ ...state, schedules: schedulesArr });
   };
+
+  useEffect(() => {
+    if (!_.isEmpty(packageData)) {
+      document.title =
+        language === "vi"
+          ? `${packageData.nameVi} tại ${packageData.clinicData.nameVi}`
+          : `${packageData.nameEn} at ${packageData.clinicData.nameEN}`;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [_.isEmpty(packageData), language]);
 
   return (
     <div className="package-container">

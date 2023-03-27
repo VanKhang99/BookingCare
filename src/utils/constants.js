@@ -38,3 +38,6 @@ export const DATE_FORMAT = ["DD/MM/YYYY", "DD/MM/YY"];
 export const TIMEOUT_NAVIGATE_SYSTEM = 300;
 
 export const TO_USD = 25000;
+
+export const START_INDEX = 0;
+export const END_INDEX = 5;

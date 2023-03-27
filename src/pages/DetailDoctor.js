@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import HtmlReactParser from "html-react-parser";
 import _ from "lodash";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useFetchDataBaseId } from "../utils/CustomHook";
 import { getDoctor } from "../slices/doctorSlice";
-import { dataModalBooking } from "../utils/helpers";
+import { dataModalBooking, helperDisplayNameDoctor } from "../utils/helpers";
 import { DateOptions, BookingHours, ClinicInfo, ModalBooking, Introduce, Loading } from "../components";
 import "../styles/DetailDoctor.scss";
 
@@ -35,6 +35,13 @@ const DetailDoctor = ({ remote }) => {
   const handleUpdateSchedules = (schedulesArr) => {
     return setState({ ...state, schedules: schedulesArr });
   };
+
+  useEffect(() => {
+    if (!_.isEmpty(doctor)) {
+      document.title = helperDisplayNameDoctor(doctor, language);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [_.isEmpty(doctor), language]);
 
   return (
     <div className="outstanding-doctor-container">

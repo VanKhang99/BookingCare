@@ -245,7 +245,7 @@ export const helperCreateCategory = (arr, type) => {
 
       if (!checkNameExisted) {
         acc.push({
-          id: index + 1,
+          id: type === "clinic" ? item.clinicId : index + 1,
           nameEn: propContainName.nameEn,
           nameVi: propContainName.nameVi,
         });

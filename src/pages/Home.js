@@ -13,6 +13,7 @@ const Home = () => {
         ? "BookingCare - Nền tảng chăm sóc sức khỏe toàn diện"
         : "BookingCare - Comprehensive healthcare platform";
   }, [language]);
+
   return (
     <div className="app">
       <main>

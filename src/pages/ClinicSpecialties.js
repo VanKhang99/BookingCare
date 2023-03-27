@@ -43,9 +43,22 @@ const ClinicSpecialties = () => {
   useEffect(() => {
     if (clinicId) {
       handleFetchSpecialties();
+      // document.title = language === 'vi' `Các chuyên khoa `
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (specialties.length > 0) {
+      document.title =
+        language === "vi"
+          ? `Các chuyên khoa tại ${specialties[0].clinicInfo.nameVi}`
+          : `Specialties at ${specialties[0].clinicInfo.nameEn}`;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language, specialties.length]);
+
+  // console.log();
 
   return (
     <div className="clinic-specialties-container">

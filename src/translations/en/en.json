@@ -12,6 +12,13 @@
     "services-name": "Specialty examination, Remote examination, General examination, Medical test, Mental health, Dental examination, Surgery package, Medical products, Business health"
   },
 
+  "packages": {
+    "medical-package": "Medical package",
+    "category": "Categories",
+    "outstanding-package": "Outstanding medical package",
+    "health-facilities": "Health facilities"
+  },
+
   "slider": {
     "doctor-remote-title": "Telemedicine via Video",
     "popular-specialty-title": "Popular specialties",

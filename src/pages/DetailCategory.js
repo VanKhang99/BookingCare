@@ -1,33 +1,37 @@
 import React, { useState, useEffect } from "react";
 import _ from "lodash";
 import { useParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Filter, Package, PackageBanner, ModalBooking } from "../components";
+import { Filter, Package, ModalBooking, ScrollToTop } from "../components";
 import { getAllPackages, getPackage } from "../slices/packageSlice";
 import { getCategory } from "../slices/categorySlice";
 import { useFetchDataBaseId } from "../utils/CustomHook";
 import { dataModalBooking } from "../utils/helpers";
+import { START_INDEX, END_INDEX } from "../utils/constants";
 import "../styles/DetailCategory.scss";
 
 const initialState = {
   packageArr: [],
+  packageFilteredInit: [],
 
   isOpenModalBooking: false,
   hourBooked: "",
   packageId: "",
   packageData: {},
 
-  hideCategoryIntro: false,
+  hideSomeElement: false,
   haveFilterByClinicsAndCity: true,
+
+  startIndex: START_INDEX,
+  endIndex: END_INDEX,
+  isRenderFull: false,
 };
 
 const DetailCategory = () => {
   const [categoryState, setCategoryState] = useState(initialState);
   const [packageFiltered, setPackageFiltered] = useState([]);
   const dispatch = useDispatch();
-  const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
   const { categoryId } = useParams();
   const { data: category } = useFetchDataBaseId(+categoryId, "category", getCategory);
@@ -37,9 +41,12 @@ const DetailCategory = () => {
       const res = await dispatch(getAllPackages({ clinicId: null, specialtyId: null, getAll: false }));
       if (res.payload.data.length > 0) {
         const packageBelongCategory = res.payload.data.filter((cate) => cate.categoryId.includes(categoryId));
-        // const packageArr = res.payload.data;
-        setCategoryState({ ...categoryState, packageArr: res.payload.data });
-        setPackageFiltered(packageBelongCategory);
+        setCategoryState({
+          ...categoryState,
+          packageArr: res.payload.data,
+          packageFilteredInit: packageBelongCategory,
+        });
+        setPackageFiltered(packageBelongCategory.slice(START_INDEX, END_INDEX));
       }
     } catch (error) {
       console.error(error);
@@ -78,12 +85,41 @@ const DetailCategory = () => {
     }
   };
 
-  const handleFilteredData = (arr) => {
-    setPackageFiltered(arr);
+  const handleFilteredData = (arr, firstFilter = false) => {
+    if (firstFilter) {
+      return setPackageFiltered(arr);
+    }
+
+    setCategoryState({
+      ...categoryState,
+      packageFilteredInit: arr,
+      hideSomeElement: true,
+      startIndex: START_INDEX,
+      endIndex: END_INDEX,
+      isRenderFull: false,
+    });
+    setPackageFiltered(arr.slice(START_INDEX, END_INDEX));
   };
 
-  const handleHideCategoryIntro = () => {
-    setCategoryState({ ...categoryState, hideCategoryIntro: true });
+  const handleScroll = () => {
+    if (categoryState.isRenderFull) return;
+
+    if (
+      window.innerHeight + document.documentElement.scrollTop <=
+      document.documentElement.offsetHeight - 2
+    ) {
+      return;
+    }
+
+    if (categoryState.startIndex > categoryState.packageFilteredInit.length)
+      return setCategoryState({ ...categoryState, isRenderFull: true });
+
+    const newStartIndex = categoryState.startIndex + 5;
+    const newEndIndex = categoryState.endIndex + 5;
+    const newPackageFiltered = categoryState.packageFilteredInit.slice(newStartIndex, newEndIndex);
+
+    setCategoryState({ ...categoryState, startIndex: newStartIndex, endIndex: newEndIndex });
+    setPackageFiltered([...packageFiltered, ...newPackageFiltered]);
   };
 
   useEffect(() => {
@@ -91,9 +127,25 @@ const DetailCategory = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (!_.isEmpty(category)) {
+      document.title =
+        language === "vi" ? `Gói khám bệnh - ${category.nameVi}` : `Medical packages - ${category.nameEn}`;
+    }
+    // document.title = language === 'vi'
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language, _.isEmpty(category)]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categoryState.startIndex, categoryState.endIndex, categoryState.packageFilteredInit.length]);
+
   return (
     <div className="detail-category">
-      {!categoryState.hideCategoryIntro && (
+      {!categoryState.hideSomeElement && (
         <div className="category-intro">
           <div className="category-intro__background"></div>
           <div className="category-content">
@@ -124,13 +176,13 @@ const DetailCategory = () => {
         </div>
       )}
 
-      <div className={categoryState.hideCategoryIntro ? "category-body margin-top" : "category-body"}>
+      <div className={categoryState.hideSomeElement ? "category-body margin-top" : "category-body"}>
         <Filter
           categoryId={categoryId}
           packageArr={categoryState.packageArr}
           dataFiltered={packageFiltered}
           onFilteredData={handleFilteredData}
-          onHideCategoryIntro={handleHideCategoryIntro}
+          // onHideSomeElement={handleHideElement}
           haveFilterByClinicsAndCity={categoryState.haveFilterByClinicsAndCity}
         />
 
@@ -160,6 +212,7 @@ const DetailCategory = () => {
           hourClicked={!_.isEmpty(categoryState.hourClicked) && categoryState.hourClicked}
         />
       </div>
+      <ScrollToTop />
     </div>
   );
 };

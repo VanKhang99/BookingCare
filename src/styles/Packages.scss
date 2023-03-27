@@ -1,7 +1,7 @@
 @import "./sass/variables";
 
-.packages {
-  &-head {
+.packages-container {
+  .packages-head {
     margin-top: $height-header;
     &-image {
       background-image: linear-gradient(to right, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.2)),
@@ -23,13 +23,20 @@
     }
   }
 
-  &-filter {
+  .packages-filter {
     margin-top: -10rem;
   }
 
-  &-categories,
-  &-outstanding,
-  &-clinics {
+  .packages-list {
+    margin: 3rem auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .packages-categories,
+  .packages-outstanding,
+  .packages-clinics {
     &-top {
       display: flex;
       align-items: center;
@@ -47,7 +54,7 @@
     }
   }
 
-  &-categories {
+  .packages-categories {
     margin-bottom: 4rem;
     &-top {
       padding: 2rem 0 1.5rem;
@@ -81,7 +88,7 @@
     }
   }
 
-  &-outstanding {
+  .packages-outstanding {
     &-list {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -134,7 +141,7 @@
     }
   }
 
-  &-clinics {
+  .packages-clinics {
     &-top {
       margin-bottom: 4rem;
     }

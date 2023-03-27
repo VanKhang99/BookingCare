@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { MdLocationOn } from "react-icons/md";
 import "../styles/ClinicTop.scss";
 
-const ClinicTop = ({ refObserver, dataClinic, clinicId, clinicCarouselMore }) => {
+const ClinicTop = ({ refObserver, dataClinic, clinicId, clinicCarouselMore, packageClinicSpecialty }) => {
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
 
@@ -30,7 +30,7 @@ const ClinicTop = ({ refObserver, dataClinic, clinicId, clinicCarouselMore }) =>
             </div>
           </div>
           <div className="top-info-right">
-            {dataClinic.haveSpecialtyPage ? (
+            {dataClinic.haveSpecialtyPage && !packageClinicSpecialty ? (
               <Link to={`/clinic/${+clinicId}/specialties`}> {t("button.booking-examination")}</Link>
             ) : (
               <LinkScroll

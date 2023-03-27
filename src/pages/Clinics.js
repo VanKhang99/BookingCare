@@ -92,7 +92,6 @@ const Clinics = () => {
 
   const handleSearchClinics = (inputToActions, type) => {
     let clinicsCopy = [...clinicsState.clinicsForActions];
-    console.log(clinicsCopy);
     let newClinics = clinicsCopy.map(([key, clinic]) => {
       const clinicFiltered = clinic.filter((cl) => {
         const { targetName, input } = helperFilterSearch(
@@ -129,7 +128,16 @@ const Clinics = () => {
   useEffect(() => {
     handleFetchClinics();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [clinicsHavePackages?.length]);
+
+  useEffect(() => {
+    document.title =
+      language === "vi"
+        ? `Danh sách các cơ sở y tế uy tín ${clinicsHavePackages?.length ? "cung cấp gói khám bệnh" : ""}`
+        : `List of reputable medical facilities ${
+            clinicsHavePackages?.length ? "that provide medical examination packages" : ""
+          }`;
+  }, [language, clinicsHavePackages?.length]);
 
   return (
     <div className="clinics">
@@ -214,7 +222,10 @@ const Clinics = () => {
                         {clinic[1].map((cl) => {
                           return (
                             <React.Fragment key={cl.id}>
-                              <Link to={`/${path.CLINIC}/${cl.id}`} className="clinics-letter-item">
+                              <Link
+                                to={clinicsHavePackages?.length > 0 ? `${cl.id}` : `/${path.CLINIC}/${cl.id}`}
+                                className="clinics-letter-item"
+                              >
                                 <div className="clinics-letter-item__image">
                                   <img src={cl.logoUrl} alt={language === "vi" ? cl.nameVi : cl.nameEn} />
                                 </div>

@@ -12,6 +12,13 @@
     "services-name": "Khám chuyên khoa, Khám từ xa, Khám tổng quát, Xét nghiệm y học, Sức khỏe tinh thần, Khám  nha khoa, Gói  phẫu thuật, Sản phẩm  y tế, Sức khỏe  doanh nghiệp"
   },
 
+  "packages": {
+    "medical-package": "Gói khám bệnh",
+    "category": "Danh mục",
+    "outstanding-package": "Gói khám nổi bật",
+    "health-facilities": "Cơ sở y tế"
+  },
+
   "slider": {
     "doctor-remote-title": "Bác sĩ từ xa qua Video",
     "popular-specialty-title": "Chuyên khoa phổ biến",

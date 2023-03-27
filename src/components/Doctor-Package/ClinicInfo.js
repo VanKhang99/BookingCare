@@ -113,7 +113,7 @@ const ClinicInfo = ({
                   </h5>
                   <p className="more-info-top__note">
                     {t("detail-doctor.price-note")}{" "}
-                    <span>{`$${handleDisplayInterface().priceForeigner}`}</span>
+                    <span>{`${handleDisplayInterface().priceForeigner}`}</span>
                   </p>
                 </div>
 

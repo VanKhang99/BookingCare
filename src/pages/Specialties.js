@@ -42,8 +42,17 @@ const Specialties = ({ remote }) => {
 
   useEffect(() => {
     handleFetchSpecialties();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    document.title =
+      language === "vi"
+        ? `Các chuyên khoa phổ biến ${remote ? "từ xa" : ""}`
+        : `Popular ${remote ? "remote" : ""} specialties`;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language]);
 
   return (
     <div className="specialties u-wrapper">

@@ -17,6 +17,7 @@ import {
   VerifyBooking,
   PackageDetail,
   Packages,
+  PackageClinic,
   // RemoteExam,
   // MedicalTest,
   // MentalHealth,
@@ -112,6 +113,8 @@ function App() {
             <Route path={`${path.PACKAGE}s/:packageId`} element={<PackageDetail />} />
             <Route path={`${path.PACKAGE_CLINIC}/:packageId`} element={<PackageDetail />} />
             <Route path={`${path.PACKAGE}s/${path.CLINIC}s`} element={<Clinics />} />
+            <Route path={`${path.PACKAGE}s/${path.CLINIC}s/:clinicId`} element={<PackageClinic />} />
+            <Route path={`${path.PACKAGE}s/${path.CLINIC}/:clinicId`} element={<PackageClinic />} />
             <Route path={`${path.PACKAGE}s/${path.CATEGORIES}/:categoryId`} element={<DetailCategory />} />
 
             <Route path={path.SUPPORT} element={<Support />} />

@@ -93,7 +93,12 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
     <div className="clinic-carousel-container">
       {!_.isEmpty(dataClinic) && (
         <>
-          <ClinicTop clinicId={+clinicId} dataClinic={dataClinic} clinicCarouselMore={true} />
+          <ClinicTop
+            clinicId={+clinicId}
+            dataClinic={dataClinic}
+            clinicCarouselMore={true}
+            packageClinicSpecialty={packageClinicSpecialty}
+          />
 
           <div style={{ borderTop: "1px solid #eee" }}></div>
 

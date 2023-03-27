@@ -47,12 +47,13 @@ const Filter = ({
   packageClinicSpecialty,
   pageClinicDoctors,
   categoryId,
+  clinicId,
   doctorsById,
   packageArr,
   dataFiltered,
   onFilteredData,
-  onHideCategoryIntro,
   haveFilterByClinicsAndCity,
+  onBackInitialInterface,
 }) => {
   const [state, setState] = useState({ ...initialState });
   const dispatch = useDispatch();
@@ -151,15 +152,11 @@ const Filter = ({
       optionsClinic: clinicsFilter,
     });
 
-    if (categoryId) {
-      const packageToRender = packageArr.filter((pk) => pk.categoryId.includes(categoryId));
-      onFilteredData(packageToRender);
-      return;
+    if (!dataFiltered.length) {
+      return onFilteredData(pageClinicDoctors ? doctorsById : packageArr, true);
     }
 
-    pageClinicDoctors
-      ? onFilteredData(dataFiltered.length > 0 ? dataFiltered : doctorsById)
-      : onFilteredData(dataFiltered.length > 0 ? dataFiltered : packageArr);
+    onFilteredData(dataFiltered, true);
     return;
   };
 
@@ -309,10 +306,7 @@ const Filter = ({
       return arr;
     }
 
-    const newPackagesFiltered =
-      filterOf === "category"
-        ? helperFilterCategory(arr || (pageClinicDoctors ? doctorsById : packageArr))
-        : helperFilterClinic(arr);
+    const newPackagesFiltered = filterOf === "category" ? helperFilterCategory(arr) : helperFilterClinic(arr);
     return newPackagesFiltered;
   };
 
@@ -448,7 +442,6 @@ const Filter = ({
 
   // FILTER BY CLINIC
   const helperFilterClinic = (arr) => {
-    console.log(arr);
     const specialtiesName = state.clinicSelected.map((specialty) => specialty.nameVi);
     const newPackagesFiltered = arr.filter((data) => {
       return specialtiesName.includes(data.clinicData.nameVi);
@@ -539,7 +532,10 @@ const Filter = ({
     }
 
     if (categorySelected.length) {
-      newPackagesFiltered = filterByCategoryAndClinic(newPackagesFiltered || packageArr, "category");
+      newPackagesFiltered = filterByCategoryAndClinic(
+        newPackagesFiltered || (pageClinicDoctors ? doctorsById : packageArr),
+        "category"
+      );
     }
 
     if (priceSelected) {
@@ -560,7 +556,7 @@ const Filter = ({
       isOpenClinic: false,
     });
     onFilteredData(newPackagesFiltered || (pageClinicDoctors ? doctorsById : packageArr));
-    onHideCategoryIntro();
+
     return;
   };
 
@@ -590,11 +586,12 @@ const Filter = ({
         inputSearch: "",
       });
       onFilteredData(arrBelongToProps);
-      onHideCategoryIntro();
+      if (!categoryId && !clinicId && !packageClinicSpecialty) onBackInitialInterface();
       return;
     }
 
     let newPackagesFiltered;
+    // COMMON OF 4 FILTER
     if (state.inputSearch) {
       newPackagesFiltered = filterBySearch(state.inputSearch);
     }
@@ -621,17 +618,17 @@ const Filter = ({
         allowChooseDistrict: false,
       });
       onFilteredData(newPackagesFiltered?.length ? newPackagesFiltered : arrBelongToProps);
-      onHideCategoryIntro();
       return;
     }
 
-    if (refreshOf === "Category") {
-      if (Object.keys(state.citySelected).length && !state.districtSelected.length) {
-        newPackagesFiltered = filterByRegion(newPackagesFiltered || packageArr, "city");
-      } else if (Object.keys(state.citySelected).length && state.districtSelected.length) {
-        newPackagesFiltered = filterByRegion(newPackagesFiltered || packageArr, "district");
-      }
+    // COMMON OF 3 FILTER CATEGORY, PRICE, CLINICS
+    if (Object.keys(state.citySelected).length && !state.districtSelected.length) {
+      newPackagesFiltered = filterByRegion(newPackagesFiltered || packageArr, "city");
+    } else if (Object.keys(state.citySelected).length && state.districtSelected.length) {
+      newPackagesFiltered = filterByRegion(newPackagesFiltered || packageArr, "district");
+    }
 
+    if (refreshOf === "Category") {
       if (state.priceSelected) {
         newPackagesFiltered = filterByPrice(newPackagesFiltered || arrBelongToProps);
       }
@@ -643,22 +640,13 @@ const Filter = ({
       setState({
         ...state,
         isOpenCategory: false,
-        isOpenPrice: false,
-        isOpenClinic: false,
         categorySelected: [],
       });
       onFilteredData(newPackagesFiltered?.length ? newPackagesFiltered : arrBelongToProps);
-      onHideCategoryIntro();
       return;
     }
 
     if (refreshOf === "Price") {
-      if (Object.keys(state.citySelected).length && !state.districtSelected.length) {
-        newPackagesFiltered = filterByRegion(newPackagesFiltered || packageArr, "city");
-      } else if (Object.keys(state.citySelected).length && state.districtSelected.length) {
-        newPackagesFiltered = filterByRegion(newPackagesFiltered || packageArr, "district");
-      }
-
       if (state.categorySelected) {
         newPackagesFiltered = filterByCategoryAndClinic(newPackagesFiltered || arrBelongToProps, "category");
       }
@@ -669,26 +657,17 @@ const Filter = ({
 
       setState({
         ...state,
-        isOpenCategory: false,
         isOpenPrice: false,
-        isOpenClinic: false,
         priceSelected: "",
         priceTo: "",
         priceFrom: "",
       });
 
       onFilteredData(newPackagesFiltered?.length ? newPackagesFiltered : arrBelongToProps);
-      onHideCategoryIntro();
       return;
     }
 
     if (refreshOf === "Clinic") {
-      if (Object.keys(state.citySelected).length && !state.districtSelected.length) {
-        newPackagesFiltered = filterByRegion(newPackagesFiltered || packageArr, "city");
-      } else if (Object.keys(state.citySelected).length && state.districtSelected.length) {
-        newPackagesFiltered = filterByRegion(newPackagesFiltered || packageArr, "district");
-      }
-
       if (state.categorySelected) {
         newPackagesFiltered = filterByCategoryAndClinic(newPackagesFiltered || arrBelongToProps, "category");
       }
@@ -699,25 +678,27 @@ const Filter = ({
 
       setState({
         ...state,
-        isOpenCategory: false,
-        isOpenPrice: false,
         isOpenClinic: false,
         inputSearchClinic: "",
         clinicSelected: [],
       });
       onFilteredData(newPackagesFiltered?.length ? newPackagesFiltered : arrBelongToProps);
-      onHideCategoryIntro();
     }
   };
 
   const handleStateChangeLanguage = () => {
     const { priceSelected } = state;
-    const { categoriesFilter, rangePriceFilter } = optionsFilter();
+    const { categoriesFilter, rangePriceFilter, clinicsFilter } = optionsFilter();
 
     //CATEGORY INITIAL FROM PAGE PACKAGES
     const checkCategory = categoryId
       ? categoriesFilter.filter((category) => category.id === +categoryId)
       : state.categorySelected;
+
+    //CLINIC INITIAL FROM PAGE PACKAGES WHEN CLICK CLINIC
+    const checkClinic = clinicId
+      ? clinicsFilter.filter((clinic) => clinic.id === +clinicId)
+      : state.clinicSelected;
 
     // PRICE
     const indexPriceSelected = state.optionsPrice.findIndex((price) => price === priceSelected);
@@ -732,6 +713,7 @@ const Filter = ({
         optionsCategory: categoriesFilter,
         optionsPrice: rangePriceFilter,
         priceSelected: rangePriceFilter,
+        clinicSelected: checkClinic,
       });
     }
 
@@ -765,6 +747,7 @@ const Filter = ({
         priceTo: pricePassToState(pricesArr[0]),
         optionsCategory: categoriesFilter,
         optionsPrice: rangePriceFilter,
+        clinicSelected: checkClinic,
       });
     }
 
@@ -780,6 +763,7 @@ const Filter = ({
         priceTo: "",
         optionsCategory: categoriesFilter,
         optionsPrice: rangePriceFilter,
+        clinicSelected: checkClinic,
       });
     }
 
@@ -796,6 +780,7 @@ const Filter = ({
       priceTo: !state.priceFrom ? "" : pricePassToState(pricesArr[1]),
       optionsCategory: categoriesFilter,
       optionsPrice: rangePriceFilter,
+      clinicSelected: checkClinic,
     });
   };
 
@@ -814,13 +799,11 @@ const Filter = ({
   useEffect(() => {
     handleStateChangeLanguage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [language, categories.length]);
-
-  console.log(state);
+  }, [language, categories.length, state.optionsClinic.length]);
 
   return (
-    <div className="filters u-wrapper">
-      <div className="filter-search">
+    <div className="filters-container u-wrapper">
+      <div className="filters-search">
         <InputSearch
           placeholder={
             pageClinicDoctors ? t("filter.placeholder-search-doctor") : t("filter.placeholder-search-package")
@@ -837,11 +820,11 @@ const Filter = ({
         </button>
       </div>
 
-      <div className="filter">
+      <div className="filters">
         {haveFilterByClinicsAndCity && (
-          <div className="filter-item filter-item--region" onClick={() => handleDisplayOptions("Region")}>
-            <div className="filter-item__name">{displayOptionsSelected("city") || t("filter.area")}</div>
-            <span className="filter-item__icon">
+          <div className="filter filter--region" onClick={() => handleDisplayOptions("Region")}>
+            <div className="filter__name">{displayOptionsSelected("city") || t("filter.area")}</div>
+            <span className="filter__icon">
               <svg
                 stroke="%23000000"
                 fill="%23000000"
@@ -934,12 +917,12 @@ const Filter = ({
           </div>
         )}
 
-        <div className="filter-item filter-item--category" onClick={() => handleDisplayOptions("Category")}>
-          <div className="filter-item__name">
+        <div className="filter filter--category" onClick={() => handleDisplayOptions("Category")}>
+          <div className="filter__name">
             {displayOptionsSelected("category")?.join(", ") || t("filter.category")}
             {/* {t("filter.category")} */}
           </div>
-          <span className="filter-item__icon">
+          <span className="filter__icon">
             <svg
               stroke="%23000000"
               fill="%23000000"
@@ -995,11 +978,11 @@ const Filter = ({
           </div>
         </div>
 
-        <div className="filter-item filter-item--price" onClick={() => handleDisplayOptions("Price")}>
-          <span className="filter-item__name">
+        <div className="filter filter--price" onClick={() => handleDisplayOptions("Price")}>
+          <span className="filter__name">
             {state.priceSelected ? state.priceSelected : t("filter.price")}
           </span>
-          <span className="filter-item__icon">
+          <span className="filter__icon">
             <svg
               stroke="%23000000"
               fill="%23000000"
@@ -1072,11 +1055,11 @@ const Filter = ({
         </div>
 
         {haveFilterByClinicsAndCity && (
-          <div className="filter-item filter-item--clinic" onClick={() => handleDisplayOptions("Clinic")}>
-            <span className="filter-item__name">
+          <div className="filter filter--clinic" onClick={() => handleDisplayOptions("Clinic")}>
+            <span className="filter__name">
               {displayOptionsSelected("clinic")?.join(", ") || t("filter.clinic")}
             </span>
-            <span className="filter-item__icon">
+            <span className="filter__icon">
               <svg
                 stroke="%23000000"
                 fill="%23000000"

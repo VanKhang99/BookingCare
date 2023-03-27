@@ -17,6 +17,7 @@ import VerifyBooking from "./VerifyBooking";
 import PackageDetail from "./PackageDetail";
 import Packages from "./Packages";
 import DetailCategory from "./DetailCategory";
+import PackageClinic from "./PackageClinic";
 
 //BANNER
 import RemoteExam from "./RemoteExam";
@@ -51,6 +52,7 @@ export {
   Packages,
   PackageDetail,
   DetailCategory,
+  PackageClinic,
   RemoteExam,
   MedicalTest,
   MentalHealth,

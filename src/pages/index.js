@@ -10,6 +10,7 @@ import Doctors from "./Doctors";
 import DetailDoctor from "./DetailDoctor";
 import MedicalPackage from "./MedicalPackage";
 import Login from "./Login";
+import Register from "./Register";
 import Support from "./Support";
 import Error from "./Error";
 import System from "./System";
@@ -45,6 +46,7 @@ export {
   DetailDoctor,
   MedicalPackage,
   Login,
+  Register,
   Support,
   Error,
   System,

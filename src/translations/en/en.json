@@ -19,6 +19,40 @@
     "health-facilities": "Health facilities"
   },
 
+  "login-register": {
+    "back-home": "Back to home page",
+    "login": "Login",
+    "signup": "Sign up",
+    "no-account": "You don't have an account?",
+    "have-account": "Have an account?",
+    "forgot-password": "Forgot password",
+
+    "email-invalid": "Invalid email. Please check again",
+    "email-empty": "Please enter Email",
+
+    "placeholder-password": "Password",
+    "password": "Please enter a password",
+    "password-valid": "Password must be at least 8 characters",
+
+    "placeholder-password-confirm": "Password confirm",
+    "password-confirm": "Please enter the confirmation password",
+
+    "placeholder-phone": "Phone number",
+    "phone": "Please enter the phone number",
+    "phone-invalid": "Invalid phone number",
+
+    "placeholder-first-name": "First name",
+    "first-name": "Please enter first name",
+
+    "placeholder-last-name": "Last name",
+    "last-name": "Please enter last name",
+
+    "placeholder-address": "Address",
+    "address": "Please enter your address",
+
+    "gender": "Please select the appropriate gender"
+  },
+
   "slider": {
     "doctor-remote-title": "Telemedicine via Video",
     "popular-specialty-title": "Popular specialties",

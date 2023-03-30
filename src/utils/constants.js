@@ -12,6 +12,7 @@ export const path = {
   PACKAGE_SPECIALTY: "package-specialty",
   CATEGORIES: "categories",
   LOGIN: "login",
+  REGISTER: "register",
   SUPPORT: "support",
   ERROR: "*",
   SYSTEM: "system",
@@ -41,3 +42,6 @@ export const TO_USD = 25000;
 
 export const START_INDEX = 0;
 export const END_INDEX = 5;
+
+export const INTERVAL_COUNTDOWN = 1000;
+export const EXPIRES_CONFIRM_CODE = 2 * 60 * 60 * 1000;

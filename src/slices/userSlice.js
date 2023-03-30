@@ -33,6 +33,35 @@ export const logout = createAsyncThunk("user/logout", async (_, thunkAPI) => {
   }
 });
 
+export const getConfirmCode = createAsyncThunk("user/getConfirmCode", async (data, thunkAPI) => {
+  try {
+    const res = await axios.post("/api/users/send-code", data);
+    return res;
+  } catch (error) {
+    return error.response.data;
+  }
+});
+
+export const verifyCode = createAsyncThunk("user/verifyCode", async (data, thunkAPI) => {
+  try {
+    const res = await axios.post("/api/users/verify-code", data);
+    return res;
+  } catch (error) {
+    return error.response.data;
+  }
+});
+
+export const signUp = createAsyncThunk("user/signUp", async (data, thunkAPI) => {
+  try {
+    const res = await axios.post("/api/users/signup", data);
+    // const token = res.payload.token;
+    // localStorage.setItem("token", token);
+    return res;
+  } catch (error) {
+    return error.response.data;
+  }
+});
+
 export const getAllUsers = createAsyncThunk("user/getAllUsers", async (data, thunkAPI) => {
   try {
     const res = await axios.get(`/api/users?page=${data.page}&limit=${data.limit}&role=${data.role}`);

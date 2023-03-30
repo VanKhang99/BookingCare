@@ -12,6 +12,7 @@ import {
   DetailDoctor,
   DetailCategory,
   Login,
+  Register,
   Support,
   System,
   VerifyBooking,
@@ -60,6 +61,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path={path.LOGIN} element={<Login />} />
+          <Route path={path.REGISTER} element={<Register />} />
 
           <Route path="/" element={<SharedLayout clientInterface={1} />}>
             <Route index element={<Home />} />
@@ -182,6 +184,7 @@ function App() {
           <Route path={path.BUSINESSHEALTH} element={<BusinessHealth />} /> */}
         </Routes>
       </BrowserRouter>
+
       <ToastContainer
         position="top-right"
         autoClose={4000}

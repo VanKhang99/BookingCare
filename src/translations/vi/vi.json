@@ -19,6 +19,40 @@
     "health-facilities": "Cơ sở y tế"
   },
 
+  "login-register": {
+    "back-home": "Về trang trủ",
+    "login": "Đăng nhập",
+    "signup": "Đăng ký",
+    "no-account": "Bạn không có tài khoản",
+    "have-account": "Bạn đã có tài khoản",
+    "forgot-password": "Quên mật khẩu",
+
+    "email-invalid": "Email không hợp lệ. Vui lòng kiểm tra lại!",
+    "email-empty": "Vui lòng nhập email",
+
+    "placeholder-password": "Mật khẩu",
+    "password": "Vui lòng nhập mật khẩu",
+    "password-valid": "Mật khẩu cần có ít nhất 8 kí tự",
+
+    "placeholder-password-confirm": "Xác nhận lại mật khẩu",
+    "password-confirm": "Vui lòng nhập mật khẩu xác nhận",
+
+    "placeholder-phone": "Số điện thoại",
+    "phone": "Vui lòng nhập số điện thoại",
+    "phone-invalid": "Số điện thoại không hợp lệ",
+
+    "placeholder-first-name": "Tên",
+    "first-name": "Vui lòng nhập tên",
+
+    "placeholder-last-name": "Họ",
+    "last-name": "Vui lòng nhập họ",
+
+    "placeholder-address": "Địa chỉ",
+    "address": "Vui lòng nhập địa chỉ",
+
+    "gender": "Vui lòng chọn giới tính phù hợp"
+  },
+
   "slider": {
     "doctor-remote-title": "Bác sĩ từ xa qua Video",
     "popular-specialty-title": "Chuyên khoa phổ biến",

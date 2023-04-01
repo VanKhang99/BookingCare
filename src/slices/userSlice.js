@@ -71,6 +71,15 @@ export const getAllUsers = createAsyncThunk("user/getAllUsers", async (data, thu
   }
 });
 
+export const getProfile = createAsyncThunk("user/getProfile", async (data, thunkAPI) => {
+  try {
+    const user = await axios.get(`/api/users/profile`);
+    return user.data;
+  } catch (error) {
+    return error.response.data;
+  }
+});
+
 export const getUser = createAsyncThunk("user/getUser", async (id, thunkAPI) => {
   try {
     const user = await axios.get(`/api/users/${id}`);
@@ -119,7 +128,12 @@ export const getAllUsersByRole = createAsyncThunk("user/getAllUsersByRole", asyn
 export const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    autoLogin(state, { payload }) {
+      state.isLoggedIn = true;
+      state.userInfo = payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(login.pending, (state) => {
@@ -160,6 +174,6 @@ export const userSlice = createSlice({
   },
 });
 
-// export const {} = userSlice.actions;
+export const { autoLogin } = userSlice.actions;
 
 export default userSlice.reducer;

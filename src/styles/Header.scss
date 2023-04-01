@@ -68,6 +68,83 @@
       align-items: center;
       gap: 1.2rem;
 
+      .user {
+        position: relative;
+        margin-right: 1rem;
+
+        img {
+          width: 3.2rem;
+          height: 3.2rem;
+          cursor: pointer;
+        }
+
+        &-modal {
+          position: absolute;
+          top: calc(100% + 0.2rem);
+          right: 0;
+          width: 30rem;
+          border-radius: 0.6rem;
+          box-shadow: $shadow-5;
+          background: #fff;
+          opacity: 0;
+          visibility: hidden;
+          transition: all 0.2s ease-in;
+
+          &.open {
+            top: calc(100% + 1rem);
+            opacity: 1;
+            visibility: visible;
+          }
+
+          &-top {
+            padding: 2.8rem 4rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            border-bottom: 1px solid $grey-2;
+
+            img {
+              width: 6rem;
+              height: 6rem;
+            }
+
+            &__name {
+              font-size: $base-size + 0.2rem;
+              font-weight: 700;
+            }
+          }
+
+          &-bottom {
+            display: flex;
+
+            &__left,
+            &__right {
+              padding: 1.2rem;
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 0.4rem;
+
+              svg {
+                width: 2rem;
+                height: 2rem;
+              }
+
+              span {
+                font-weight: 600;
+              }
+            }
+
+            &__left {
+              border-right: 1px solid $grey-2;
+            }
+          }
+        }
+      }
+
       a.login {
         font-weight: 800;
         font-size: $base-size + 0.1rem;

@@ -3,16 +3,18 @@ import _ from "lodash";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login, signUp, getConfirmCode, verifyCode } from "../slices/userSlice";
-
 import { toast } from "react-toastify";
+
+import { Loading } from "../components";
+import { RotatingLines } from "react-loader-spinner";
 import { AiOutlineMail, AiOutlineNumber } from "react-icons/ai";
 import { BiArrowBack } from "react-icons/bi";
 import { BsTelephone } from "react-icons/bs";
 import { IoLocationOutline } from "react-icons/io5";
 import { Form, Input, Radio } from "antd";
-import { isValidEmail, isValidPhone, checkData } from "../utils/helpers";
-import { INTERVAL_COUNTDOWN, EXPIRES_CONFIRM_CODE } from "../utils/constants";
+import { isValidEmail, isValidPhone, checkData, setAuthToken } from "../utils/helpers";
+import { signUp, getConfirmCode, verifyCode, getProfile, autoLogin } from "../slices/userSlice";
+import { INTERVAL_COUNTDOWN, EXPIRES_COUNTDOWN, EXPIRES_CONFIRM_CODE } from "../utils/constants";
 import "../styles/LoginRegister.scss";
 import "../styles/CustomForm.scss";
 
@@ -27,16 +29,16 @@ const initialState = {
   confirmCode: "",
 
   countdownStart: false,
-  codeFromServer: "",
+  gotVerifyCode: false,
   timeStampWhenGettingCode: "",
 };
 
 const Login = () => {
   const [userData, setUserData] = useState({ ...initialState });
-  const [countDown, setCountDown] = useState(120);
-  const [codeFromServer, setCodeFromServer] = useState("");
+  const [countDown, setCountDown] = useState(EXPIRES_COUNTDOWN);
   const [disableButtonSignup, setDisableButtonSignup] = useState(true);
   const [disableButtonSendCode, setDisableButtonSendCode] = useState(true);
+  const [backHomePage, setBackHomePage] = useState(false);
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { language } = useSelector((store) => store.app);
@@ -58,10 +60,31 @@ const Login = () => {
   };
 
   const handleInputChange = (changedValues, allValues) => {
-    if (userData.countdownStart) return;
-    //handle state of button send code
     const propsKeyCheck = Object.keys(allValues);
-    setDisableButtonSendCode(checkInputUserData(propsKeyCheck, allValues));
+    const disableButton = checkInputUserData(propsKeyCheck, allValues);
+
+    // CASE: current email got coded but see email wrong => re-set some values
+    if (userData.countdownStart && userData.gotVerifyCode) {
+      if (Object.keys(changedValues)[0] === "email") {
+        setUserData({ ...userData, countdownStart: false, gotVerifyCode: false });
+        setCountDown(EXPIRES_COUNTDOWN);
+        setDisableButtonSendCode(isValidEmail(Object.values(changedValues)[0]) ? false : true);
+        return;
+      }
+
+      // Change others field data
+      setDisableButtonSignup(disableButton);
+      setDisableButtonSendCode(true);
+      return;
+    }
+
+    //CASE (Got coded but no countdown): current email got coded but change others input field data
+    if (userData.gotVerifyCode) {
+      setDisableButtonSignup(disableButton);
+    }
+
+    //handle state of button send code
+    setDisableButtonSendCode(disableButton);
 
     //handle userData
     const userDataCopy = { ...userData };
@@ -74,11 +97,16 @@ const Login = () => {
   };
 
   const handleInputConfirmCode = (e) => {
+    //CASE: countdownStart don't start and not got code => input field code can not change
+    if (!userData.countdownStart && !userData.gotVerifyCode) return;
+
     const value = e.target.value;
     let disableButton = true;
 
+    //CASE: input field code only have 7 numbers and got coded => button sign up is available
+    // if get code => run function handleSendCode
     if (value.length <= 7) {
-      disableButton = !disableButtonSendCode && value.length === 7 ? false : true;
+      disableButton = userData.gotVerifyCode && value.length === 7 ? false : true;
       setUserData({ ...userData, confirmCode: value });
     } else {
       return;
@@ -88,6 +116,7 @@ const Login = () => {
 
   const handleSendCode = async (e) => {
     e.preventDefault();
+    //CASE button send code available => sign up button available too
     if (disableButtonSendCode) return;
 
     try {
@@ -98,17 +127,20 @@ const Login = () => {
         })
       );
 
+      if (result.payload?.status === "error") {
+        return toast.error(result.payload.message);
+      }
+
       if (result.payload?.status === "success") {
         const timeStampWhenGettingCode = Date.now();
         setUserData({
           ...userData,
           timeStampWhenGettingCode,
           countdownStart: true,
+          gotVerifyCode: true,
         });
         return;
       }
-
-      // console.log(result);
     } catch (error) {
       console.error(error);
     }
@@ -117,45 +149,59 @@ const Login = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
-      // EXPIRES_CONFIRM_CODE
       const timeStampWhenPressSignup = Date.now();
       const codeIsExpired =
         timeStampWhenPressSignup - userData.timeStampWhenGettingCode > EXPIRES_CONFIRM_CODE;
 
       if (codeIsExpired) {
-        return toast.error(
-          "Mã xác nhận tài khoản đã hết hiệu lực. Xin vui lòng thực hiện lại quá trình lấy mã!"
-        );
+        return toast.error("Mã xác nhận tài khoản đã hết hiệu lực. Xin vui lòng lấy mã khác!");
       }
-
-      // const dataUserSendToServer = {
-      //   address: userData.address,
-      //   email: userData.email,
-      //   password: userData.password,
-      //   phoneNumber: userData.phoneNumber,
-      //   firstName: userData.firstName,
-      //   lastName: userData.lastName,
-      //   gender: userData.gender,
-      // };
 
       const resultVerifyCode = await dispatch(
         verifyCode({ email: userData.email, confirmCode: userData.confirmCode })
       );
-      if (resultVerifyCode.payload.status === "success") {
-        // call hàm register
-      } else {
-        return toast.error("Mã xác nhận bạn cung cấp không đúng. Vui lòng kiểm tra lại!");
+
+      if (!resultVerifyCode.payload || resultVerifyCode.payload.status !== "success") {
+        return toast.error("Mã xác nhận hoặc email bạn cung cấp không đúng. Vui lòng kiểm tra lại!");
       }
-      // if (res.payload?.status === "error") {
-      //   return toast.error("Email đã được sử dụng. Xin hãy sử dụng email khác!");
-      // }
-      // const user = res.payload?.data?.user;
-      // console.log(user);
-      // if (!_.isEmpty(user)) {
-      //   const resLogin = await dispatch();
-      // }
+
+      const dataUserSendToServer = {
+        address: userData.address,
+        email: userData.email,
+        password: userData.password,
+        phoneNumber: userData.phoneNumber,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        gender: userData.gender,
+      };
+      const resultRegister = await dispatch(signUp({ ...dataUserSendToServer, isNewUser: true }));
+
+      if (resultRegister.payload.status === "success") {
+        handleRegistrationSuccess(resultRegister.payload);
+      }
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const handleRegistrationSuccess = async (data) => {
+    try {
+      // Store the JWT token in local storage or a cookie
+      localStorage.setItem("token", data.token);
+
+      // Fetch the user's profile data using the JWT token
+      const res = await dispatch(getProfile());
+      console.log(res);
+      if (!_.isEmpty(res.payload.data)) {
+        setBackHomePage(true);
+
+        setTimeout(async () => {
+          await dispatch(autoLogin(res.payload.data));
+          window.location.href = "/";
+        }, 3000);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -175,13 +221,26 @@ const Login = () => {
       timerId = setInterval(() => {
         setCountDown((prevState) => {
           if (prevState === 0) {
-            setUserData({ ...userData, countdownStart: false });
+            // const propsCheckUserInput = Object.keys(userData).filter((key) =>
+            //   ['confirmCode']
+            // )
+            setUserData((prevState) => {
+              const newState = {
+                ...prevState,
+                countdownStart: false,
+                gotVerifyCode: true,
+                confirmCode: prevState.confirmCode,
+              };
+              return newState;
+            });
             setDisableButtonSendCode(false);
             return 120;
           }
+
+          setDisableButtonSendCode(true);
           return prevState - 1;
         });
-      }, [50]);
+      }, [100]);
       // INTERVAL_COUNTDOWN
     }
     return () => clearInterval(timerId);
@@ -478,6 +537,8 @@ const Login = () => {
           </div>
         </div>
       </div>
+
+      {backHomePage && <Loading />}
     </div>
   );
 };

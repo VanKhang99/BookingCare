@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
 import { MenuSystem } from "../system";
 import { Header, Footer } from "../components";
-// import { getUser } from "../slices/userSlice";
 
 const SharedLayout = ({ clientInterface }) => {
   const { userInfo } = useSelector((store) => store.user);

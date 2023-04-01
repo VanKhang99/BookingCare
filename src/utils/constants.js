@@ -44,4 +44,5 @@ export const START_INDEX = 0;
 export const END_INDEX = 5;
 
 export const INTERVAL_COUNTDOWN = 1000;
+export const EXPIRES_COUNTDOWN = 120;
 export const EXPIRES_CONFIRM_CODE = 2 * 60 * 60 * 1000;

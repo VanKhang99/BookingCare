@@ -8,6 +8,12 @@ const instance = axios.create({
   // withCredentials: true
 });
 
+instance.interceptors.request.use(function (config) {
+  const token = localStorage.getItem("token");
+  config.headers.Authorization = token ? `Bearer ${token}` : "";
+  return config;
+});
+
 instance.interceptors.response.use((response) => {
   const { data } = response;
   return response.data;

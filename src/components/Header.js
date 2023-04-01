@@ -1,13 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { headerNavList } from "../utils/dataRender";
-import { HiQuestionMarkCircle } from "react-icons/hi";
 import { Language } from "./index";
+import { HiQuestionMarkCircle } from "react-icons/hi";
+import { BsEmojiSmile } from "react-icons/bs";
+import { IoLogOutOutline } from "react-icons/io5";
+import { headerNavList } from "../utils/dataRender";
 import "../styles/Header.scss";
 
 const Header = () => {
+  const [showUserModal, setShowUserModal] = useState(false);
   const { t } = useTranslation();
+  const { language } = useSelector((store) => store.app);
+  const { isLoggedIn, userInfo } = useSelector((store) => store.user);
+
+  const handleShowUserModal = () => {
+    setShowUserModal(!showUserModal);
+  };
 
   return (
     <header className="header-container fixed">
@@ -34,17 +44,68 @@ const Header = () => {
         </div>
 
         <div className="header-right">
-          <Link to="/login" className="login">
-            <span>Đăng nhập</span>
-          </Link>
+          <Language />
 
-          <Link to="/support" className="header-right__support">
+          {/* <Link to="/support" className="header-right__support">
             <span title={t("header.support")}>
               <HiQuestionMarkCircle />
             </span>
-          </Link>
+          </Link> */}
 
-          <Language />
+          {isLoggedIn ? (
+            <div className="user" onClick={handleShowUserModal}>
+              <img
+                src={
+                  userInfo.imageUrl
+                    ? userInfo.imageUrl
+                    : "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png"
+                }
+                alt={
+                  language === "vi"
+                    ? `${userInfo.lastName} ${userInfo.firstName}`
+                    : `${userInfo.firstName} ${userInfo.lastName}`
+                }
+              />
+
+              <div className={showUserModal ? "user-modal open" : "user-modal"}>
+                <div className="user-modal-top">
+                  <img
+                    src={
+                      userInfo.imageUrl
+                        ? userInfo.imageUrl
+                        : "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png"
+                    }
+                    alt={
+                      language === "vi"
+                        ? `${userInfo.lastName} ${userInfo.firstName}`
+                        : `${userInfo.firstName} ${userInfo.lastName}`
+                    }
+                    className="user-modal-top__image"
+                  />
+                  <span className="user-modal-top__name">
+                    {language === "vi"
+                      ? `${userInfo.lastName} ${userInfo.firstName}`
+                      : `${userInfo.firstName} ${userInfo.lastName}`}
+                  </span>
+                </div>
+
+                <div className="user-modal-bottom">
+                  <div className="user-modal-bottom__left">
+                    <BsEmojiSmile />
+                    <span>Trung tâm cá nhân</span>
+                  </div>
+                  <div className="user-modal-bottom__right">
+                    <IoLogOutOutline />
+                    <span>Đăng xuất</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <Link to="/login" className="login">
+              <span>Đăng nhập</span>
+            </Link>
+          )}
         </div>
       </div>
     </header>

@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+
+import { LoginSocialFacebook } from "reactjs-social-login";
+import { useGoogleLogin } from "@react-oauth/google";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { Loading } from "../components";
 import { AiOutlineMail } from "react-icons/ai";
 import { BiArrowBack } from "react-icons/bi";
 import { BsFacebook } from "react-icons/bs";
 import { Form, Input } from "antd";
 import { isValidEmail } from "../utils/helpers";
 import { handleChangePathSystem } from "../slices/appSlice";
-import { login } from "../slices/userSlice";
+import { login, socialLogin, autoLogin } from "../slices/userSlice";
+import { FACEBOOK_APP_ID, TIMEOUT_NAVIGATE } from "../utils/constants";
 import "../styles/LoginRegister.scss";
 import "../styles/CustomForm.scss";
 
@@ -20,6 +26,7 @@ const initialState = {
 
 const Login = () => {
   const [state, setState] = useState({ ...initialState });
+  const [backHomePage, setBackHomePage] = useState(false);
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { isLoggedIn, userInfo } = useSelector((store) => store.user);
@@ -46,17 +53,81 @@ const Login = () => {
     }
   };
 
+  const helperLoginBySocial = async (dataUser, token, socialLoginName) => {
+    try {
+      const firstName = socialLoginName === "google" ? dataUser.given_name : dataUser.first_name;
+      const lastName = socialLoginName === "google" ? dataUser.family_name : dataUser.last_name;
+      const imageUrl = socialLoginName === "google" ? dataUser.picture : dataUser.picture.data.url;
+
+      const dataSentToServer = {
+        firstName,
+        lastName,
+        email: dataUser.email,
+        imageUrl,
+        googleFlag: true,
+        loginBy: socialLoginName,
+      };
+
+      const result = await dispatch(socialLogin(dataSentToServer));
+
+      if (result.payload?.user) {
+        const dataSaveToLocal = {
+          firstName,
+          lastName,
+          imageUrl,
+          roleId: result.payload.user.roleId || "R7",
+        };
+
+        localStorage.setItem("userInfo", JSON.stringify(dataSaveToLocal));
+        localStorage.setItem("token", token);
+        setBackHomePage(true);
+        setTimeout(async () => {
+          await dispatch(autoLogin({ ...dataSaveToLocal, id: result.payload.user.id }));
+          navigate("/");
+        }, TIMEOUT_NAVIGATE);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const res = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
+          headers: { Authorization: "Bearer " + tokenResponse.access_token },
+        });
+
+        if (Object.keys(res.data).length) {
+          helperLoginBySocial(res.data, tokenResponse.access_token, "google");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+  });
+
+  const handleResponseFacebook = async (response) => {
+    try {
+      if (Object.keys(response.data).length) {
+        helperLoginBySocial(response.data, response.data.accessToken, "facebook");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
+    let timerId;
     const token = localStorage.getItem("token");
     if (token) {
-      if (userInfo?.roleId === "R1") {
-        navigate("/admin-system");
-        dispatch(handleChangePathSystem("/admin-system"));
-      } else {
-        navigate("/doctor-system");
-        dispatch(handleChangePathSystem("/doctor-system"));
-      }
+      setBackHomePage(true);
+      timerId = setTimeout(() => {
+        navigate("/");
+      }, TIMEOUT_NAVIGATE);
     }
+
+    return () => clearTimeout(timerId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn]);
 
@@ -73,8 +144,8 @@ const Login = () => {
         <div className="form-content ">
           <div className="form-content__title"> {t("login-register.login")}</div>
 
-          <div className="auth-social">
-            <button className="auth-google">
+          <div className="auth-social" id="auth-social">
+            <button className="auth-google" onClick={loginWithGoogle}>
               <div className="icon">
                 <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg">
                   <g fill="#000" fillRule="evenodd">
@@ -100,13 +171,18 @@ const Login = () => {
               </div>
               <span>Google</span>
             </button>
-
-            <button className="auth-facebook">
-              <div className="icon">
-                <BsFacebook />
-              </div>
-              <span>Facebook</span>
-            </button>
+            <LoginSocialFacebook
+              appId={FACEBOOK_APP_ID}
+              onResolve={handleResponseFacebook}
+              onReject={(error) => console.log(error)}
+            >
+              <button className="auth-facebook">
+                <div className="icon">
+                  <BsFacebook />
+                </div>
+                <span>Facebook</span>
+              </button>
+            </LoginSocialFacebook>
           </div>
 
           <div className="or">{language === "vi" ? "hoặc" : "or"}</div>
@@ -187,7 +263,7 @@ const Login = () => {
               <Link to="/login/forgot-password">{t("login-register.forgot-password")}</Link>
             </div>
 
-            <button className="form-button button button-main">{t("login-register.login")}</button>
+            <button className="form-button form-button--login">{t("login-register.login")}</button>
           </Form>
 
           <div className="no-account">
@@ -196,6 +272,8 @@ const Login = () => {
           </div>
         </div>
       </div>
+
+      {backHomePage && <Loading />}
     </div>
   );
 };

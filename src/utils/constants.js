@@ -1,3 +1,7 @@
+//GOOGLE CLIENT ID
+export const GOOGLE_CLIENT_ID = "110417318096-g2i6i3p92cschkccs0avj6kp44nak8po.apps.googleusercontent.com";
+export const FACEBOOK_APP_ID = 245053981258733;
+
 export const path = {
   HOME: "/",
   ADMIN: "admin",
@@ -36,7 +40,7 @@ export const API_APP_BACKEND_URL = "http://localhost:8000";
 
 export const DATE_FORMAT = ["DD/MM/YYYY", "DD/MM/YY"];
 
-export const TIMEOUT_NAVIGATE_SYSTEM = 300;
+export const TIMEOUT_NAVIGATE = 1500;
 
 export const TO_USD = 25000;
 

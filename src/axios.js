@@ -1,5 +1,4 @@
 import axios from "axios";
-import _ from "lodash";
 import { API_APP_BACKEND_URL } from "./utils/constants";
 
 const instance = axios.create({

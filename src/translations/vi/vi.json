@@ -53,6 +53,12 @@
     "gender": "Vui lòng chọn giới tính phù hợp"
   },
 
+  "login-modal": {
+    "personal-center": "Trung tâm cá nhân",
+    "management-center": "Trung tâm quản lý",
+    "logout": "Đăng xuất"
+  },
+
   "slider": {
     "doctor-remote-title": "Bác sĩ từ xa qua Video",
     "popular-specialty-title": "Chuyên khoa phổ biến",

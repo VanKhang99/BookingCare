@@ -2,12 +2,12 @@ import React, { memo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { LoginModal } from "../components";
 import { Select } from "antd";
 import { languages } from "../utils/constants";
-import { TbLogout } from "react-icons/tb";
 import { Button, Dropdown, Space } from "antd";
+import { IoHome } from "react-icons/io5";
 import { handleCurrentKey } from "../slices/appSlice";
-import { logout } from "../slices/userSlice";
 import { handleChangeLanguage } from "../slices/appSlice";
 import "./styles/HeaderSystem.scss";
 
@@ -22,23 +22,22 @@ const Header = ({ menuSystemList, packageMenu }) => {
     dispatch(handleChangeLanguage(value));
   };
 
-  const handleLogout = async () => {
-    try {
-      await dispatch(logout());
-      navigate("/login");
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handleMenuClick = (e) => {
     return dispatch(handleCurrentKey(e.key));
+  };
+
+  const handleToHomePage = () => {
+    navigate("/");
   };
 
   return (
     <header className="system-header-container">
       <div className="system-header-content">
         <div className="system-header-left">
+          <div className="system-header-left__home" onClick={handleToHomePage}>
+            <IoHome />
+          </div>
+
           {menuSystemList["user"] && (
             <Dropdown
               menu={{
@@ -139,9 +138,7 @@ const Header = ({ menuSystemList, packageMenu }) => {
         </div>
 
         <div className="system-header-right">
-          <div className="welcome">
-            <div>{`${t("menu-system.welcome")} ${userInfo?.firstName && userInfo.firstName}`}</div>
-          </div>
+          <LoginModal />
 
           <div className="language">
             <Select
@@ -159,12 +156,6 @@ const Header = ({ menuSystemList, packageMenu }) => {
               ]}
             />
           </div>
-
-          <button className="logout" onClick={handleLogout}>
-            <span>
-              <TbLogout title="Logout" />
-            </span>
-          </button>
         </div>
       </div>
     </header>

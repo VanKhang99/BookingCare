@@ -18,6 +18,17 @@
       font-weight: 600;
       font-size: $base-size + 0.2rem;
 
+      &__home {
+        cursor: pointer;
+        svg {
+          margin-top: 2px;
+          margin-right: 1rem;
+          width: 2.8rem;
+          height: 2.8rem;
+          color: #fff;
+        }
+      }
+
       .system-button {
         display: flex;
         align-items: center;

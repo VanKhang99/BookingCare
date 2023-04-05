@@ -67,23 +67,24 @@
       .auth-social {
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: space-between;
 
         button {
           font-family: inherit;
           border: 1px solid #cbd7ef;
           font-size: $base-size;
           letter-spacing: 0.2px;
-          margin: 3.6rem auto 0;
+          margin: 3.6rem 2.4rem 0;
           width: 15rem;
           border-radius: 1.6rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
           background-color: #fff;
           box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
           transition: $transition;
           cursor: pointer;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
 
           .icon {
             display: flex;
@@ -167,6 +168,7 @@
           a {
             font-family: "Nunito", sans-serif;
             color: $grey-1;
+            font-size: $base-size + 0.1rem;
           }
         }
 
@@ -185,6 +187,10 @@
           &--disable {
             cursor: not-allowed;
             filter: brightness(0.95);
+          }
+
+          &--login {
+            margin-top: 0;
           }
         }
       }

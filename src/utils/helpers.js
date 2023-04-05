@@ -106,7 +106,7 @@ export const formatterPrice = (language, priceData) => {
     currency: `${language === "vi" ? "VND" : "USD"}`,
   });
 
-  if (priceData.includes("-")) {
+  if (typeof priceData !== "number" && priceData.includes("-")) {
     const splitPrice = priceData.split(" - ").map((p) => {
       p =
         language === "vi"

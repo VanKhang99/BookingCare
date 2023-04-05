@@ -53,6 +53,12 @@
     "gender": "Please select the appropriate gender"
   },
 
+  "login-modal": {
+    "personal-center": "Personal center",
+    "management-center": "Management center",
+    "logout": "Logout"
+  },
+
   "slider": {
     "doctor-remote-title": "Telemedicine via Video",
     "popular-specialty-title": "Popular specialties",

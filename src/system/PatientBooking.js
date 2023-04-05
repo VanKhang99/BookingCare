@@ -55,7 +55,6 @@ const PatientBooking = () => {
   };
 
   const handleFetchPatients = async () => {
-    console.log(state);
     try {
       const splitDateBooked = state.dateBooked.split("/");
       const formatDateBooked =
@@ -81,26 +80,25 @@ const PatientBooking = () => {
     if (!patientId) return setState({ ...state, isModalOpen: !state.isModalOpen });
 
     const patientConfirmed = state.patients?.find((patient) => patient.patientId === patientId);
-    // console.log(patientConfirmed);
+    const { patientData, doctorName, timeFrameData } = patientConfirmed;
     const dataSendToServer = {
-      email: patientConfirmed.patientData.email,
+      email: patientData.email,
       patientName:
         language === "vi"
-          ? `${patientConfirmed.patientData.lastName} ${patientConfirmed.patientData.firstName}`
-          : `${patientConfirmed.patientData.firstName} ${patientConfirmed.patientData.lastName}`,
+          ? `${patientData.lastName} ${patientData.firstName}`
+          : `${patientData.firstName} ${patientData.lastName}`,
       doctorName:
         language === "vi"
-          ? `${patientConfirmed.doctorName.lastName} ${patientConfirmed.doctorName.firstName}`
-          : `${patientConfirmed.doctorName.firstName} ${patientConfirmed.doctorName.lastName}`,
+          ? `${doctorName.lastName} ${doctorName.firstName}`
+          : `${doctorName.firstName} ${doctorName.lastName}`,
       examinationResults: "",
       invoiceNumber: uuidv4(),
       serviceUsed: "",
       totalFee: patientConfirmed.remoteDoctor.remote
-        ? +patientConfirmed.bookingPrice.valueVi
-        : +patientConfirmed.bookingPrice.valueVi + 150000,
+        ? +patientConfirmed.priceId
+        : +patientConfirmed.priceId + 150000,
       token: patientConfirmed.token,
-      timeFrame:
-        language === "vi" ? patientConfirmed.timeFrameData.valueVi : patientConfirmed.timeFrameData.valueEn,
+      timeFrame: language === "vi" ? timeFrameData.valueVi : timeFrameData.valueEn,
       patientId,
       // remote: patientConfirmed.remoteDoctor.remote,
     };
@@ -328,7 +326,7 @@ const PatientBooking = () => {
                 <div className="total-fee mb-3">
                   <h3>
                     {t("patients-booking-manage.total-fee")}:{" "}
-                    <span>{`${formatterPrice("vi").format(state.totalFee)}`}</span>
+                    <span>{`${formatterPrice("vi", state.totalFee)}`}</span>
                   </h3>
                 </div>
               </Form>

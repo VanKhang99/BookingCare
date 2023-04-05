@@ -6,15 +6,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 import { Loading } from "../components";
-import { RotatingLines } from "react-loader-spinner";
 import { AiOutlineMail, AiOutlineNumber } from "react-icons/ai";
 import { BiArrowBack } from "react-icons/bi";
 import { BsTelephone } from "react-icons/bs";
 import { IoLocationOutline } from "react-icons/io5";
 import { Form, Input, Radio } from "antd";
-import { isValidEmail, isValidPhone, checkData, setAuthToken } from "../utils/helpers";
+import { isValidEmail, isValidPhone, checkData } from "../utils/helpers";
 import { signUp, getConfirmCode, verifyCode, getProfile, autoLogin } from "../slices/userSlice";
-import { INTERVAL_COUNTDOWN, EXPIRES_COUNTDOWN, EXPIRES_CONFIRM_CODE } from "../utils/constants";
+import {
+  INTERVAL_COUNTDOWN,
+  EXPIRES_COUNTDOWN,
+  EXPIRES_CONFIRM_CODE,
+  TIMEOUT_NAVIGATE,
+} from "../utils/constants";
 import "../styles/LoginRegister.scss";
 import "../styles/CustomForm.scss";
 
@@ -191,25 +195,26 @@ const Login = () => {
 
       // Fetch the user's profile data using the JWT token
       const res = await dispatch(getProfile());
-      console.log(res);
       if (!_.isEmpty(res.payload.data)) {
-        setBackHomePage(true);
+        const dataSaveToLocal = {
+          firstName: res.payload.data.firstName,
+          lastName: res.payload.data.lastName,
+          imageUrl: null,
+          roleId: res.payload.data.roleId,
+        };
 
+        localStorage.setItem("userInfo", JSON.stringify(dataSaveToLocal));
+
+        setBackHomePage(true);
         setTimeout(async () => {
           await dispatch(autoLogin(res.payload.data));
-          window.location.href = "/";
-        }, 3000);
+          navigate("/");
+        }, TIMEOUT_NAVIGATE);
       }
     } catch (error) {
       console.error(error);
     }
   };
-
-  // const countdown = () => {
-  //   if (userData.timeResendCode < 0) {
-  //     setUserData({ ...userData, timeResendCode: 120, isGettingCode: true });
-  //   }
-  // };
 
   useEffect(() => {
     let timerId;
@@ -221,9 +226,6 @@ const Login = () => {
       timerId = setInterval(() => {
         setCountDown((prevState) => {
           if (prevState === 0) {
-            // const propsCheckUserInput = Object.keys(userData).filter((key) =>
-            //   ['confirmCode']
-            // )
             setUserData((prevState) => {
               const newState = {
                 ...prevState,
@@ -240,7 +242,7 @@ const Login = () => {
           setDisableButtonSendCode(true);
           return prevState - 1;
         });
-      }, [100]);
+      }, [INTERVAL_COUNTDOWN]);
       // INTERVAL_COUNTDOWN
     }
     return () => clearInterval(timerId);

@@ -25,6 +25,7 @@ import Loading from "./Loading";
 import ClinicTop from "./ClinicTop";
 import ScrollToTop from "./ScrollToTop";
 import Filter from "./Filter/Filter";
+import LoginModal from "./LoginModal";
 
 export {
   Header,
@@ -54,4 +55,5 @@ export {
   ClinicTop,
   ScrollToTop,
   Filter,
+  LoginModal,
 };

@@ -12,12 +12,19 @@ const initialState = {
 export const login = createAsyncThunk("user/login", async ({ email, password }, thunkAPI) => {
   try {
     const res = await axios.post("/api/users/login", { email, password });
-    const token = res.token;
-    localStorage.setItem("token", token);
-    setAuthToken(token);
+
     return res;
   } catch (error) {
     throw error.response.data;
+  }
+});
+
+export const socialLogin = createAsyncThunk("user/socialLogin", async (data, thunkAPI) => {
+  try {
+    const res = await axios.post("/api/users/social-login", data);
+    return res.data;
+  } catch (error) {
+    return error.response.data;
   }
 });
 
@@ -141,25 +148,28 @@ export const userSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, { payload }) => {
         const { user } = payload.data;
-        const userCopy = { ...user };
+        const userCopy = JSON.parse(JSON.stringify(user));
         for (const prop of Object.keys(userCopy)) {
-          if (prop === "firstName" || prop === "lastName" || prop === "roleId" || prop === "id") {
+          if (prop === "firstName" || prop === "lastName" || prop === "roleId" || prop === "imageUrl") {
             continue;
           } else {
             delete userCopy[prop];
           }
         }
+        const userSaveToRedux = JSON.parse(JSON.stringify({ ...userCopy, id: user.id }));
 
         state.isLoggedIn = true;
-        state.userInfo = userCopy;
+        state.userInfo = userSaveToRedux;
+
+        localStorage.setItem("token", payload.token);
+        setAuthToken(payload.token);
         localStorage.setItem("userInfo", JSON.stringify(userCopy));
       })
       .addCase(login.rejected, (state) => {
         state.isLoggedIn = false;
         state.userInfo = null;
-        state.email = "";
-        state.password = "";
       })
+      //LOG-OUT
       .addCase(logout.pending, (state) => {
         state.isLoggedIn = true;
       })
@@ -171,6 +181,17 @@ export const userSlice = createSlice({
       .addCase(logout.rejected, (state) => {
         state.isLoggedIn = true;
       });
+    //SOCIAL LOGIN
+    // .addCase(socialLogin.pending, (state) => {
+    //   state.isLoggedIn = false;
+    // })
+    // .addCase(socialLogin.fulfilled, (state, { payload }) => {
+    //   console.log(payload);
+    // })
+    // .addCase(socialLogin.rejected, (state) => {
+    //   state.isLoggedIn = false;
+    //   state.userInfo = null;
+    // });
   },
 });
 

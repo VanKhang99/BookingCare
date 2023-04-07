@@ -79,3 +79,38 @@
     height: auto;
   }
 }
+
+@mixin custom-input {
+  align-items: center;
+  border-radius: 1.6rem;
+  padding: 1.6rem;
+  font-weight: 500;
+  line-height: 2.2rem;
+
+  svg {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  input {
+    font-size: $base-size + 0.2rem;
+    line-height: 2.2rem;
+  }
+
+  span:not(.ant-input-suffix) {
+    margin-right: 1.1rem;
+  }
+}
+
+@mixin form-button {
+  padding: 1.6rem 2rem;
+  font-weight: 700;
+  font-size: $base-size + 0.2rem;
+  font-family: "Nunito", sans-serif;
+  text-transform: none;
+  color: #fff;
+  border: none;
+  border-radius: 100px;
+  background-image: $linear-gradient1;
+  filter: brightness(1.05);
+}

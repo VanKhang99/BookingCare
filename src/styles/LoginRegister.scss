@@ -1,8 +1,9 @@
 @import "./sass/variables";
+@import "../styles/sass/mixin";
 
 .background {
   padding: 3rem;
-  height: 100vh;
+  min-height: 100vh;
   background: $linear-gradient1;
   display: flex;
   flex-direction: column;
@@ -32,9 +33,10 @@
   }
 
   .form-container {
+    position: relative;
     width: 50rem;
     max-width: 100%;
-    padding: 4.8rem;
+    padding: 4.8rem 4.8rem 3.6rem;
     height: fit-content;
     background-color: #fff;
     border-radius: 2rem;
@@ -130,26 +132,8 @@
 
       .form.form--login,
       .form.form--register {
-        .customInput {
-          align-items: center;
-          border-radius: 1.6rem;
-          padding: 1.6rem;
-          font-weight: 500;
-          line-height: 2.2rem;
-
-          svg {
-            width: 1.6rem;
-            height: 1.6rem;
-          }
-
-          input {
-            font-size: $base-size + 0.2rem;
-            line-height: 2.2rem;
-          }
-
-          span:not(.ant-input-suffix) {
-            margin-right: 1.1rem;
-          }
+        .custom-input {
+          @include custom-input;
         }
 
         .error-text {
@@ -160,29 +144,8 @@
           margin-bottom: 1.6rem;
         }
 
-        .forgot-password {
-          font-weight: 700;
-          text-align: right;
-          margin-bottom: 2.6rem;
-
-          a {
-            font-family: "Nunito", sans-serif;
-            color: $grey-1;
-            font-size: $base-size + 0.1rem;
-          }
-        }
-
         .form-button {
-          padding: 1.6rem 2rem;
-          font-weight: 700;
-          font-size: $base-size + 0.2rem;
-          font-family: "Nunito", sans-serif;
-          text-transform: none;
-          color: #fff;
-          border: none;
-          border-radius: 100px;
-          background-image: $linear-gradient1;
-          filter: brightness(1.05);
+          @include form-button;
 
           &--disable {
             cursor: not-allowed;
@@ -231,15 +194,9 @@
         }
 
         &-confirm-code {
-          display: flex;
           &__input {
-            flex-basis: 75%;
-            border-top-right-radius: 0;
-
-            .customInput {
-              border-top-right-radius: 0 !important;
-              border-bottom-right-radius: 0 !important;
-
+            position: relative;
+            .custom-input {
               input::-webkit-outer-spin-button,
               input::-webkit-inner-spin-button {
                 -webkit-appearance: none;
@@ -250,43 +207,37 @@
         }
 
         &-button {
-          margin-top: 1.6rem;
+          // margin-top: 1.6rem;
           grid-column: 1/-1;
-          font-size: $base-size + 0.4rem !important;
+          font-size: $base-size + 0.4rem;
+
+          &.form-button--sign-up,
+          &.form-button--sign-up-disable {
+            span {
+              display: inline-block;
+              margin-top: 1px;
+            }
+          }
+
+          &.form-button--sign-up-disable {
+            cursor: not-allowed;
+            filter: brightness(0.95) !important;
+          }
         }
 
         .form-button.form-button--send-code {
-          // position: absolute;
-          // top: 0;
-          // right: 0;
-          // height: 100%;
-          // z-index: 10;
-          flex-basis: 25%;
-          height: fit-content;
-
-          font-size: $base-size + 0.2rem !important;
-          margin-top: 0;
-          padding: 1.5rem 3.6rem;
+          position: absolute;
+          top: 2px;
+          right: 2px;
+          bottom: 2px;
+          z-index: 10;
+          padding: 1.4rem 4rem;
+          border-radius: 1.4rem;
+          font-weight: 600;
+          font-size: $base-size + 0.2rem;
           background-color: $color-red;
-          border-radius: unset;
+          color: #fff;
           background-image: unset;
-          border-top-right-radius: 1.6rem;
-          border-bottom-right-radius: 1.6rem;
-
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          span {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            svg {
-              width: 1.6rem;
-              height: 1.6rem;
-              margin-top: -1px;
-            }
-          }
         }
 
         .form-button.form-button--send-code-disable {
@@ -312,22 +263,27 @@
         }
       }
 
+      .no-account {
+        margin-top: 3.4rem;
+      }
+
+      .forgot-password {
+        button {
+          display: block;
+          outline: none;
+          border: none;
+          color: $color-blue-dark;
+          background-color: transparent;
+          margin: 0.8rem auto 4.4rem;
+          font-weight: 700;
+          font-family: "Nunito", sans-serif;
+          font-size: $base-size + 0.1rem;
+        }
+      }
+
       .have-account {
         margin-top: 3.2rem;
       }
     }
   }
-}
-
-.loader {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background-color: rgba(255, 255, 255, 0.4);
 }

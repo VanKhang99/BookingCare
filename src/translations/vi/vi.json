@@ -23,9 +23,9 @@
     "back-home": "Về trang trủ",
     "login": "Đăng nhập",
     "signup": "Đăng ký",
-    "no-account": "Bạn không có tài khoản",
-    "have-account": "Bạn đã có tài khoản",
-    "forgot-password": "Quên mật khẩu",
+    "no-account": "Bạn không có tài khoản?",
+    "have-account": "Bạn đã có tài khoản?",
+    "forgot-password": "Quên mật khẩu?",
 
     "email-invalid": "Email không hợp lệ. Vui lòng kiểm tra lại!",
     "email-empty": "Vui lòng nhập email",
@@ -33,9 +33,6 @@
     "placeholder-password": "Mật khẩu",
     "password": "Vui lòng nhập mật khẩu",
     "password-valid": "Mật khẩu cần có ít nhất 8 kí tự",
-
-    "placeholder-password-confirm": "Xác nhận lại mật khẩu",
-    "password-confirm": "Vui lòng nhập mật khẩu xác nhận",
 
     "placeholder-phone": "Số điện thoại",
     "phone": "Vui lòng nhập số điện thoại",
@@ -50,7 +47,30 @@
     "placeholder-address": "Địa chỉ",
     "address": "Vui lòng nhập địa chỉ",
 
-    "gender": "Vui lòng chọn giới tính phù hợp"
+    "gender": "Vui lòng chọn giới tính phù hợp",
+
+    "verification-code": "Mã xác nhận",
+    "valid-verification-code": "Mã xác nhận phải có 7 chữ số"
+  },
+
+  "forgot-password": {
+    "password-retrieval": "Lấy lại mật khẩu",
+    "verification-code": "Mã xác nhận",
+    "valid-verification-code": "Mã xác nhận phải có 7 chữ số",
+
+    "label-new-password": "Nhập mật khẩu mới",
+    "label-renew-password": "Nhập lại mật khẩu mới",
+
+    "placeholder-password": "Mật khẩu",
+    "password": "Vui lòng nhập mật khẩu",
+    "password-valid": "Mật khẩu cần có ít nhất 8 kí tự",
+
+    "placeholder-password-confirm": "Xác nhận mật khẩu",
+    "password-confirm": "Vui lòng nhập mật khẩu xác nhận"
+  },
+
+  "term-use": {
+    "continue-use": "Việc bạn tiếp tục sử dụng trang web này đồng nghĩa bạn đồng ý với"
   },
 
   "login-modal": {
@@ -366,6 +386,9 @@
     "update": "Cập nhật",
     "upload": "Tải ảnh",
     "delete": "Xóa",
-    "hide-away": "Ẩn bớt"
+    "hide-away": "Ẩn bớt",
+    "confirm": "Xác nhận",
+    "send-code": "Gửi mã",
+    "resend-code": "Gửi lại mã"
   }
 }

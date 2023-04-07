@@ -9,7 +9,6 @@ const initialState = {
 
 export const createSchedules = createAsyncThunk("schedule/createSchedules", async (data, thunkAPI) => {
   try {
-    console.log(data);
     const res = await axios.post("/api/schedules", data);
     return res;
   } catch (error) {

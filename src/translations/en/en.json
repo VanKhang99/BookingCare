@@ -25,7 +25,7 @@
     "signup": "Sign up",
     "no-account": "You don't have an account?",
     "have-account": "Have an account?",
-    "forgot-password": "Forgot password",
+    "forgot-password": "Forgot password?",
 
     "email-invalid": "Invalid email. Please check again",
     "email-empty": "Please enter Email",
@@ -33,9 +33,6 @@
     "placeholder-password": "Password",
     "password": "Please enter a password",
     "password-valid": "Password must be at least 8 characters",
-
-    "placeholder-password-confirm": "Password confirm",
-    "password-confirm": "Please enter the confirmation password",
 
     "placeholder-phone": "Phone number",
     "phone": "Please enter the phone number",
@@ -50,7 +47,30 @@
     "placeholder-address": "Address",
     "address": "Please enter your address",
 
-    "gender": "Please select the appropriate gender"
+    "gender": "Please select the appropriate gender",
+
+    "verification-code": "Verification code",
+    "valid-verification-code": "Verification code must have 7 digits"
+  },
+
+  "forgot-password": {
+    "password-retrieval": "Password Retrieval",
+    "verification-code": "Verification code",
+    "valid-verification-code": "Verification code must have 7 digits",
+
+    "label-new-password": "Enter your new password",
+    "label-renew-password": "Re-enter your new password",
+
+    "placeholder-password": "Password",
+    "password": "Please enter a password",
+    "password-valid": "Password must be at least 8 characters",
+
+    "placeholder-password-confirm": "Confirm password",
+    "password-confirm": "Please enter the confirmation password"
+  },
+
+  "term-use": {
+    "continue-use": "Your continued use of this website constitutes your agreement to"
   },
 
   "login-modal": {
@@ -366,6 +386,9 @@
     "update": "Update",
     "upload": "Upload",
     "delete": "Delete",
-    "hide-away": "Hide away"
+    "hide-away": "Hide away",
+    "confirm": "Confirm",
+    "send-code": "Send code",
+    "resend-code": "Resend code"
   }
 }

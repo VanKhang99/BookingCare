@@ -7,6 +7,8 @@ import { setAuthToken } from "../utils/helpers";
 const initialState = {
   isLoggedIn: false,
   userInfo: null,
+
+  urlNavigateBack: "",
 };
 
 export const login = createAsyncThunk("user/login", async ({ email, password }, thunkAPI) => {
@@ -31,7 +33,6 @@ export const socialLogin = createAsyncThunk("user/socialLogin", async (data, thu
 export const logout = createAsyncThunk("user/logout", async (_, thunkAPI) => {
   try {
     const res = await axios.get("/api/users/logout");
-    localStorage.removeItem("token");
     thunkAPI.dispatch(handleChangePathSystem("/"));
 
     return res;
@@ -63,6 +64,24 @@ export const signUp = createAsyncThunk("user/signUp", async (data, thunkAPI) => 
     const res = await axios.post("/api/users/signup", data);
     // const token = res.payload.token;
     // localStorage.setItem("token", token);
+    return res;
+  } catch (error) {
+    return error.response.data;
+  }
+});
+
+export const forgotPassword = createAsyncThunk("user/forgotPassword", async (data, thunkAPI) => {
+  try {
+    const res = await axios.post("/api/users/forgot-password", data);
+    return res;
+  } catch (error) {
+    return error.response.data;
+  }
+});
+
+export const resetPassword = createAsyncThunk("user/resetPassword", async (data, thunkAPI) => {
+  try {
+    const res = await axios.post("/api/users/reset-password", data);
     return res;
   } catch (error) {
     return error.response.data;
@@ -140,6 +159,10 @@ export const userSlice = createSlice({
       state.isLoggedIn = true;
       state.userInfo = payload;
     },
+
+    autoNavigateToLoginAndBack(state, { payload }) {
+      state.urlNavigateBack = payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -176,7 +199,9 @@ export const userSlice = createSlice({
       .addCase(logout.fulfilled, (state) => {
         state.isLoggedIn = false;
         state.userInfo = null;
+        state.urlNavigateBack = "";
         localStorage.removeItem("userInfo");
+        localStorage.removeItem("token");
       })
       .addCase(logout.rejected, (state) => {
         state.isLoggedIn = true;
@@ -195,6 +220,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { autoLogin } = userSlice.actions;
+export const { autoLogin, autoNavigateToLoginAndBack } = userSlice.actions;
 
 export default userSlice.reducer;

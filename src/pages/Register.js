@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
-import { Loading } from "../components";
+import { Loading, TermUse } from "../components";
 import { AiOutlineMail, AiOutlineNumber } from "react-icons/ai";
 import { BiArrowBack } from "react-icons/bi";
 import { BsTelephone } from "react-icons/bs";
@@ -15,8 +15,8 @@ import { isValidEmail, isValidPhone, checkData } from "../utils/helpers";
 import { signUp, getConfirmCode, verifyCode, getProfile, autoLogin } from "../slices/userSlice";
 import {
   INTERVAL_COUNTDOWN,
-  EXPIRES_COUNTDOWN,
-  EXPIRES_CONFIRM_CODE,
+  EXPIRES__REGISTER_COUNTDOWN,
+  EXPIRES_REGISTER_CONFIRM_CODE,
   TIMEOUT_NAVIGATE,
 } from "../utils/constants";
 import "../styles/LoginRegister.scss";
@@ -39,7 +39,7 @@ const initialState = {
 
 const Login = () => {
   const [userData, setUserData] = useState({ ...initialState });
-  const [countDown, setCountDown] = useState(EXPIRES_COUNTDOWN);
+  const [countDown, setCountDown] = useState(EXPIRES__REGISTER_COUNTDOWN);
   const [disableButtonSignup, setDisableButtonSignup] = useState(true);
   const [disableButtonSendCode, setDisableButtonSendCode] = useState(true);
   const [backHomePage, setBackHomePage] = useState(false);
@@ -71,7 +71,7 @@ const Login = () => {
     if (userData.countdownStart && userData.gotVerifyCode) {
       if (Object.keys(changedValues)[0] === "email") {
         setUserData({ ...userData, countdownStart: false, gotVerifyCode: false });
-        setCountDown(EXPIRES_COUNTDOWN);
+        setCountDown(EXPIRES__REGISTER_COUNTDOWN);
         setDisableButtonSendCode(isValidEmail(Object.values(changedValues)[0]) ? false : true);
         return;
       }
@@ -82,13 +82,9 @@ const Login = () => {
       return;
     }
 
-    //CASE (Got coded but no countdown): current email got coded but change others input field data
-    if (userData.gotVerifyCode) {
-      setDisableButtonSignup(disableButton);
-    }
-
-    //handle state of button send code
+    //handle state of button
     setDisableButtonSendCode(disableButton);
+    setDisableButtonSignup(disableButton === false && userData.confirmCode.length === 7 ? false : true);
 
     //handle userData
     const userDataCopy = { ...userData };
@@ -155,10 +151,14 @@ const Login = () => {
     try {
       const timeStampWhenPressSignup = Date.now();
       const codeIsExpired =
-        timeStampWhenPressSignup - userData.timeStampWhenGettingCode > EXPIRES_CONFIRM_CODE;
+        timeStampWhenPressSignup - userData.timeStampWhenGettingCode > EXPIRES_REGISTER_CONFIRM_CODE;
 
       if (codeIsExpired) {
-        return toast.error("Mã xác nhận tài khoản đã hết hiệu lực. Xin vui lòng lấy mã khác!");
+        return toast.error(
+          language === "vi"
+            ? "Mã xác nhận tài khoản đã hết hiệu lực. Xin vui lòng lấy mã khác!"
+            : "The account verification code has expired. Please get another code!"
+        );
       }
 
       const resultVerifyCode = await dispatch(
@@ -219,7 +219,7 @@ const Login = () => {
   useEffect(() => {
     let timerId;
     if (userData.countdownStart) {
-      if (countDown === 120) {
+      if (countDown === EXPIRES__REGISTER_COUNTDOWN) {
         setDisableButtonSendCode(true);
       }
 
@@ -236,7 +236,7 @@ const Login = () => {
               return newState;
             });
             setDisableButtonSendCode(false);
-            return 120;
+            return EXPIRES__REGISTER_COUNTDOWN;
           }
 
           setDisableButtonSendCode(true);
@@ -289,7 +289,7 @@ const Login = () => {
                 value={userData.email}
                 prefix={<AiOutlineMail style={{ marginTop: "1px" }} />}
                 placeholder="Email"
-                className="customInput"
+                className="custom-input"
                 autoFocus
               />
             </Form.Item>
@@ -331,7 +331,7 @@ const Login = () => {
                   </svg>
                 }
                 placeholder={t("login-register.placeholder-password")}
-                className="customInput"
+                className="custom-input"
                 minLength="8"
                 autoComplete="on"
                 // autoFocus
@@ -363,7 +363,7 @@ const Login = () => {
                 value={userData.phoneNumber}
                 prefix={<BsTelephone />}
                 placeholder={t("login-register.placeholder-phone")}
-                className="customInput"
+                className="custom-input"
                 // autoFocus
               />
             </Form.Item>
@@ -400,7 +400,7 @@ const Login = () => {
                   </svg>
                 }
                 placeholder={t("login-register.placeholder-first-name")}
-                className="customInput"
+                className="custom-input"
                 // autoFocus
               />
             </Form.Item>
@@ -438,7 +438,7 @@ const Login = () => {
                   </svg>
                 }
                 placeholder={t("login-register.placeholder-last-name")}
-                className="customInput"
+                className="custom-input"
                 // autoFocus
               />
             </Form.Item>
@@ -464,7 +464,7 @@ const Login = () => {
                 value={userData.address}
                 prefix={<IoLocationOutline />}
                 placeholder={t("login-register.placeholder-address")}
-                className="customInput"
+                className="custom-input"
               />
             </Form.Item>
 
@@ -495,7 +495,7 @@ const Login = () => {
                   {
                     validator: (_, value) => {
                       if (value.length !== 7) {
-                        return Promise.reject("Mã xác nhận phải có 7 chữ số");
+                        return Promise.reject(t("login-register.valid-verification-code"));
                       }
 
                       return Promise.resolve();
@@ -507,29 +507,33 @@ const Login = () => {
                   type="number"
                   value={userData.confirmCode}
                   prefix={<AiOutlineNumber />}
-                  placeholder="Mã xác nhận"
-                  className="customInput"
+                  placeholder={t("login-register.verification-code")}
+                  className="custom-input"
                   maxLength="7"
                   onChange={handleInputConfirmCode}
                 />
-              </Form.Item>
 
-              <button
-                className={`form-button form-button--send-code ${
-                  disableButtonSendCode ? "form-button--send-code-disable" : "form-button--send-code"
-                }`}
-                onClick={(e) => handleSendCode(e)}
-              >
-                {userData.countdownStart ? `Gửi lại mã ${countDown}` : "Gửi mã"}
-              </button>
+                <button
+                  className={`form-button form-button--send-code ${
+                    disableButtonSendCode ? "form-button--send-code-disable" : "form-button--send-code"
+                  }`}
+                  onClick={(e) => handleSendCode(e)}
+                >
+                  {userData.countdownStart
+                    ? `${t("button.resend-code")} ${countDown}`
+                    : t("button.send-code")}
+                </button>
+              </Form.Item>
             </div>
 
             <button
-              className={`form-button ${disableButtonSignup ? "form-button--disable" : ""}`}
+              className={`form-button ${
+                disableButtonSignup ? "form-button--sign-up-disable" : "form-button--sign-up"
+              }`}
               onClick={(e) => handleSignUp(e)}
               disabled={disableButtonSignup}
             >
-              {t("login-register.signup")}
+              <span>{t("login-register.signup")}</span>
             </button>
           </Form>
 
@@ -537,6 +541,8 @@ const Login = () => {
             <span>{t("login-register.have-account")}</span>
             <Link to="/login"> {t("login-register.login")}</Link>
           </div>
+
+          <TermUse />
         </div>
       </div>
 

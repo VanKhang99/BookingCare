@@ -1,0 +1,16 @@
+@import "./sass/variables";
+
+.term-use {
+  text-align: center;
+  color: $grey-1;
+  font-size: $base-size - 0.1rem;
+  margin-top: 5.2rem;
+  p {
+    margin-bottom: 0;
+  }
+
+  a {
+    color: $grey-1;
+    text-decoration: underline !important;
+  }
+}

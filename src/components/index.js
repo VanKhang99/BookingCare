@@ -26,6 +26,9 @@ import ClinicTop from "./ClinicTop";
 import ScrollToTop from "./ScrollToTop";
 import Filter from "./Filter/Filter";
 import LoginModal from "./LoginModal";
+import ForgotPassword from "./ForgotPassword";
+import ResetPassword from "./ResetPassword";
+import TermUse from "./TermUse";
 
 export {
   Header,
@@ -56,4 +59,7 @@ export {
   ScrollToTop,
   Filter,
   LoginModal,
+  ForgotPassword,
+  ResetPassword,
+  TermUse,
 };

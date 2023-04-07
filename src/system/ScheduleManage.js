@@ -180,7 +180,6 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
     }
 
     try {
-      console.log(state);
       let result = [];
       let timeSelected = state.hoursList.filter((hour) => hour.isSelected === true);
       if (!timeSelected.length) {

@@ -41,6 +41,8 @@ const PackageClinic = () => {
   const { clinicId } = useParams();
   const clinicData = useFetchDataBaseId(+clinicId, "clinic", getClinic);
 
+  console.log(clinicId);
+
   const handleModal = async (hourClicked, doctorId = null, packageId = null) => {
     // console.log("test");
     // (Why get doctorId)

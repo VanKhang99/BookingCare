@@ -5,6 +5,8 @@ import { handleChangePathSystem } from "./appSlice";
 import { setAuthToken } from "../utils/helpers";
 
 const initialState = {
+  isUpdating: false,
+  socialLogin: false,
   isLoggedIn: false,
   userInfo: null,
 
@@ -88,6 +90,15 @@ export const resetPassword = createAsyncThunk("user/resetPassword", async (data,
   }
 });
 
+export const updatePassword = createAsyncThunk("user/updatePassword", async (data, thunkAPI) => {
+  try {
+    const res = await axios.patch("/api/users/update-password", data);
+    return res;
+  } catch (error) {
+    return error.response.data;
+  }
+});
+
 export const getAllUsers = createAsyncThunk("user/getAllUsers", async (data, thunkAPI) => {
   try {
     const res = await axios.get(`/api/users?page=${data.page}&limit=${data.limit}&role=${data.role}`);
@@ -163,6 +174,10 @@ export const userSlice = createSlice({
     autoNavigateToLoginAndBack(state, { payload }) {
       state.urlNavigateBack = payload;
     },
+
+    checkSocialLogin(state) {
+      state.socialLogin = true;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -179,7 +194,16 @@ export const userSlice = createSlice({
             delete userCopy[prop];
           }
         }
-        const userSaveToRedux = JSON.parse(JSON.stringify({ ...userCopy, id: user.id }));
+        const userSaveToRedux = JSON.parse(
+          JSON.stringify({
+            ...userCopy,
+            id: user.id,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            address: user.address,
+            gender: user.gender,
+          })
+        );
 
         state.isLoggedIn = true;
         state.userInfo = userSaveToRedux;
@@ -200,26 +224,49 @@ export const userSlice = createSlice({
         state.isLoggedIn = false;
         state.userInfo = null;
         state.urlNavigateBack = "";
+        state.socialLogin = false;
         localStorage.removeItem("userInfo");
         localStorage.removeItem("token");
       })
       .addCase(logout.rejected, (state) => {
         state.isLoggedIn = true;
+      })
+      // UPDATE USER
+      .addCase(updateDataUser.pending, (state) => {
+        state.isUpdating = true;
+      })
+      .addCase(updateDataUser.fulfilled, (state, { payload }) => {
+        const { user } = payload.data;
+        const userCopy = JSON.parse(JSON.stringify(user));
+        for (const prop of Object.keys(userCopy)) {
+          if (prop === "firstName" || prop === "lastName" || prop === "roleId" || prop === "imageUrl") {
+            continue;
+          } else {
+            delete userCopy[prop];
+          }
+        }
+        const userSaveToRedux = JSON.parse(
+          JSON.stringify({
+            ...userCopy,
+            id: user.id,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            address: user.address,
+            gender: user.gender,
+          })
+        );
+
+        state.isUpdating = false;
+        state.userInfo = userSaveToRedux;
+
+        localStorage.setItem("userInfo", JSON.stringify(userCopy));
+      })
+      .addCase(updateDataUser.rejected, (state) => {
+        state.isUpdating = false;
       });
-    //SOCIAL LOGIN
-    // .addCase(socialLogin.pending, (state) => {
-    //   state.isLoggedIn = false;
-    // })
-    // .addCase(socialLogin.fulfilled, (state, { payload }) => {
-    //   console.log(payload);
-    // })
-    // .addCase(socialLogin.rejected, (state) => {
-    //   state.isLoggedIn = false;
-    //   state.userInfo = null;
-    // });
   },
 });
 
-export const { autoLogin, autoNavigateToLoginAndBack } = userSlice.actions;
+export const { autoLogin, autoNavigateToLoginAndBack, checkSocialLogin } = userSlice.actions;
 
 export default userSlice.reducer;

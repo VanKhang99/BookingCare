@@ -13,24 +13,17 @@ import {
   DetailCategory,
   Login,
   Register,
+  Profile,
   Support,
   System,
   VerifyBooking,
   PackageDetail,
   Packages,
   PackageClinic,
-  // RemoteExam,
-  // MedicalTest,
-  // MentalHealth,
-  // Dental,
-  // PackageSurgery,
-  // MedicalProduct,
-  // BusinessHealth,
   ProtectedRoute,
   SharedLayout,
 } from "./pages";
 import {
-  // UserManage,
   UserManage,
   DoctorManage,
   ScheduleWrapper,
@@ -63,6 +56,7 @@ function App() {
           <Route path={path.LOGIN} element={<Login />} />
           <Route path={path.REGISTER} element={<Register />} />
 
+          {/* NORMAL ROUTE */}
           <Route path="/" element={<SharedLayout clientInterface={1} />}>
             <Route index element={<Home />} />
 
@@ -132,6 +126,16 @@ function App() {
           </Route>
 
           <Route
+            path={path.PROFILE}
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ADMIN-SYSTEM */}
+          <Route
             path={`${path.ADMIN}-${path.SYSTEM}`}
             element={
               <ProtectedRoute>
@@ -161,6 +165,7 @@ function App() {
             <Route path="allcode-manage" element={<AllcodeManage />} />
           </Route>
 
+          {/* DOCTOR-SYSTEM */}
           <Route
             path={`${path.DOCTOR}-${path.SYSTEM}`}
             element={
@@ -173,15 +178,6 @@ function App() {
             <Route path="patient-booking-manage" element={<PatientBooking />} />
             <Route path="schedule-manage" element={<ScheduleWrapper isDoctorAccount={true} />} />
           </Route>
-
-          {/* BANNER */}
-          {/* <Route path={path.REMOTEEXAM} element={<RemoteExam />} />
-          <Route path={path.MEDICALTEST} element={<MedicalTest />} />
-          <Route path={path.MENTALHEALTH} element={<MentalHealth />} />
-          <Route path={path.DENTAL} element={<Dental />} />
-          <Route path={path.PACKAGESURGERY} element={<PackageSurgery />} />
-          <Route path={path.MEDICALPRODUCT} element={<MedicalProduct />} />
-          <Route path={path.BUSINESSHEALTH} element={<BusinessHealth />} /> */}
         </Routes>
       </BrowserRouter>
 

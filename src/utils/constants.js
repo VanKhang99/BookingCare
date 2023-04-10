@@ -5,6 +5,7 @@ export const FACEBOOK_APP_ID = 245053981258733;
 export const path = {
   HOME: "/",
   ADMIN: "admin",
+  PROFILE: "profile",
   REMOTE: "remote",
   SPECIALTY: "specialty",
   SPECIALTIES: "specialties",

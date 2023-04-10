@@ -29,6 +29,10 @@ import LoginModal from "./LoginModal";
 import ForgotPassword from "./ForgotPassword";
 import ResetPassword from "./ResetPassword";
 import TermUse from "./TermUse";
+import UpdateInformation from "./Profile/UpdateInformation";
+import ChangePassword from "./Profile/ChangePassword";
+import MedicalAppointmentHistory from "./Profile/MedicalAppointmentHistory";
+import PurchaseHistory from "./Profile/PurchaseHistory";
 
 export {
   Header,
@@ -62,4 +66,8 @@ export {
   ForgotPassword,
   ResetPassword,
   TermUse,
+  UpdateInformation,
+  ChangePassword,
+  MedicalAppointmentHistory,
+  PurchaseHistory,
 };

@@ -6,6 +6,7 @@ $grey-5: #eee;
 $grey-6: #efefef;
 $grey-7: #f9f9f9;
 $grey-8: #ccc;
+$grey-9: #a5a5a5;
 
 $color-hover: #49bce2;
 $main-color-text: #333333;
@@ -24,12 +25,15 @@ $color-green-light-2: #d6e9c6;
 
 $color-red: #d01a1d;
 
+$color-purple-light: #e8efff;
+
 $color-blue: #45c3d2;
 $color-blue-2: #0071ba;
 $color-blue-3: #49bce2;
 $color-blue-light: #d4effc;
 $color-blue-dark: #1a5296;
 $color-blue-dark-2: #337ab7;
+$color-blue-dark-3: #4e81f0;
 
 $rgba-black-1: rgba(0, 0, 0, 0.25);
 $rgba-black-2: rgba(0, 0, 0, 0.4);
@@ -37,10 +41,12 @@ $rgba-black-3: rgba(0, 0, 0, 0.6);
 
 $linear-gradient1: linear-gradient(135deg, #80d0c7, #47b5d6 50.52%, #0093e9);
 $linear-gradient2: linear-gradient(rgb(250, 242, 217), rgb(190, 230, 244));
+$linear-gradient3: linear-gradient(to right bottom, #fff, #80d0c7);
 
 $base-size: 1.4rem;
 $font-main: "Nunito", sans-serif;
 $transition: all 0.2s linear;
+$transition-2: all 0.2s ease-in-out;
 $shadow-1: 1px 2px 3px #bbb;
 $shadow-2: 1px 3px 5px rgba(0, 0, 0, 0.15);
 $shadow-3: 0px 2px 6px 0px rgba(0, 0, 0, 0.18);

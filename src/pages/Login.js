@@ -13,7 +13,7 @@ import { BsFacebook } from "react-icons/bs";
 import { Form, Input } from "antd";
 import { ForgotPassword, TermUse } from "../components";
 import { isValidEmail } from "../utils/helpers";
-import { login, socialLogin, autoLogin } from "../slices/userSlice";
+import { login, socialLogin, autoLogin, checkSocialLogin } from "../slices/userSlice";
 import { FACEBOOK_APP_ID, TIMEOUT_NAVIGATE } from "../utils/constants";
 import "../styles/LoginRegister.scss";
 import "../styles/CustomForm.scss";
@@ -82,6 +82,7 @@ const Login = () => {
         localStorage.setItem("userInfo", JSON.stringify(dataSaveToLocal));
         localStorage.setItem("token", token);
         setBackHomePage(true);
+        await dispatch(checkSocialLogin());
         setTimeout(async () => {
           await dispatch(autoLogin({ ...dataSaveToLocal, id: result.payload.user.id }));
         }, TIMEOUT_NAVIGATE);

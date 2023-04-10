@@ -11,6 +11,7 @@ import DetailDoctor from "./DetailDoctor";
 import MedicalPackage from "./MedicalPackage";
 import Login from "./Login";
 import Register from "./Register";
+import Profile from "./Profile";
 import Support from "./Support";
 import Error from "./Error";
 import System from "./System";
@@ -47,6 +48,7 @@ export {
   MedicalPackage,
   Login,
   Register,
+  Profile,
   Support,
   Error,
   System,

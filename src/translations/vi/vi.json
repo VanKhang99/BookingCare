@@ -53,13 +53,17 @@
     "valid-verification-code": "Mã xác nhận phải có 7 chữ số"
   },
 
-  "forgot-password": {
+  "password": {
     "password-retrieval": "Lấy lại mật khẩu",
     "verification-code": "Mã xác nhận",
     "valid-verification-code": "Mã xác nhận phải có 7 chữ số",
 
+    "label-current-password": "Mật khẩu hiện tại",
     "label-new-password": "Nhập mật khẩu mới",
     "label-renew-password": "Nhập lại mật khẩu mới",
+
+    "placeholder-current-password": "Mật khẩu hiện tại",
+    "current-password": "Vui lòng nhập mật khẩu hiện tại",
 
     "placeholder-password": "Mật khẩu",
     "password": "Vui lòng nhập mật khẩu",
@@ -79,6 +83,21 @@
     "logout": "Đăng xuất"
   },
 
+  "profile": {
+    "profile-detail": "Thông tin cá nhân",
+    "phone-number": "Số điện thoại",
+    "address": "Địa chỉ",
+    "gender": "Giới tính",
+    "first-name": "Tên",
+    "last-name": "Họ",
+
+    "actions": "Chức năng",
+    "update-information": "Cập nhật thông tin",
+    "change-password": "Thay đổi mật khẩu",
+    "medical-appointment-history": "Lịch sử đặt lịch khám bệnh",
+    "purchase-history": "Lịch sử mua hàng",
+    "log-out": "Đăng xuất"
+  },
   "slider": {
     "doctor-remote-title": "Bác sĩ từ xa qua Video",
     "popular-specialty-title": "Chuyên khoa phổ biến",

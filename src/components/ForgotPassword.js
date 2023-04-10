@@ -182,7 +182,7 @@ const ForgotPassword = ({ onForgotPassword }) => {
             <IoChevronBack />
           </div>
 
-          <div className="forgot-password__title">{t("forgot-password.password-retrieval")}</div>
+          <div className="forgot-password__title">{t("password.password-retrieval")}</div>
 
           <Form className="form form--forgot-password">
             <Form.Item
@@ -218,7 +218,7 @@ const ForgotPassword = ({ onForgotPassword }) => {
                   {
                     validator: (_, value) => {
                       if (value.length !== 7) {
-                        return Promise.reject(t("forgot-password.valid-verification-code"));
+                        return Promise.reject(t("password.valid-verification-code"));
                       }
 
                       return Promise.resolve();
@@ -230,7 +230,7 @@ const ForgotPassword = ({ onForgotPassword }) => {
                   type="number"
                   value={stateFP.confirmCode}
                   prefix={<AiOutlineNumber />}
-                  placeholder={t("forgot-password.verification-code")}
+                  placeholder={t("password.verification-code")}
                   className="custom-input"
                   maxLength="7"
                   onChange={handleInputConfirmCode}

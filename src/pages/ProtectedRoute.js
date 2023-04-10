@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// import { path } from "../utils/constants";
-// import { checkHasJWT } from "../utils/helpers";
+import { Login } from "../pages";
 
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
@@ -12,13 +11,13 @@ const ProtectedRoute = ({ children }) => {
     return flag;
   };
 
-  useEffect(() => {
-    if (!checkHasJWT()) {
-      navigate("/");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!checkHasJWT()) {
+  //     navigate("/login");
+  //   }
+  // }, []);
 
-  return children;
+  return <>{checkHasJWT() ? children : <Login />}</>;
 };
 
 export default ProtectedRoute;

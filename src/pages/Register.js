@@ -46,7 +46,6 @@ const Login = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { language } = useSelector((store) => store.app);
-  // const { isLoggedIn, userInfo } = useSelector((store) => store.user);
   const navigate = useNavigate();
 
   const checkInputUserData = (propsToCheck, objectValues) => {

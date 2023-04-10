@@ -53,13 +53,17 @@
     "valid-verification-code": "Verification code must have 7 digits"
   },
 
-  "forgot-password": {
+  "password": {
     "password-retrieval": "Password Retrieval",
     "verification-code": "Verification code",
     "valid-verification-code": "Verification code must have 7 digits",
 
+    "label-current-password": "Current password",
     "label-new-password": "Enter your new password",
     "label-renew-password": "Re-enter your new password",
+
+    "placeholder-current-password": "Current password",
+    "current-password": "Please enter the current password",
 
     "placeholder-password": "Password",
     "password": "Please enter a password",
@@ -77,6 +81,22 @@
     "personal-center": "Personal center",
     "management-center": "Management center",
     "logout": "Logout"
+  },
+
+  "profile": {
+    "profile-detail": "Profile detail",
+    "phone-number": "Phone number",
+    "address": "Address",
+    "gender": "Gender",
+    "first-name": "First name",
+    "last-name": "Last name",
+
+    "actions": "Actions",
+    "update-information": "Update information",
+    "change-password": "Change password",
+    "medical-appointment-history": "Medical appointment history",
+    "purchase-history": "Purchase history",
+    "log-out": "Log out"
   },
 
   "slider": {

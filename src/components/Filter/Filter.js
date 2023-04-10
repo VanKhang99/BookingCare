@@ -586,7 +586,10 @@ const Filter = ({
         inputSearch: "",
       });
       onFilteredData(arrBelongToProps);
-      if (!categoryId && !clinicId && !packageClinicSpecialty) onBackInitialInterface();
+
+      if (!categoryId && !clinicId && !packageClinicSpecialty) {
+        onBackInitialInterface();
+      }
       return;
     }
 

@@ -31,6 +31,8 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
   const { packageArr } = useSelector((store) => store.package);
   const dataClinic = useFetchDataBaseId(clinicId ? +clinicId : "", "clinic", getClinic);
 
+  console.log(clinicId);
+
   const handleModal = async (hourClicked, doctorId = null, packageId = null) => {
     // console.log("test");
     // (Why get doctorId)
@@ -105,6 +107,7 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
           <Filter
             pageClinicDoctors={pageClinicDoctors}
             packageClinicSpecialty={packageClinicSpecialty}
+            clinicId={clinicId}
             doctorsById={doctorsById}
             packageArr={packageArr}
             dataFiltered={dataFiltered}

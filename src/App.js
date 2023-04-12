@@ -27,7 +27,6 @@ import {
   UserManage,
   DoctorManage,
   ScheduleWrapper,
-  PatientBooking,
   ClinicManage,
   ClinicSpecialtyManage,
   SpecialtyManage,
@@ -125,6 +124,7 @@ function App() {
             />
           </Route>
 
+          {/* USER ACCOUNT ROUTE */}
           <Route
             path={path.PROFILE}
             element={
@@ -149,7 +149,6 @@ function App() {
 
             <Route path="doctor-manage" element={<DoctorManage />} />
             <Route path="doctor-schedule-manage" element={<ScheduleWrapper scheduleOf="doctor" />} />
-            <Route path="patient-booking-manage" element={<PatientBooking />} />
 
             <Route path="clinic-manage" element={<ClinicManage />} />
             <Route path="clinic-specialty-manage" element={<ClinicSpecialtyManage />} />
@@ -166,7 +165,7 @@ function App() {
           </Route>
 
           {/* DOCTOR-SYSTEM */}
-          <Route
+          {/* <Route
             path={`${path.DOCTOR}-${path.SYSTEM}`}
             element={
               <ProtectedRoute>
@@ -177,7 +176,7 @@ function App() {
             <Route index element={<System />} />
             <Route path="patient-booking-manage" element={<PatientBooking />} />
             <Route path="schedule-manage" element={<ScheduleWrapper isDoctorAccount={true} />} />
-          </Route>
+          </Route> */}
         </Routes>
       </BrowserRouter>
 

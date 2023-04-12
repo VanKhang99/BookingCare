@@ -7,7 +7,6 @@ import TableList from "./User/TableList";
 import DoctorManage from "./DoctorManage";
 import ScheduleWrapper from "./ScheduleWrapper";
 import ScheduleManage from "./ScheduleManage";
-import PatientBooking from "./PatientBooking";
 import ClinicManage from "./ClinicManage";
 import ClinicSpecialtyManage from "./ClinicSpecialtyManage";
 import SpecialtyManage from "./SpecialtyManage";
@@ -28,7 +27,6 @@ export {
   DoctorManage,
   ScheduleWrapper,
   ScheduleManage,
-  PatientBooking,
   ClinicManage,
   ClinicSpecialtyManage,
   SpecialtyManage,

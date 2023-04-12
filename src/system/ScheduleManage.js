@@ -26,11 +26,12 @@ const initialState = {
   initHoursList: [],
 };
 
-const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
+const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount, profilePage }) => {
   const [state, setState] = useState({ ...initialState });
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
+  const { userInfo } = useSelector((store) => store.user);
 
   const disabledDate = useCallback((current) => {
     // Can not select days before today and today
@@ -94,7 +95,7 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
       id = scheduleOf === "doctor" ? state.selectedDoctor.value : state.selectedPackage.value;
       typeId = scheduleOf === "doctor" ? "doctorId" : "packageId";
     } else {
-      id = JSON.parse(localStorage.getItem("userInfo")).id;
+      id = +userInfo.id;
       typeId = "doctorId";
     }
 
@@ -194,7 +195,7 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
         // console.log(time);
         const objectTime = {};
         if (isDoctorAccount) {
-          objectTime.doctorId = JSON.parse(localStorage.getItem("userInfo")).id;
+          objectTime.doctorId = userInfo.id;
         } else {
           scheduleOf === "doctor"
             ? (objectTime.doctorId = state.selectedDoctor.value)
@@ -299,10 +300,12 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
 
   return (
     <div className="schedule-manage container">
-      <div className="u-main-title mt-3">{t("schedule-manage.title")}</div>
+      <div className={profilePage ? "profile-heading" : "u-main-title mt-3"}>
+        {profilePage ? t("profile.create-time-frame") : t("schedule-manage.title")}
+      </div>
 
       <div className="schedule-manage-content mt-3">
-        <div className="select-doctor col-6 mt-5">
+        <div className={`select-doctor ${profilePage ? "" : "mt-5"}`}>
           {!isDoctorAccount && (
             <h4 className="u-input-label">
               {scheduleOf === "doctor"
@@ -316,12 +319,8 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
               {language === "vi" ? "Bác sĩ" : "Doctor"}:{" "}
               <span>
                 {language === "vi"
-                  ? `${JSON.parse(localStorage.getItem("userInfo")).lastName} ${
-                      JSON.parse(localStorage.getItem("userInfo")).firstName
-                    }`
-                  : `${JSON.parse(localStorage.getItem("userInfo")).firstName} ${
-                      JSON.parse(localStorage.getItem("userInfo")).lastName
-                    }`}
+                  ? `${userInfo?.lastName} ${userInfo?.firstName}`
+                  : `${userInfo?.firstName} ${userInfo?.lastName}`}
               </span>
             </h4>
           )}
@@ -347,7 +346,7 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
           )}
         </div>
 
-        <div className="select-date col-6 mt-5">
+        <div className="select-date  mt-5">
           <h4 className="u-input-label">{t("schedule-manage.choose-date")}</h4>
 
           <div className="mt-3">
@@ -368,7 +367,7 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
           </div>
         </div>
 
-        <div className="select-hours mt-5 col-6">
+        <div className="select-hours mt-5 ">
           <h4 className="u-input-label mb-3 d-flex justify-content-between">
             {t("schedule-manage.time-frame")}
             <button className="u-system-button--refresh-data" onClick={handleResetState}>
@@ -393,7 +392,7 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount }) => {
           </ul>
         </div>
 
-        <div className="u-system-button my-4 d-flex justify-content-end gap-3 col-6">
+        <div className="u-system-button my-4 d-flex justify-content-end gap-3">
           <Button variant="danger" onClick={handleDeleteSchedule}>
             {t("button.delete")}
           </Button>

@@ -8,7 +8,7 @@ const initialState = {
   isUpdating: false,
   socialLogin: false,
   isLoggedIn: false,
-  userInfo: null,
+  userInfo: {},
 
   urlNavigateBack: "",
 };
@@ -202,6 +202,9 @@ export const userSlice = createSlice({
             phoneNumber: user.phoneNumber,
             address: user.address,
             gender: user.gender,
+            image: user.image,
+            roleData: user.roleData,
+            positionData: user.positionData,
           })
         );
 
@@ -214,7 +217,7 @@ export const userSlice = createSlice({
       })
       .addCase(login.rejected, (state) => {
         state.isLoggedIn = false;
-        state.userInfo = null;
+        state.userInfo = {};
       })
       //LOG-OUT
       .addCase(logout.pending, (state) => {
@@ -222,7 +225,7 @@ export const userSlice = createSlice({
       })
       .addCase(logout.fulfilled, (state) => {
         state.isLoggedIn = false;
-        state.userInfo = null;
+        state.userInfo = {};
         state.urlNavigateBack = "";
         state.socialLogin = false;
         localStorage.removeItem("userInfo");
@@ -253,6 +256,9 @@ export const userSlice = createSlice({
             phoneNumber: user.phoneNumber,
             address: user.address,
             gender: user.gender,
+            image: user.image,
+            roleData: user.roleData,
+            positionData: user.positionData,
           })
         );
 

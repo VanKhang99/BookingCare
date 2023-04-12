@@ -4,7 +4,7 @@ import { getAllDoctors } from "../slices/doctorSlice";
 import { getAllPackages } from "../slices/packageSlice";
 import { ScheduleManage } from "./index";
 
-const ScheduleWrapper = ({ isDoctorAccount, scheduleOf }) => {
+const ScheduleWrapper = ({ isDoctorAccount, scheduleOf, profilePage }) => {
   const dispatch = useDispatch();
   const { doctors } = useSelector((store) => store.doctor);
   const { packageArr } = useSelector((store) => store.package);
@@ -24,6 +24,7 @@ const ScheduleWrapper = ({ isDoctorAccount, scheduleOf }) => {
       packages={packageArr}
       scheduleOf={scheduleOf}
       isDoctorAccount={isDoctorAccount}
+      profilePage={profilePage}
     />
   );
 };

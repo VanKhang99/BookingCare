@@ -50,6 +50,7 @@ const ModalBooking = ({
   const { id } = useParams();
   const { language } = useSelector((store) => store.app);
   const { genderArr } = useSelector((store) => store.allcode);
+  const { userInfo } = useSelector((store) => store.user);
   const dispatch = useDispatch();
 
   const handleHideModal = () => {
@@ -64,16 +65,7 @@ const ModalBooking = ({
   };
 
   const checkValidateInput = () => {
-    let arrInput = [
-      "firstName",
-      "lastName",
-      "phoneNumber",
-      "address",
-      "email",
-      "birthday",
-      "reason",
-      "gender",
-    ];
+    let arrInput = ["firstName", "lastName", "phoneNumber", "address", "birthday", "reason", "gender"];
 
     const isValid = checkData(state, arrInput);
     return isValid;
@@ -94,7 +86,7 @@ const ModalBooking = ({
       return;
     }
 
-    if (!isValidEmail(state.email)) {
+    if (!isValidEmail(userInfo.email)) {
       setState({
         ...state,
         errorInput: {
@@ -145,6 +137,7 @@ const ModalBooking = ({
 
       const dataSendServer = {
         ...state,
+        email: userInfo.email,
         doctorId: +doctorId || +id,
         timeType: hourClicked.timeType,
         birthday,
@@ -161,7 +154,6 @@ const ModalBooking = ({
       delete dataSendServer["errorInput"];
 
       const result = await dispatch(createBooking(dataSendServer));
-      // console.log(result);
 
       if (result.payload.status === "error") {
         onHide(hourClicked);
@@ -326,7 +318,8 @@ const ModalBooking = ({
               <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
-                value={state.email}
+                value={userInfo?.email ? userInfo.email : ""}
+                disabled={true}
                 onChange={(e, id) => handleInputChange(e, "email")}
               />
             </Form.Group>
@@ -396,6 +389,7 @@ const ModalBooking = ({
               {t("modal-booking.note-first")}
               <ul>
                 <li>{HtmlReactParser(t("modal-booking.note-first-sub-1"))}</li>
+                <li>{t("modal-booking.note-first-sub-2")}</li>
                 <li>{t("modal-booking.note-first-sub-3")}</li>
               </ul>
             </li>

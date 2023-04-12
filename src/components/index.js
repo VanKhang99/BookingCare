@@ -1,6 +1,6 @@
 import Header from "./Header";
 import Language from "./Language";
-import Banner from "./Banner";
+import Hero from "./Hero";
 import Slider from "./Carousel/Carousel";
 import Media from "./Media";
 import CTA from "./CTA";
@@ -33,11 +33,12 @@ import UpdateInformation from "./Profile/UpdateInformation";
 import ChangePassword from "./Profile/ChangePassword";
 import MedicalAppointmentHistory from "./Profile/MedicalAppointmentHistory";
 import PurchaseHistory from "./Profile/PurchaseHistory";
+import PatientBooking from "./Profile/PatientBooking";
 
 export {
   Header,
   Language,
-  Banner,
+  Hero,
   Slider,
   Media,
   CTA,
@@ -70,4 +71,5 @@ export {
   ChangePassword,
   MedicalAppointmentHistory,
   PurchaseHistory,
+  PatientBooking,
 };

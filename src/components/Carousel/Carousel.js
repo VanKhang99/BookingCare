@@ -12,7 +12,6 @@ import {
   CarouselDoctorAndFacilities,
   CarouselPackageClinic,
   CarouselDoctorClinic,
-  CarouselPackagesCategories,
 } from "./index.js";
 import "../../styles/Carousel.scss";
 // import Specialties from "./../../pages/Specialties";
@@ -95,15 +94,15 @@ const Slider = ({
 
           {doctorAndFacilities && (
             <div className="carousel-top__buttons">
-              <a href="#">
-                <button className="button button-main">{buttonText}</button>
-              </a>
-              <a href="#">
-                <button className="button button-main">{buttonText2}</button>
-              </a>
-              <a href="#">
-                <button className="button button-main">{buttonText3}</button>
-              </a>
+              <button>
+                <span className="button button-main">{buttonText}</span>
+              </button>
+              <button>
+                <span className="button button-main">{buttonText2}</span>
+              </button>
+              <button>
+                <span className="button button-main">{buttonText3}</span>
+              </button>
             </div>
           )}
 

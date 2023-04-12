@@ -38,6 +38,10 @@ const VerifyBooking = () => {
     }
   };
 
+  useEffect(() => {
+    document.title = language === "vi" ? "Xác nhận lịch khám bệnh" : "Confirm medical appointment";
+  }, [language]);
+
   return (
     <>
       <div className="verify-booking-container">

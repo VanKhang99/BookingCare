@@ -1,12 +1,15 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import "../styles/Media.scss";
 
 const Media = () => {
+  const { t } = useTranslation();
+
   return (
     <section className="media-container u-wrapper u-border-bottom">
       <div className="media">
         <div className="media-head">
-          <h2>Truyền thông nói về BookingCare</h2>
+          <h2>{t("slider.media-talk")}</h2>
         </div>
 
         <div className="media-content">

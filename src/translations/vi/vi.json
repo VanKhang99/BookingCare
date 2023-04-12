@@ -5,11 +5,11 @@
     "support": "Hỗ trợ"
   },
 
-  "banner": {
+  "hero": {
     "medical-background": "NỀN TẢNG Y TẾ",
     "health-care": "CHĂM SÓC SỨC KHỎE TOÀN DIỆN",
     "reason-check": "Tìm lý do khám",
-    "services-name": "Khám chuyên khoa, Khám từ xa, Khám tổng quát, Xét nghiệm y học, Sức khỏe tinh thần, Khám  nha khoa, Gói  phẫu thuật, Sản phẩm  y tế, Sức khỏe  doanh nghiệp"
+    "services-name": "Khám chuyên khoa, Khám từ xa, Khám tổng quát, Xét nghiệm y học, Sức khỏe tinh thần, Sản phẩm  y tế, Sức khỏe  doanh nghiệp"
   },
 
   "packages": {
@@ -90,20 +90,48 @@
     "gender": "Giới tính",
     "first-name": "Tên",
     "last-name": "Họ",
+    "role": "Vai trò",
+    "degree": "Học vị",
 
     "actions": "Chức năng",
     "update-information": "Cập nhật thông tin",
     "change-password": "Thay đổi mật khẩu",
     "medical-appointment-history": "Lịch sử đặt lịch khám bệnh",
     "purchase-history": "Lịch sử mua hàng",
+    "list-patient-appointment": "Danh sách bệnh nhân đặt lịch khám",
+    "create-time-frame": "Tạo khung giờ khám bệnh",
     "log-out": "Đăng xuất"
   },
+
+  "med-appoint-history": {
+    "booked-title": "THÔNG TIN VỀ LỊCH KHÁM ĐÃ ĐẶT",
+    "appointment-email": "Email đặt lịch",
+    "booking-for": "Đặt cho",
+    "time-frame": "Khung giờ khám",
+    "package": "Gói khám bệnh",
+    "doctor": "Bác sĩ",
+    "clinic": "Bệnh viện",
+    "day-exam": "Ngày khám",
+    "reason": "Lý do đặt lịch khám",
+    "status": "Tình trạng ",
+    "booking-code": "Mã đặt lịch"
+  },
+
   "slider": {
     "doctor-remote-title": "Bác sĩ từ xa qua Video",
     "popular-specialty-title": "Chuyên khoa phổ biến",
     "outstanding-medical-facilities-title": "Cơ sở y tế nổi bật",
     "outstanding-doctors-title": "Bác sĩ nổi bật tuần qua",
     "handbook-title": "Cẩm nang",
+    "media-talk": "Truyền thông nói về BookingCare",
+    "download-app": {
+      "title": "Tải ứng dụng BookingCare",
+      "benefit-1": "Đặt khám nhanh hơn",
+      "benefit-2": "Nhận thông báo từ hệ thống",
+      "benefit-3": "Nhận hướng dẫn đi khám chi tiết",
+      "or-open-link": "Hoặc mở liên kết"
+    },
+
     "for-doctor-facilities-title": "Dành cho bác sĩ và cơ sở y tế"
   },
 
@@ -198,6 +226,7 @@
     "note": "LƯU Ý",
     "note-first": "Thông tin anh/chị cung cấp sẽ được sử dụng làm hồ sơ khám bệnh, khi điền thông tin anh/chị vui lòng:",
     "note-first-sub-1": "Ghi rõ họ và tên, viết hoa những chữ cái đầu tiên, ví dụ: <strong>Trần Văn Phú</strong>",
+    "note-first-sub-2": "Họ tên phải ghi đúng tên người đến khám tại bệnh viện, không ghi tên người đặt dùm.",
     "note-first-sub-3": "Điền đầy đủ, đúng và vui lòng kiểm tra lại thông tin trước khi ấn \"Xác nhận\"",
     "note-second": "Anh/chị vui lòng tuân thủ quy định phòng chống dịch (đeo khẩu trang, khử khuẩn, khai báo dịch tễ) khi đến khám.",
     "note-third": "Bằng việc xác nhận đặt khám, anh/chị đã hoàn toàn đồng ý với <a href=\"#\">Điều khoản sử dụng</a> dịch vụ của chúng tôi.",
@@ -326,7 +355,7 @@
   },
 
   "schedule-manage": {
-    "title": "QUẢN LÝ KHUNG GIỜ KHÁM BỆNH CỦA BÁC SĨ",
+    "title": "QUẢN LÝ KHUNG GIỜ KHÁM BỆNH",
     "choose-doctor": "Chọn bác sĩ",
     "choose-package": "Chọn gói khám bệnh",
     "choose-date": "Chọn ngày",

@@ -1,14 +1,6 @@
-@import "../../styles/sass/base";
+@import "../styles/sass/base";
 
 .patient-booking {
-  &__title {
-    font-size: $base-size + 1.4rem;
-    text-transform: uppercase;
-    font-weight: 800;
-    text-align: center;
-    color: $color-blue-dark;
-  }
-
   .patient-booking-content {
     .label {
       font-size: $base-size + 0.4rem;

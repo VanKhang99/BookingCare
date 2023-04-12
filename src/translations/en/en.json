@@ -5,11 +5,11 @@
     "support": "Support"
   },
 
-  "banner": {
+  "hero": {
     "medical-background": "MEDICAL PLATFORM",
     "health-care": "COMPREHENSIVE HEALTH CARE",
     "reason-check": "Find a reason for medical examination",
-    "services-name": "Specialty examination, Remote examination, General examination, Medical test, Mental health, Dental examination, Surgery package, Medical products, Business health"
+    "services-name": "Specialty examination, Remote examination, General examination, Medical test, Mental health, Medical products, Business health"
   },
 
   "packages": {
@@ -90,13 +90,31 @@
     "gender": "Gender",
     "first-name": "First name",
     "last-name": "Last name",
+    "role": "Role",
+    "degree": "Degree",
 
     "actions": "Actions",
     "update-information": "Update information",
     "change-password": "Change password",
     "medical-appointment-history": "Medical appointment history",
     "purchase-history": "Purchase history",
+    "list-patient-appointment": "List of patients appointment",
+    "create-time-frame": "Create time frame",
     "log-out": "Log out"
+  },
+
+  "med-appoint-history": {
+    "booked-title": "INFORMATION ABOUT THE BOOKED EXAMINATION SCHEDULE",
+    "appointment-email": "Appointment email",
+    "booking-for": "Booking for",
+    "time-frame": "Exam time frame",
+    "package": "Examination package",
+    "doctor": "Doctor",
+    "clinic": "Clinic",
+    "day-exam": "Day exam",
+    "reason": "Reasons",
+    "status": "Status",
+    "booking-code": "Booking code"
   },
 
   "slider": {
@@ -105,6 +123,14 @@
     "outstanding-medical-facilities-title": "Outstanding medical facilities",
     "outstanding-doctors-title": "Outstanding doctor last week",
     "handbook-title": "Handbook",
+    "media-talk": "Media talk about BookingCare",
+    "download-app": {
+      "title": "Download the BookingCare app",
+      "benefit-1": "Book faster",
+      "benefit-2": "Receive notifications from the system",
+      "benefit-3": "Get detailed examination instructions",
+      "or-open-link": "Or open the link"
+    },
     "for-doctor-facilities-title": "For doctors and medical facilities"
   },
 
@@ -199,6 +225,7 @@
     "note": "NOTE",
     "note-first": "The information you provide will be used as medical examination records, when filling in your information, please:",
     "note-first-sub-1": "Specify your first and last name, capitalize the first letters, for example: <strong>Tran Van Phu</strong>",
+    "note-first-sub-2": "The full name must be exactly the name of the person who comes to the hospital for examination, not the name of the person ordering it.",
     "note-first-sub-3": "Fill it out completely and correctly and please double check the information before pressing \"Confirm booking\"",
     "note-second": "Please follow the epidemic prevention regulations (wearing a mask, disinfecting, declaring the epidemiology) when visiting the clinic.",
     "note-third": "By confirming your booking, you have fully agreed to our <a href=\"#\">Terms of Service</a>.",
@@ -293,7 +320,7 @@
   },
 
   "schedule-manage": {
-    "title": "MANAGE THE DOCTOR'S EXAMINATION TIME FRAME",
+    "title": "MANAGE THE EXAMINATION TIME FRAME",
     "choose-doctor": "Choose a doctor",
     "choose-package": "Choose a package",
     "choose-date": "Choose date",

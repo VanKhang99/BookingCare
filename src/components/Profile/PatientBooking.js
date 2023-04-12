@@ -10,12 +10,12 @@ import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { DatePicker, Space } from "antd";
-import { getAllPatientsForDoctor, confirmExaminationComplete } from "../slices/bookingSlice";
 import { IoClose } from "react-icons/io5";
-import { formatterPrice } from "../utils/helpers";
+import { getAllPatientsForDoctor, confirmExaminationComplete } from "../../slices/bookingSlice";
+import { formatterPrice } from "../../utils/helpers";
 import "bootstrap/dist/css/bootstrap.css";
-import "./styles/PatientBooking.scss";
-import "./styles/Modal.scss";
+import "../../styles/PatientBooking.scss";
+import "../../system/styles/Modal.scss";
 
 const initialState = {
   sizeDatePicker: "medium",
@@ -155,7 +155,7 @@ const PatientBooking = () => {
   return (
     <>
       <div className="patient-booking container">
-        <div className="patient-booking__title mt-4">{t("patients-booking-manage.main-title")}</div>
+        <div className="profile-heading"> {t("profile.list-patient-appointment")}</div>
 
         <div className="patient-booking-content">
           <div className="patient-booking-date col-4 mt-5">

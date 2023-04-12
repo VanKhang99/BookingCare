@@ -37,10 +37,8 @@ const LoginModal = () => {
 
     if (userInfo.roleId === "R1") {
       return "/admin-system";
-    } else if (userInfo.roleId === "R7") {
-      return "/profile";
     } else {
-      return "/doctor-system";
+      return "/profile";
     }
   };
 

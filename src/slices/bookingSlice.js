@@ -56,6 +56,18 @@ export const confirmExaminationComplete = createAsyncThunk(
   }
 );
 
+export const getAllHistoryBookedById = createAsyncThunk(
+  "booking/getAllHistoryBookedById",
+  async (patientId, thunkAPI) => {
+    try {
+      const res = await axios.get(`/api/bookings/history-booked/${patientId}`);
+      return res.data;
+    } catch (error) {
+      return error.response.data;
+    }
+  }
+);
+
 export const bookingSlice = createSlice({
   name: "booking",
   initialState,

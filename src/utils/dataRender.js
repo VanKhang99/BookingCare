@@ -19,7 +19,22 @@ export const headerNavList = [
   },
 ];
 
-export const bannerServicesList = [
+export const placeholderArrayVi = [
+  "Tìm lý do khám",
+  "Tìm phòng khám - bệnh viện",
+  "Tìm bác sĩ",
+  "Tìm gói khám bệnh",
+  "Tìm chuyên khoa",
+];
+export const placeholderArrayEn = [
+  "Find a reason to check",
+  "Find clinic - hospital",
+  "Find a doctor",
+  "Find medical packages",
+  "Find a specialty",
+];
+
+export const heroServicesList = [
   {
     id: 1,
     image: "https://cdn.bookingcare.vn/fo/2021/12/08/133537-khamchuyenkhoa.png",
@@ -45,16 +60,16 @@ export const bannerServicesList = [
     image: "https://cdn.bookingcare.vn/fo/2021/12/08/133744-suckhoetinhthan.png",
     router: "/mental-health",
   },
-  {
-    id: 6,
-    image: "https://cdn.bookingcare.vn/fo/2022/05/19/104635-khamnhakhoa.png",
-    router: "/dental",
-  },
-  {
-    id: 7,
-    image: "https://cdn.bookingcare.vn/fo/2022/05/16/151930-phau-thuat.jpg",
-    router: "/package-surgery",
-  },
+  // {
+  //   id: 6,
+  //   image: "https://cdn.bookingcare.vn/fo/2022/05/19/104635-khamnhakhoa.png",
+  //   router: "/dental",
+  // },
+  // {
+  //   id: 7,
+  //   image: "https://cdn.bookingcare.vn/fo/2022/05/16/151930-phau-thuat.jpg",
+  //   router: "/package-surgery",
+  // },
   {
     id: 8,
     image: "https://cdn.bookingcare.vn/fo/2021/12/08/133744-khamtainha.png",

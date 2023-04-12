@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { Banner, Slider, Media, CTA } from "../components";
+import { Hero, Slider, Media, CTA } from "../components";
 
 const Home = () => {
   const { t } = useTranslation();
@@ -19,7 +19,7 @@ const Home = () => {
       <main>
         <div className="wrapper">
           <div className="content">
-            <Banner />
+            <Hero />
             <Slider
               mainTitle={t("slider.doctor-remote-title")}
               buttonText={t("button.see-more").toUpperCase()}

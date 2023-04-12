@@ -132,6 +132,14 @@ const Login = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    if (forgotPassword) {
+      document.title = language === "vi" ? `Quên mật khẩu` : `Forgot password`;
+    } else {
+      document.title = language === "vi" ? `Đăng nhập` : `Login`;
+    }
+  }, [language, forgotPassword]);
+
   return (
     <div className="background">
       <div className="back-home">

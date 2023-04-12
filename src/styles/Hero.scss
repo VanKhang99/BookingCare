@@ -1,13 +1,13 @@
 @import "./sass/variables";
 
-.banner-container {
+.hero-container {
   background-image: url(https://bookingcare.vn/assets/anh/bookingcare-cover-4.jpg);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
   height: 100%;
 
-  .banner-top {
+  .hero-top {
     min-height: 60vh;
     background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0.1));
     padding: 4.5rem 0;
@@ -62,7 +62,6 @@
         width: 38rem;
         font-size: $base-size + 0.2rem;
         outline: none;
-        padding-top: 4px;
 
         &::placeholder {
           font-family: "Nunito";
@@ -84,7 +83,7 @@
     }
   }
 
-  .banner-service {
+  .hero-service {
     background-image: linear-gradient(
       rgba(255, 255, 255, 0.1),
       rgba(255, 255, 255, 0.9),

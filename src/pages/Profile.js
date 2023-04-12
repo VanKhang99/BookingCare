@@ -1,20 +1,27 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { BsDatabaseUp, BsHospital } from "react-icons/bs";
+import { BsDatabaseUp, BsHospital, BsCardChecklist } from "react-icons/bs";
 import { MdSecurity } from "react-icons/md";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { IoLogOutOutline } from "react-icons/io5";
+import { HiOutlineUpload } from "react-icons/hi";
+import { FiClock } from "react-icons/fi";
 import {
   UpdateInformation,
   ChangePassword,
   MedicalAppointmentHistory,
   PurchaseHistory,
+  PatientBooking,
   Loading,
   Language,
 } from "../components";
-import { logout } from "../slices/userSlice";
+import { ScheduleWrapper } from "../system";
+
+import { logout, updateDataUser } from "../slices/userSlice";
+import { postImageToS3, deleteImageOnS3 } from "../utils/helpers";
 import { TIMEOUT_NAVIGATE } from "../utils/constants";
 import "../styles/Profile.scss";
 
@@ -23,17 +30,17 @@ const initialState = {
   isShowChangePassword: false,
   isShowMedicalAppointmentHistory: false,
   isShowPurchaseHistory: false,
+  isShowListOfAppointment: false,
+  isShowCreateSchedule: false,
 };
 
 const Profile = () => {
   const [profileState, setProfileState] = useState(initialState);
   const [backToLogin, setBackToLogin] = useState(false);
-
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
   const { userInfo, socialLogin } = useSelector((store) => store.user);
-
   const navigate = useNavigate();
 
   const handleDisplayGender = () => {
@@ -48,6 +55,31 @@ const Profile = () => {
     }
 
     return language === "vi" ? "Khác" : "Other";
+  };
+
+  const handleChangeImage = async (e) => {
+    try {
+      if (!e.target.files || !e.target.files.length) return;
+      const file = e.target.files[0];
+
+      if (userInfo.image) {
+        await deleteImageOnS3(userInfo.image);
+      }
+
+      const imageUploadToS3 = await postImageToS3(file);
+      if (imageUploadToS3.data.status !== "success") {
+        return toast.error(
+          language === "vi"
+            ? "Có lỗi xảy ra trong quá trình cập nhật hình ảnh. Vui lòng thử lại hoặc quay lại sau!"
+            : "An error occurred while updating the image. Please try again or come back later!"
+        );
+      }
+      const newImage = imageUploadToS3.data.data.image;
+      const resultUpdated = await dispatch(updateDataUser({ id: userInfo.id, image: newImage }));
+      console.log(resultUpdated);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleLogOut = async () => {
@@ -66,6 +98,10 @@ const Profile = () => {
     setProfileState({ ...initialState, isShowUpdateInformation: false, [`isShow${featureShowed}`]: true });
   };
 
+  useEffect(() => {
+    document.title = language === "vi" ? `Trang thông tin cá nhân` : `Personal information page`;
+  }, [language]);
+
   return (
     <div className="profile-container">
       <div className="profile">
@@ -76,17 +112,41 @@ const Profile = () => {
           </div>
 
           <div className="profile-portrait">
-            <img
-              src={
-                userInfo?.imageUrl
-                  ? userInfo.imageUrl
-                  : "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png"
-              }
-              alt=""
-              className="profile-portrait__img"
-            />
+            {!socialLogin ? (
+              <>
+                <label htmlFor="changeImage" className="profile-portrait__label">
+                  <img
+                    src={
+                      userInfo?.imageUrl
+                        ? userInfo.imageUrl
+                        : "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png"
+                    }
+                    alt=""
+                    className="profile-portrait__label-img"
+                  />
 
-            <h3 className="profile-portrait__name">
+                  <div className="profile-portrait--hover">
+                    <span>
+                      <HiOutlineUpload />
+                    </span>
+                  </div>
+                </label>
+
+                <input type="file" id="changeImage" onChange={handleChangeImage} hidden />
+              </>
+            ) : (
+              <img
+                src={
+                  userInfo?.imageUrl
+                    ? userInfo.imageUrl
+                    : "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png"
+                }
+                alt=""
+                className="profile-portrait__img"
+              />
+            )}
+
+            <h3 className="profile-portrait__name" style={{ marginTop: socialLogin ? "0.8rem" : "0rem" }}>
               {language === "vi"
                 ? `${userInfo?.lastName} ${userInfo?.firstName}`
                 : `${userInfo?.firstName} ${userInfo?.lastName}`}
@@ -117,6 +177,26 @@ const Profile = () => {
 
                   <span className="profile-detail-item__data">{userInfo?.address}</span>
                 </div>
+
+                {userInfo && userInfo.roleId !== "R1" && userInfo.roleId !== "R7" && (
+                  <>
+                    <div className="profile-detail-item">
+                      <span className="profile-detail-item__label">{t("profile.role")}</span>
+
+                      <span className="profile-detail-item__data">
+                        {language === "vi" ? userInfo.roleData?.valueVi : userInfo.roleData?.valueEn}
+                      </span>
+                    </div>
+
+                    <div className="profile-detail-item">
+                      <span className="profile-detail-item__label">{t("profile.degree")}</span>
+
+                      <span className="profile-detail-item__data">
+                        {language === "vi" ? userInfo.positionData?.valueVi : userInfo.positionData?.valueEn}
+                      </span>
+                    </div>
+                  </>
+                )}
 
                 <div className="profile-detail-item">
                   <span className="profile-detail-item__label">{t("profile.gender")}</span>
@@ -159,29 +239,61 @@ const Profile = () => {
                 </>
               )}
 
-              <div
-                className={`profile-actions-item ${
-                  profileState.isShowMedicalAppointmentHistory ? "profile-actions-item--active" : ""
-                }`}
-                onClick={() => handleShowFeature("MedicalAppointmentHistory")}
-              >
-                <div className="profile-actions-item__icon">
-                  <BsHospital />
-                </div>
-                <span>{t("profile.medical-appointment-history")}</span>
-              </div>
+              {userInfo && userInfo.roleId === "R7" && (
+                <>
+                  <div
+                    className={`profile-actions-item ${
+                      profileState.isShowMedicalAppointmentHistory ? "profile-actions-item--active" : ""
+                    }`}
+                    onClick={() => handleShowFeature("MedicalAppointmentHistory")}
+                  >
+                    <div className="profile-actions-item__icon">
+                      <BsHospital />
+                    </div>
+                    <span>{t("profile.medical-appointment-history")}</span>
+                  </div>
 
-              <div
-                className={`profile-actions-item ${
-                  profileState.isShowPurchaseHistory ? "profile-actions-item--active" : ""
-                }`}
-                onClick={() => handleShowFeature("PurchaseHistory")}
-              >
-                <div className="profile-actions-item__icon">
-                  <HiOutlineShoppingBag />
-                </div>
-                <span>{t("profile.purchase-history")}</span>
-              </div>
+                  <div
+                    className={`profile-actions-item ${
+                      profileState.isShowPurchaseHistory ? "profile-actions-item--active" : ""
+                    }`}
+                    onClick={() => handleShowFeature("PurchaseHistory")}
+                  >
+                    <div className="profile-actions-item__icon">
+                      <HiOutlineShoppingBag />
+                    </div>
+                    <span>{t("profile.purchase-history")}</span>
+                  </div>
+                </>
+              )}
+
+              {userInfo && userInfo.roleId !== "R7" && (
+                <>
+                  <div
+                    className={`profile-actions-item ${
+                      profileState.isShowListOfAppointment ? "profile-actions-item--active" : ""
+                    }`}
+                    onClick={() => handleShowFeature("ListOfAppointment")}
+                  >
+                    <div className="profile-actions-item__icon">
+                      <BsCardChecklist />
+                    </div>
+                    <span>{t("profile.list-patient-appointment")}</span>
+                  </div>
+
+                  <div
+                    className={`profile-actions-item ${
+                      profileState.isShowCreateSchedule ? "profile-actions-item--active" : ""
+                    }`}
+                    onClick={() => handleShowFeature("CreateSchedule")}
+                  >
+                    <div className="profile-actions-item__icon">
+                      <FiClock />
+                    </div>
+                    <span>{t("profile.create-time-frame")}</span>
+                  </div>
+                </>
+              )}
 
               <div className="profile-actions-item" onClick={handleLogOut}>
                 <div className="profile-actions-item__icon">
@@ -198,6 +310,8 @@ const Profile = () => {
           {profileState.isShowChangePassword && <ChangePassword />}
           {profileState.isShowMedicalAppointmentHistory && <MedicalAppointmentHistory />}
           {profileState.isShowPurchaseHistory && <PurchaseHistory />}
+          {profileState.isShowListOfAppointment && <PatientBooking />}
+          {profileState.isShowCreateSchedule && <ScheduleWrapper isDoctorAccount={true} profilePage={true} />}
         </div>
       </div>
 

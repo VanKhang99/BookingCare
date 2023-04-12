@@ -10,9 +10,9 @@ const CarouselDoctorAndFacilities = ({ onChange, settings }) => {
           <div className="slide-content__img">
             <img src="https://cdn.bookingcare.vn/fr/w300/2022/11/13/132939-10x-content-seo-y-te.png" alt="" />
           </div>
-          <a href="/" className="slide-content__title">
+          <button className="slide-content__title">
             10X Content là gì? Cách xây dựng Content SEO Y tế theo 10X Content
-          </a>
+          </button>
         </div>
       </div>
 
@@ -24,9 +24,9 @@ const CarouselDoctorAndFacilities = ({ onChange, settings }) => {
               alt=""
             />
           </div>
-          <a href="/" className="slide-content__title">
+          <button className="slide-content__title">
             Cách sử dụng Google Keyword Planner để chọn từ khóa bài viết
-          </a>
+          </button>
         </div>
       </div>
 
@@ -38,9 +38,9 @@ const CarouselDoctorAndFacilities = ({ onChange, settings }) => {
               alt=""
             />
           </div>
-          <a href="/" className="slide-content__title">
+          <button className="slide-content__title">
             Các Module quan trọng trong thiết kế Website phòng khám
-          </a>
+          </button>
         </div>
       </div>
 
@@ -52,9 +52,9 @@ const CarouselDoctorAndFacilities = ({ onChange, settings }) => {
               alt=""
             />
           </div>
-          <a href="/" className="slide-content__title">
+          <button className="slide-content__title">
             Marketing phòng khám - Phần 1: Chiến lược tập trung vào chất lượng khám chữa bệnh
-          </a>
+          </button>
         </div>
       </div>
     </Carousel>

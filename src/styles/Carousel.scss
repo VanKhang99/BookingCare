@@ -26,6 +26,10 @@
     &__buttons {
       display: flex;
       gap: 0.5rem;
+
+      button {
+        border: none;
+      }
     }
   }
 
@@ -197,6 +201,9 @@
           }
 
           &__title {
+            align-self: flex-start;
+            border: none;
+            background-color: transparent;
             width: 50%;
             color: $main-color-text;
             font-size: $base-size + 0.2rem;

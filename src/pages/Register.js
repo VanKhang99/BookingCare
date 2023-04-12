@@ -245,7 +245,12 @@ const Login = () => {
       // INTERVAL_COUNTDOWN
     }
     return () => clearInterval(timerId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData.countdownStart]);
+
+  useEffect(() => {
+    document.title = language === "vi" ? `Đăng ký tài khoản` : `Sign up for an account`;
+  }, [language]);
 
   return (
     <div className="background">

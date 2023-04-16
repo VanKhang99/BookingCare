@@ -44,7 +44,7 @@ This app was built using the following technologies:
     
  ![alt text](https://raw.githubusercontent.com/VanKhang99/bookingCare-host-images/main/Readme%20file/Filter.png)
 
-3. Web have addmin page, doctor page and personal page
+3. Web have admin page, doctor page and personal page
     - Admin page: responsible for CRUD examination packages, CRUD accounts for doctors, modifying information about doctors as well as medical examination packages, ....
     ![alt text](https://raw.githubusercontent.com/VanKhang99/bookingCare-host-images/main/Readme%20file/admin-page.png)
     

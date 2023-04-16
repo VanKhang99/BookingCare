@@ -5,8 +5,9 @@
   background-color: #fff;
   box-shadow: 0 1px 6px rgba(32, 33, 36, 0.3);
   border-radius: 0.5rem;
-  padding: 2rem 1rem 0 2rem;
-  padding-bottom: -1rem;
+  padding-top: 2rem;
+  padding-right: 1rem;
+  padding-left: 2rem;
 
   display: flex;
   gap: 1rem;
@@ -36,7 +37,7 @@
       display: flex;
       align-items: center;
       gap: 0.4rem;
-      margin-bottom: 3.4rem;
+      margin-bottom: 2.8rem;
 
       svg {
         width: 1.6rem;

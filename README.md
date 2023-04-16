@@ -4,16 +4,18 @@ This is a React app for booking medical appontments, users can view information 
 
 ![alt text](https://raw.githubusercontent.com/VanKhang99/bookingCare-host-images/main/Readme%20file/UI.png)
 
-## Getting Started
-To get started with this app, you'll need to have Node.js and PostgreSQL installed on your local machine.
-1. Clone the repository to your local machine.
-2. Clone the repository Backend to your local machine
+## `Getting Started`
+
+1. Install Node.js (Version 14) on your local machine.
+2. Install PostgreSQL on your local machine.
+3. Clone the repository to your local machine.
+4. Clone the repository Backend to your local machine
     - Link repo: https://github.com/VanKhang99/Back-End-BookingCare/tree/imageToAWS (Choose branch imageToAWS)
-3. Run "npm install" to install all dependencies for both repos
-4. Run "npm start" for both repos
+5. Run "npm install" to install all dependencies for both repos
+6. Run "npm start" for both repos
 
 
-## Teachnology Used
+## `Teachnology Used`
 This app was built using the following technologies:
 
 - FrontEnd
@@ -23,12 +25,12 @@ This app was built using the following technologies:
     - Redux-toolkit
     - Redux-thunk
 - BackEnd 
-    - NodeJS (ExpressJS) - Version 14
+    - NodeJS (ExpressJS)
     - Sequelize (ORM)
 - Database
     - SQL (PostgreSQL)
 
-## Features
+## `Features`
 1. Users can book an appointment with the appropriate doctors, the medical examination packages are suitable for themselves. After booking, you will be notified by email
 
 ![alt text](https://raw.githubusercontent.com/VanKhang99/bookingCare-host-images/main/Readme%20file/Booking.png)
@@ -60,7 +62,7 @@ This app was built using the following technologies:
 
 6. Possible to change the website language, but there are still many limitations
 
-## Update in the future
+## `Update in the future`
 - Responsive website compatible with many different screens
 - Packages of surgery, medical tests
 - Medical products

@@ -16,15 +16,7 @@ const MedicalAppointmentHistory = () => {
   const handleGetHistoryBooked = async () => {
     try {
       const res = await dispatch(getAllHistoryBookedById(userInfo.id));
-      if (!res.payload?.list?.length) {
-        return toast.error(
-          language === "vi"
-            ? "Đã có lỗi xảy ra. Sẽ khắc phục trong thời gian sớm nhất!"
-            : "An error has occurred. Will fix as soon as possible!"
-        );
-      }
-
-      setHistoryBooked(res.payload.list);
+      setHistoryBooked(res.payload.status === "error" ? [] : res.payload.list);
     } catch (error) {
       console.error(error);
     }

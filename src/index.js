@@ -4,20 +4,18 @@ import "./index.scss";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Provider } from "react-redux";
 import { persistor, store } from "./store";
 import { PersistGate } from "redux-persist/integration/react";
 import "./i18n";
-
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import { GOOGLE_CLIENT_ID } from "./utils/constants";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Suspense fallback={<div>Loading...</div>}>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+        <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
           <App />
         </GoogleOAuthProvider>
       </PersistGate>

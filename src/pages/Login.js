@@ -14,7 +14,7 @@ import { Form, Input } from "antd";
 import { ForgotPassword, TermUse } from "../components";
 import { isValidEmail } from "../utils/helpers";
 import { login, socialLogin, autoLogin, checkSocialLogin } from "../slices/userSlice";
-import { FACEBOOK_APP_ID, TIMEOUT_NAVIGATE } from "../utils/constants";
+import { TIMEOUT_NAVIGATE } from "../utils/constants";
 import "../styles/LoginRegister.scss";
 import "../styles/CustomForm.scss";
 
@@ -54,7 +54,7 @@ const Login = () => {
     }
   };
 
-  const helperLoginBySocial = async (dataUser, token, socialLoginName) => {
+  const helperLoginBySocial = async (dataUser, socialLoginName) => {
     try {
       const firstName = socialLoginName === "google" ? dataUser.given_name : dataUser.first_name;
       const lastName = socialLoginName === "google" ? dataUser.family_name : dataUser.last_name;
@@ -71,20 +71,21 @@ const Login = () => {
 
       const result = await dispatch(socialLogin(dataSentToServer));
 
-      if (result.payload?.user) {
+      if (result.payload?.status === "success") {
+        const dataUser = result.payload.data.user;
         const dataSaveToLocal = {
           firstName,
           lastName,
           imageUrl,
-          roleId: result.payload.user.roleId || "R7",
+          roleId: dataUser.roleId || "R7",
         };
 
         localStorage.setItem("userInfo", JSON.stringify(dataSaveToLocal));
-        localStorage.setItem("token", token);
+        localStorage.setItem("token", result.payload.token);
         setBackHomePage(true);
         await dispatch(checkSocialLogin());
         setTimeout(async () => {
-          await dispatch(autoLogin({ ...dataSaveToLocal, id: result.payload.user.id }));
+          await dispatch(autoLogin({ ...dataSaveToLocal, id: dataUser.id, email: dataUser.email }));
         }, TIMEOUT_NAVIGATE);
       }
     } catch (error) {
@@ -100,7 +101,7 @@ const Login = () => {
         });
 
         if (Object.keys(res.data).length) {
-          helperLoginBySocial(res.data, tokenResponse.access_token, "google");
+          helperLoginBySocial(res.data, "google");
         }
       } catch (error) {
         console.error(error);
@@ -111,7 +112,7 @@ const Login = () => {
   const handleResponseFacebook = async (response) => {
     try {
       if (Object.keys(response.data).length) {
-        helperLoginBySocial(response.data, response.data.accessToken, "facebook");
+        helperLoginBySocial(response.data, "facebook");
       }
     } catch (error) {
       console.error(error);
@@ -182,7 +183,7 @@ const Login = () => {
                 <span>Google</span>
               </button>
               <LoginSocialFacebook
-                appId={FACEBOOK_APP_ID}
+                appId={+process.env.REACT_APP_FACEBOOK_APP_ID}
                 onResolve={handleResponseFacebook}
                 onReject={(error) => console.log(error)}
               >

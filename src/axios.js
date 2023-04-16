@@ -1,8 +1,7 @@
 import axios from "axios";
-import { API_APP_BACKEND_URL } from "./utils/constants";
 
 const instance = axios.create({
-  baseURL: API_APP_BACKEND_URL,
+  baseURL: process.env.REACT_APP_BACKEND_API_URL,
   timeout: 10000,
   // withCredentials: true
 });

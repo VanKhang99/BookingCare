@@ -26,7 +26,7 @@ export const login = createAsyncThunk("user/login", async ({ email, password }, 
 export const socialLogin = createAsyncThunk("user/socialLogin", async (data, thunkAPI) => {
   try {
     const res = await axios.post("/api/users/social-login", data);
-    return res.data;
+    return res;
   } catch (error) {
     return error.response.data;
   }

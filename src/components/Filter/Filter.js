@@ -287,7 +287,7 @@ const Filter = ({
   const displayOptionsSelected = (displayOf) => {
     const { categorySelected, clinicSelected, citySelected } = state;
 
-    if (!categorySelected.length && !clinicSelected.length && !Object.keys(citySelected).length) {
+    if (!categorySelected?.length && !clinicSelected?.length && !Object.keys(citySelected)?.length) {
       return null;
     }
 
@@ -544,7 +544,7 @@ const Filter = ({
       );
     }
 
-    if (clinicSelected.length) {
+    if (clinicSelected && clinicSelected.length) {
       newPackagesFiltered = filterByCategoryAndClinic(newPackagesFiltered || packageArr, "clinic");
     }
 
@@ -700,7 +700,7 @@ const Filter = ({
 
     //CLINIC INITIAL FROM PAGE PACKAGES WHEN CLICK CLINIC
     const checkClinic = clinicId
-      ? clinicsFilter.filter((clinic) => clinic.id === +clinicId)
+      ? clinicsFilter?.filter((clinic) => clinic.id === +clinicId)
       : state.clinicSelected;
 
     // PRICE

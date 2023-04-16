@@ -38,17 +38,17 @@ export const heroServicesList = [
   {
     id: 1,
     image: "https://cdn.bookingcare.vn/fo/2021/12/08/133537-khamchuyenkhoa.png",
-    router: "/specialty",
+    router: "/specialties",
   },
   {
     id: 2,
     image: "https://cdn.bookingcare.vn/fo/2021/12/08/133657-khamtuxa.png",
-    router: "/remote-exam",
+    router: "/remote",
   },
   {
     id: 3,
     image: "https://cdn.bookingcare.vn/fo/2021/12/08/133744-khamtongquat.png",
-    router: "/medical-package",
+    router: "/packages",
   },
   {
     id: 4,

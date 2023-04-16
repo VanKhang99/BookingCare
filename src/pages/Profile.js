@@ -26,7 +26,7 @@ import { TIMEOUT_NAVIGATE } from "../utils/constants";
 import "../styles/Profile.scss";
 
 const initialState = {
-  isShowUpdateInformation: true,
+  isShowUpdateInformation: false,
   isShowChangePassword: false,
   isShowMedicalAppointmentHistory: false,
   isShowPurchaseHistory: false,
@@ -152,7 +152,7 @@ const Profile = () => {
                 : `${userInfo?.firstName} ${userInfo?.lastName}`}
             </h3>
 
-            {socialLogin && <div className="profile-portrait__email">test@gmail.com</div>}
+            {socialLogin && <div className="profile-portrait__email">{userInfo?.email}</div>}
           </div>
 
           {!socialLogin && (

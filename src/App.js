@@ -163,20 +163,6 @@ function App() {
 
             <Route path="allcode-manage" element={<AllcodeManage />} />
           </Route>
-
-          {/* DOCTOR-SYSTEM */}
-          {/* <Route
-            path={`${path.DOCTOR}-${path.SYSTEM}`}
-            element={
-              <ProtectedRoute>
-                <SharedLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<System />} />
-            <Route path="patient-booking-manage" element={<PatientBooking />} />
-            <Route path="schedule-manage" element={<ScheduleWrapper isDoctorAccount={true} />} />
-          </Route> */}
         </Routes>
       </BrowserRouter>
 

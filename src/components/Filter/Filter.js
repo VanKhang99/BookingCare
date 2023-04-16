@@ -312,6 +312,8 @@ const Filter = ({
 
   //FILTER BY CATEGORY
   const helperFilterCategory = (arr) => {
+    if (!arr?.length) return [];
+
     if (pageClinicDoctors) {
       const specialtiesName = state.categorySelected.map((specialty) => specialty.nameVi);
       return arr.filter((data) => {
@@ -797,7 +799,7 @@ const Filter = ({
       handleOptions();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categories.length, packageArr.length]);
+  }, [categories?.length, packageArr?.length]);
 
   useEffect(() => {
     handleStateChangeLanguage();

@@ -54,9 +54,9 @@ const Footer = () => {
               {Array.from({ length: 8 }, (_, index) => index + 1).map((item) => {
                 return (
                   <li className="item" key={item}>
-                    <a href="/" target="_blank" rel="noreferrer" className="footer-middle-list__link">
+                    <button target="_blank" rel="noreferrer" className="footer-middle-list__link">
                       {t("footer.list").split(", ")[item - 1]}
-                    </a>
+                    </button>
                   </li>
                 );
               })}

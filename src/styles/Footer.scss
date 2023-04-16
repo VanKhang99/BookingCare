@@ -72,6 +72,9 @@
         padding-left: 0;
 
         &__link {
+          outline: none;
+          border: none;
+          background-color: transparent;
           font-size: $base-size + 0.2rem;
           color: #fff;
           font-weight: 300;

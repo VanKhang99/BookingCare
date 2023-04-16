@@ -227,6 +227,7 @@ export const dataModalBooking = (language, data, dataOf) => {
 };
 
 export const helperCreateCategory = (arr, type) => {
+  if (!arr?.length) return [];
   return arr.reduce(
     (acc, item, index) => {
       let propContainName;

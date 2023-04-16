@@ -8,7 +8,7 @@ export const postImageToS3 = async (fileImage) => {
     const formData = new FormData();
     formData.append("uploaded_file", fileImage);
 
-    const res = await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}/api/awsS3/post-image`, formData, {
+    const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/awsS3/post-image`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -24,7 +24,7 @@ export const postImageToS3 = async (fileImage) => {
 export const deleteImageOnS3 = async (imageName) => {
   try {
     const deleteImageFromS3 = await axios.delete(
-      `${process.env.REACT_APP_BACKEND_API_URL}/api/awsS3/delete-image/${imageName}`
+      `${process.env.REACT_APP_BACKEND_URL}/api/awsS3/delete-image/${imageName}`
     );
 
     if (deleteImageFromS3.status !== 204) {

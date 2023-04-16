@@ -67,3 +67,7 @@ This app was built using the following technologies:
 - Packages of surgery, medical tests
 - Medical products
 - Simulate online payment function
+
+## `Try account admin`
+- email: admin@bookingcare.io
+- password: 123456

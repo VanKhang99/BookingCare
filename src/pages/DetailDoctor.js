@@ -6,15 +6,7 @@ import { useSelector } from "react-redux";
 import { useFetchDataBaseId } from "../utils/CustomHook";
 import { getDoctor } from "../slices/doctorSlice";
 import { dataModalBooking, helperDisplayNameDoctor } from "../utils/helpers";
-import {
-  DateOptions,
-  BookingHours,
-  ClinicInfo,
-  ModalBooking,
-  Introduce,
-  Loading,
-  LikeAndShare,
-} from "../components";
+import { DateOptions, BookingHours, ClinicInfo, ModalBooking, Introduce, Loading } from "../components";
 import "../styles/DetailDoctor.scss";
 
 const initialState = {

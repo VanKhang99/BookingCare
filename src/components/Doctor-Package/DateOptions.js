@@ -23,6 +23,7 @@ const DateOptions = ({ small, id, onUpdateSchedules, keyMapFetchPackage }) => {
 
   const handleGetScheduleNextDay = async () => {
     try {
+      console.log(state.optionsDate);
       let newDateSelected = new Date();
       newDateSelected.setDate(newDateSelected.getDate() + 1);
       newDateSelected = formatDate(newDateSelected, language);
@@ -35,6 +36,8 @@ const DateOptions = ({ small, id, onUpdateSchedules, keyMapFetchPackage }) => {
         language === "vi"
           ? `${currentDate.getDate()}/${currentDate.getMonth()}/${currentDate.getFullYear()}`
           : `${currentDate.getMonth()}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
+
+      console.log(nextDay);
       const timeStampToRequestData = moment(
         nextDay,
         `${language === "vi" ? "DD/MM/YYYY" : "MM/DD/YYYY"}`
@@ -79,11 +82,12 @@ const DateOptions = ({ small, id, onUpdateSchedules, keyMapFetchPackage }) => {
         })
       );
 
-      // console.log(res);
+      console.log(res);
 
       if (!res?.payload?.schedules.length) {
         if (initFetch) {
           const { dateSelected, schedules } = await handleGetScheduleNextDay();
+          console.log(dateSelected, schedules);
           if (schedules.length > 0) {
             onUpdateSchedules(schedules);
             return setState({
@@ -92,11 +96,11 @@ const DateOptions = ({ small, id, onUpdateSchedules, keyMapFetchPackage }) => {
               initialFetch: false,
             });
           }
-          onUpdateSchedules(state.schedules);
+          return onUpdateSchedules([]);
         }
-        onUpdateSchedules([]);
+        return onUpdateSchedules([]);
       }
-      onUpdateSchedules(res.payload.schedules);
+      return onUpdateSchedules(res.payload.schedules);
     } catch (error) {
       console.error(error);
     }

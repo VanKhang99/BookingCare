@@ -1,70 +1,73 @@
-# Getting Started with Create React App
+# BookingCare - Medical Appointment Booking App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a React app for booking medical appontments, users can view information about doctors and hospitals that match their criteria as well as geographical location.
 
-## Available Scripts
+![alt text](https://raw.githubusercontent.com/VanKhang99/bookingCare-host-images/main/Readme%20file/UI.png)
 
-In the project directory, you can run:
+## `Getting Started`
 
-### `npm start`
+1. Install Node.js (Version 14) on your local machine.
+2. Install PostgreSQL on your local machine.
+3. Clone the repository to your local machine.
+4. Clone the repository Backend to your local machine
+    - Link repo: https://github.com/VanKhang99/Back-End-BookingCare/tree/imageToAWS (Choose branch imageToAWS)
+5. Run "npm install" to install all dependencies for both repos
+6. Run "npm start" for both repos
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## `Teachnology Used`
+This app was built using the following technologies:
 
-### `npm test`
+- FrontEnd
+    - HTML
+    - CSS (SASS, Antd, Bootstrap)
+    - ReactJS 
+    - Redux-toolkit
+    - Redux-thunk
+- BackEnd 
+    - NodeJS (ExpressJS)
+    - Sequelize (ORM)
+- Database
+    - SQL (PostgreSQL)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## `Features`
+1. Users can book an appointment with the appropriate doctors, the medical examination packages are suitable for themselves. After booking, you will be notified by email
 
-### `npm run build`
+![alt text](https://raw.githubusercontent.com/VanKhang99/bookingCare-host-images/main/Readme%20file/Booking.png)
+![alt text](https://raw.githubusercontent.com/VanKhang99/bookingCare-host-images/main/Readme%20file/Booking-2.png)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. Users can filter doctors and packages by 4 criteria: 
+    - City
+    - Category
+    - Price
+    - Hospital
+    
+ ![alt text](https://raw.githubusercontent.com/VanKhang99/bookingCare-host-images/main/Readme%20file/Filter.png)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. Web have admin page, doctor page and personal page
+    - Admin page: responsible for CRUD examination packages, CRUD accounts for doctors, modifying information about doctors as well as medical examination packages, ....
+    ![alt text](https://raw.githubusercontent.com/VanKhang99/bookingCare-host-images/main/Readme%20file/admin-page.png)
+    
+    - Doctor page: can see the number of people who book an appointment in the next days, create or delete a medical appointment that suits your time.
+    ![alt text](https://raw.githubusercontent.com/VanKhang99/bookingCare-host-images/main/Readme%20file/doctor-page.png)
+    
+    - Personal page: can view appointment history
+    ![alt text](https://raw.githubusercontent.com/VanKhang99/bookingCare-host-images/main/Readme%20file/personal-page.png)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+4. User can create an account, and login by GmaiL - Facebook, update account information, change password, change picture, view appointment history
 
-### `npm run eject`
+![alt text](https://raw.githubusercontent.com/VanKhang99/bookingCare-host-images/main/Readme%20file/Login-page.png)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+5. Scheduled appointment times will be updated in real time
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+6. Possible to change the website language, but there are still many limitations
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## `Update in the future`
+- Responsive website compatible with many different screens
+- Packages of surgery, medical tests
+- Medical products
+- Simulate online payment function
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## `Try account admin`
+- email: admin@bookingcare.io
+- password: 123456

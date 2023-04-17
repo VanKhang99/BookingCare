@@ -19,9 +19,7 @@ export const createSchedules = createAsyncThunk("schedule/createSchedules", asyn
 
 export const getSchedules = createAsyncThunk("schedule/getSchedules", async (data, thunkAPI) => {
   try {
-    const res = await axios.get(
-      `/api/schedules/${data.keyMap}=${+data.id}&${data.timeStamp}&${data.timesFetch}`
-    );
+    const res = await axios.get(`/api/schedules/${data.keyMap}=${+data.id}&${data.timeStamp}`);
     return res.data;
   } catch (error) {
     return error.response;

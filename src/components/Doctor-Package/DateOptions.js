@@ -23,7 +23,6 @@ const DateOptions = ({ small, id, onUpdateSchedules, keyMapFetchPackage }) => {
 
   const handleGetScheduleNextDay = async () => {
     try {
-      console.log(state.optionsDate);
       let newDateSelected = new Date();
       newDateSelected.setDate(newDateSelected.getDate() + 1);
       newDateSelected = formatDate(newDateSelected, language);
@@ -37,7 +36,6 @@ const DateOptions = ({ small, id, onUpdateSchedules, keyMapFetchPackage }) => {
           ? `${currentDate.getDate()}/${currentDate.getMonth()}/${currentDate.getFullYear()}`
           : `${currentDate.getMonth()}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
 
-      console.log(nextDay);
       const timeStampToRequestData = moment(
         nextDay,
         `${language === "vi" ? "DD/MM/YYYY" : "MM/DD/YYYY"}`
@@ -48,7 +46,6 @@ const DateOptions = ({ small, id, onUpdateSchedules, keyMapFetchPackage }) => {
           id: +id,
           timeStamp: `${timeStampToRequestData}`,
           keyMap: keyMapFetchPackage ? "packageId" : "doctorId",
-          timesFetch: "not-initial-fetch",
         })
       );
 
@@ -59,6 +56,37 @@ const DateOptions = ({ small, id, onUpdateSchedules, keyMapFetchPackage }) => {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleScheduleFuture = (schedulesArr) => {
+    if (!schedulesArr.length) return [];
+
+    const curDate = new Date();
+    curDate.setMinutes(curDate.getMinutes() + 30);
+    curDate.setHours(curDate.getHours() + 7);
+    // console.log("curDate", curDate);
+    // console.log(curDate.getTime());
+
+    const newSchedules = schedulesArr
+      .reduce((acc, schedule) => {
+        const hour = schedule.timeTypeData.valueVi.split(" - ")[0];
+        // console.log(hour);
+
+        const dateConvertToCompare = new Date();
+        dateConvertToCompare.setHours(+hour.split(":")[0] + 7);
+        dateConvertToCompare.setMinutes(hour.split(":")[1]);
+        dateConvertToCompare.setSeconds(0);
+
+        // console.log(typeof dateConvertToCompare.getTime());
+        // console.log("dateConvertToCompare", dateConvertToCompare);
+        // console.log(dateConvertToCompare > curDate);
+
+        if (+dateConvertToCompare.getTime() > +curDate.getTime()) acc.push(schedule);
+        return acc;
+      }, [])
+      .sort((a, b) => +a.frameTimestamp - +b.frameTimestamp);
+
+    return newSchedules;
   };
 
   const handleGetSchedules = async (data, initFetch) => {
@@ -78,17 +106,14 @@ const DateOptions = ({ small, id, onUpdateSchedules, keyMapFetchPackage }) => {
           id: +id,
           timeStamp: `${timeStampToRequestData}`,
           keyMap: keyMapFetchPackage ? "packageId" : "doctorId",
-          timesFetch: initFetch ? "initial-fetch" : "not-initial-fetch",
         })
       );
 
-      console.log(res);
-
-      if (!res?.payload?.schedules.length) {
-        if (initFetch) {
+      if (initFetch) {
+        const schedulesRealtime = handleScheduleFuture(res.payload.schedules);
+        if (!schedulesRealtime.length) {
           const { dateSelected, schedules } = await handleGetScheduleNextDay();
-          console.log(dateSelected, schedules);
-          if (schedules.length > 0) {
+          if (schedules.length) {
             onUpdateSchedules(schedules);
             return setState({
               ...state,
@@ -98,8 +123,10 @@ const DateOptions = ({ small, id, onUpdateSchedules, keyMapFetchPackage }) => {
           }
           return onUpdateSchedules([]);
         }
-        return onUpdateSchedules([]);
+
+        return onUpdateSchedules(schedulesRealtime);
       }
+
       return onUpdateSchedules(res.payload.schedules);
     } catch (error) {
       console.error(error);
@@ -141,6 +168,7 @@ const DateOptions = ({ small, id, onUpdateSchedules, keyMapFetchPackage }) => {
 
   const handleDateChange = (e) => {
     const optionDateSelected = state.optionsDate.find((date) => date.includes(e.target.value));
+    console.log(optionDateSelected);
 
     optionDateSelected === initDateSelected
       ? handleGetSchedules(optionDateSelected, true)
@@ -153,14 +181,15 @@ const DateOptions = ({ small, id, onUpdateSchedules, keyMapFetchPackage }) => {
   };
 
   useEffect(() => {
+    if (!state.optionsDate.length) return;
     handleGetSchedules(initDateSelected, state.initialFetch);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [state.optionsDate.length]);
 
   useEffect(() => {
     createOptionsDate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [language, state.optionsDate.length]);
+  }, [language, state.initialFetch]);
 
   return (
     <>

@@ -8,6 +8,7 @@ import { getDoctor } from "../slices/doctorSlice";
 import { dataModalBooking, helperDisplayNameDoctor } from "../utils/helpers";
 import { DateOptions, BookingHours, ClinicInfo, ModalBooking, Introduce, Loading } from "../components";
 import "../styles/DetailDoctor.scss";
+import scheduleSlice from "./../slices/scheduleSlice";
 
 const initialState = {
   isOpenModalBooking: false,
@@ -33,7 +34,7 @@ const DetailDoctor = ({ remote }) => {
   };
 
   const handleUpdateSchedules = (schedulesArr) => {
-    return setState({ ...state, schedules: schedulesArr });
+    setState({ ...state, schedules: schedulesArr });
   };
 
   useEffect(() => {

@@ -112,16 +112,17 @@ function App() {
             <Route path={`${path.PACKAGE}s/${path.CATEGORIES}/:categoryId`} element={<DetailCategory />} />
 
             <Route path={path.ERROR} element={<Navigate to="/" replace />} />
-
-            <Route
-              path={`${path.CONFIRM_BOOKING}/token=:token&doctorId=:doctorId`}
-              element={<ConfirmBooking />}
-            />
-            <Route
-              path={`${path.CONFIRM_BOOKING}/token=:token&packageId=:packageId`}
-              element={<ConfirmBooking />}
-            />
           </Route>
+
+          <Route
+            path={`${path.CONFIRM_BOOKING}/token=:token&doctorId=:doctorId`}
+            element={<ConfirmBooking />}
+          />
+
+          <Route
+            path={`${path.CONFIRM_BOOKING}/token=:token&packageId=:packageId`}
+            element={<ConfirmBooking />}
+          />
 
           {/* USER ACCOUNT ROUTE */}
           <Route

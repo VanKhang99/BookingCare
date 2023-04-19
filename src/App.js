@@ -14,9 +14,8 @@ import {
   Login,
   Register,
   Profile,
-  Support,
   System,
-  VerifyBooking,
+  ConfirmBooking,
   PackageDetail,
   Packages,
   PackageClinic,
@@ -112,15 +111,15 @@ function App() {
             <Route path={`${path.PACKAGE}s/${path.CLINIC}/:clinicId`} element={<PackageClinic />} />
             <Route path={`${path.PACKAGE}s/${path.CATEGORIES}/:categoryId`} element={<DetailCategory />} />
 
-            <Route path={path.SUPPORT} element={<Support />} />
             <Route path={path.ERROR} element={<Navigate to="/" replace />} />
+
             <Route
-              path={`${path.VERIFY_BOOKING}/token=:token&doctorId=:doctorId`}
-              element={<VerifyBooking />}
+              path={`${path.CONFIRM_BOOKING}/token=:token&doctorId=:doctorId`}
+              element={<ConfirmBooking />}
             />
             <Route
-              path={`${path.VERIFY_BOOKING}/token=:token&packageId=:packageId`}
-              element={<VerifyBooking />}
+              path={`${path.CONFIRM_BOOKING}/token=:token&packageId=:packageId`}
+              element={<ConfirmBooking />}
             />
           </Route>
 

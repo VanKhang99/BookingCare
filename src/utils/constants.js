@@ -17,7 +17,7 @@ export const path = {
   SUPPORT: "support",
   ERROR: "*",
   SYSTEM: "system",
-  VERIFY_BOOKING: "verify-booking",
+  CONFIRM_BOOKING: "confirm-booking",
 
   REMOTEEXAM: "remote-exam",
   MEDICALTEST: "medical-test",

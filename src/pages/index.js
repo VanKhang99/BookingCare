@@ -12,10 +12,9 @@ import MedicalPackage from "./MedicalPackage";
 import Login from "./Login";
 import Register from "./Register";
 import Profile from "./Profile";
-import Support from "./Support";
 import Error from "./Error";
 import System from "./System";
-import VerifyBooking from "./VerifyBooking";
+import ConfirmBooking from "./ConfirmBooking";
 import PackageDetail from "./PackageDetail";
 import Packages from "./Packages";
 import DetailCategory from "./DetailCategory";
@@ -49,10 +48,9 @@ export {
   Login,
   Register,
   Profile,
-  Support,
   Error,
   System,
-  VerifyBooking,
+  ConfirmBooking,
   Packages,
   PackageDetail,
   DetailCategory,

@@ -233,7 +233,7 @@
     "button-confirm": "Confirm"
   },
 
-  "verify-booking": {
+  "confirm-booking": {
     "confirm-booking-existed": "Medical appointment confirmed or non-existent!!!",
     "confirm-success": "Confirmation of successful appointment booking",
     "confirm-title": "Confirm appointment booking"

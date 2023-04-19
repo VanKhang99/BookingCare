@@ -14,14 +14,14 @@ export const createBooking = createAsyncThunk("booking/createBooking", async (da
   }
 });
 
-export const verifyBooking = createAsyncThunk("booking/verifyBooking", async (data, thunkAPI) => {
+export const confirmBooking = createAsyncThunk("booking/confirmBooking", async (data, thunkAPI) => {
   try {
     const res = data.doctorId
       ? await axios.patch(
-          `/api/bookings/verify-booking/${data.token}&${data.doctorId}&${"confirm-booking--private-doctor"}`
+          `/api/bookings/confirm-booking/${data.token}&${data.doctorId}&${"confirm-booking--private-doctor"}`
         )
       : await axios.patch(
-          `/api/bookings/verify-booking/${data.token}&${data.packageId}&${"confirm-booking-package"}`
+          `/api/bookings/confirm-booking/${data.token}&${data.packageId}&${"confirm-booking-package"}`
         );
     return res;
   } catch (error) {

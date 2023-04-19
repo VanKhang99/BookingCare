@@ -234,7 +234,7 @@
     "button-confirm": "Xác nhận đặt khám"
   },
 
-  "verify-booking": {
+  "confirm-booking": {
     "confirm-booking-existed": "Lịch khám bệnh đã được xác nhận hoặc không tồn tại!!!",
     "confirm-success": "Xác nhận đặt lịch khám bệnh thành công",
     "confirm-title": "Xác nhận đặt lịch khám bệnh"

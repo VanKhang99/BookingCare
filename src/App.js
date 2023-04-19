@@ -54,16 +54,6 @@ function App() {
           <Route path={path.LOGIN} element={<Login />} />
           <Route path={path.REGISTER} element={<Register />} />
 
-          <Route
-            path={`${path.CONFIRM_BOOKING}/token/:token/doctorId/:doctorId`}
-            element={<ConfirmBooking />}
-          />
-
-          <Route
-            path={`${path.CONFIRM_BOOKING}/token/:token/packageId/:packageId`}
-            element={<ConfirmBooking />}
-          />
-
           {/* NORMAL ROUTE */}
           <Route path="/" element={<SharedLayout clientInterface={1} />}>
             <Route index element={<Home />} />
@@ -121,7 +111,17 @@ function App() {
             <Route path={`${path.PACKAGE}s/${path.CLINIC}/:clinicId`} element={<PackageClinic />} />
             <Route path={`${path.PACKAGE}s/${path.CATEGORIES}/:categoryId`} element={<DetailCategory />} />
 
-            {/* <Route path={path.ERROR} element={<Navigate to="/" replace />} /> */}
+            <Route
+              path={`${path.CONFIRM_BOOKING}/token/:token/doctorId/:doctorId`}
+              element={<ConfirmBooking />}
+            />
+
+            <Route
+              path={`${path.CONFIRM_BOOKING}/token/:token/packageId/:packageId`}
+              element={<ConfirmBooking />}
+            />
+
+            <Route path={path.ERROR} element={<Navigate to="/" replace />} />
           </Route>
 
           {/* USER ACCOUNT ROUTE */}

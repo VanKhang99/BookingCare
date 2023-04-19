@@ -45,8 +45,6 @@ const ConfirmBooking = () => {
   return (
     <>
       <div className="confirm-booking-container">
-        <Header />
-
         <div className="confirm-booking-content">
           {!state.isVerified ? (
             <>
@@ -59,8 +57,6 @@ const ConfirmBooking = () => {
             <h1>{state.message}</h1>
           )}
         </div>
-
-        <Footer />
       </div>
     </>
   );

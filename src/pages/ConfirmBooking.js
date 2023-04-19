@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { confirmBooking } from "../slices/bookingSlice";
 import "../styles/ConfirmBooking.scss";
-import { languages } from "../utils/constants";
 
 const initialState = {
   isVerified: false,
@@ -18,6 +17,8 @@ const ConfirmBooking = () => {
   const { t } = useTranslation();
   const { token, doctorId, packageId } = useParams();
   const { language } = useSelector((store) => store.app);
+
+  console.log(token, doctorId, packageId);
 
   const handleVerifyBooking = async () => {
     if (token) {

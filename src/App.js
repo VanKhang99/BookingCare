@@ -55,12 +55,12 @@ function App() {
           <Route path={path.REGISTER} element={<Register />} />
 
           <Route
-            path={`${path.CONFIRM_BOOKING}/token=:token&doctorId=:doctorId`}
+            path={`${path.CONFIRM_BOOKING}/token/:token/doctorId/:doctorId`}
             element={<ConfirmBooking />}
           />
 
           <Route
-            path={`${path.CONFIRM_BOOKING}/token=:token&packageId=:packageId`}
+            path={`${path.CONFIRM_BOOKING}/token/:token/packageId/:packageId`}
             element={<ConfirmBooking />}
           />
 

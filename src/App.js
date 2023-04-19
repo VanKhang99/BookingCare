@@ -121,7 +121,7 @@ function App() {
             <Route path={`${path.PACKAGE}s/${path.CLINIC}/:clinicId`} element={<PackageClinic />} />
             <Route path={`${path.PACKAGE}s/${path.CATEGORIES}/:categoryId`} element={<DetailCategory />} />
 
-            <Route path={path.ERROR} element={<Navigate to="/" replace />} />
+            {/* <Route path={path.ERROR} element={<Navigate to="/" replace />} /> */}
           </Route>
 
           {/* USER ACCOUNT ROUTE */}

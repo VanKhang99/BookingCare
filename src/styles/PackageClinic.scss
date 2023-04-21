@@ -1,6 +1,7 @@
 @import "./sass/variables";
 
 .package-clinic-container {
+  flex: 1;
   .package-clinic-image {
     img {
       margin-top: $height-header;

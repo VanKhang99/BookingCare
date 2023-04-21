@@ -3,6 +3,7 @@ import _ from "lodash";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
+import { Skeleton } from "antd";
 import { Filter, Package, ModalBooking, ScrollToTop } from "../components";
 import { getAllPackages, getPackage } from "../slices/packageSlice";
 import { getAllCategories } from "../slices/categorySlice";
@@ -33,11 +34,13 @@ const initialState = {
 
 const Packages = () => {
   const [packageState, setPackageState] = useState(initialState);
-  const [packageFiltered, setPackageFiltered] = useState([]);
+  const [packageToRender, setPackageToRender] = useState([]);
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
-  const { categories } = useSelector((store) => store.category);
+  const { isLoadingCategory, categories } = useSelector((store) => store.category);
+  const { isLoadingPackage, packageArr } = useSelector((store) => store.package);
+  const { isLoadingClinics, clinics } = useSelector((store) => store.clinic);
 
   const handleModal = async (hourClicked, doctorId = null, packageId = null) => {
     // console.log("test");
@@ -71,35 +74,23 @@ const Packages = () => {
     }
   };
 
-  const handlePackagesClinics = async () => {
-    try {
-      const res = await Promise.all([
-        dispatch(getAllPackages({ clinicId: null, specialId: null, getAll: false })),
-        dispatch(getAllClinics("all")),
-      ]);
+  const handlePackagesClinics = () => {
+    const packagesOutstanding = packageArr.filter((pk) => pk.popular);
+    const clinicsIdInPackages = [...new Set(packageArr.map((pk) => pk.clinicId))];
+    const clinicsHavePackages = clinics.filter((clinic) => clinicsIdInPackages.includes(clinic.id));
 
-      const packages = res[0]?.payload?.data;
-      const packagesOutstanding = packages.filter((pk) => pk.popular);
-
-      const clinicsIdInPackages = [...new Set(packages.map((pk) => pk.clinicId))];
-      const clinics = res[1]?.payload?.clinics;
-      const clinicsHavePackages = clinics.filter((clinic) => clinicsIdInPackages.includes(clinic.id));
-
-      setPackageState({
-        ...packageState,
-        packages,
-        packagesOutstanding,
-        clinicsHavePackages,
-        packageFilteredInit: packages,
-      });
-    } catch (error) {
-      console.error(error);
-    }
+    setPackageState({
+      ...packageState,
+      packages: packageArr,
+      packagesOutstanding,
+      clinicsHavePackages,
+      packageFilteredInit: packageArr,
+    });
   };
 
   const handleFilteredData = (arr, firstFilter = false) => {
     if (firstFilter) {
-      return setPackageFiltered(arr);
+      return setPackageToRender(arr);
     }
 
     setPackageState({
@@ -110,7 +101,7 @@ const Packages = () => {
       endIndex: END_INDEX,
       isRenderFull: false,
     });
-    setPackageFiltered(arr.slice(START_INDEX, END_INDEX));
+    setPackageToRender(arr.slice(START_INDEX, END_INDEX));
   };
 
   const handleArrayToRender = (type) => {
@@ -170,31 +161,39 @@ const Packages = () => {
   };
 
   const handleScroll = () => {
+    // if()
     if (packageState.isRenderFull) return;
-
+    if (!packageState.packageFilteredInit.length) return;
     if (
       window.innerHeight + document.documentElement.scrollTop <=
       document.documentElement.offsetHeight - 2
     ) {
       return;
     }
-
     if (packageState.startIndex > packageState.packageFilteredInit.length)
       return setPackageState({ ...packageState, isRenderFull: true });
 
     const newStartIndex = packageState.startIndex + 5;
     const newEndIndex = packageState.endIndex + 5;
     const newPackageFiltered = packageState.packageFilteredInit.slice(newStartIndex, newEndIndex);
-
     setPackageState({ ...packageState, startIndex: newStartIndex, endIndex: newEndIndex });
-    setPackageFiltered([...packageFiltered, ...newPackageFiltered]);
+    setPackageToRender([...packageToRender, ...newPackageFiltered]);
   };
 
   useEffect(() => {
-    dispatch(getAllCategories());
-    handlePackagesClinics();
+    if (!categories.length) {
+      dispatch(getAllCategories());
+    }
+
+    if (!packageArr.length || !clinics.length) {
+      Promise.all([dispatch(getAllPackages()), dispatch(getAllClinics())]);
+    }
+
+    if (packageArr.length && clinics.length) {
+      handlePackagesClinics();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [categories.length, packageArr.length, clinics.length]);
 
   useEffect(() => {
     document.title = language === "vi" ? "Gói khám bệnh" : "Medical examination packages";
@@ -217,7 +216,7 @@ const Packages = () => {
         <div className="packages-filter">
           <Filter
             packageArr={packageState.packages}
-            dataFiltered={packageFiltered}
+            dataFiltered={packageToRender}
             onFilteredData={handleFilteredData}
             haveFilterByClinicsAndCity={true}
             onHideSomeElement={handleHideElement}
@@ -238,24 +237,28 @@ const Packages = () => {
                 </button>
               </div>
 
-              <div className="packages-categories-list">
-                {handleArrayToRender("Categories").map((pk) => {
-                  const { id, imageUrl, nameEn, nameVi } = pk;
+              {!isLoadingCategory ? (
+                <div className="packages-categories-list">
+                  {handleArrayToRender("Categories").map((pk) => {
+                    const { id, imageUrl, nameEn, nameVi } = pk;
 
-                  return (
-                    <Link to={`${path.CATEGORIES}/${id}`} key={id} className="packages-categories-item">
-                      <img
-                        src={imageUrl}
-                        alt={language === "vi" ? nameVi : nameEn}
-                        className="packages-categories-item__image"
-                      />
-                      <div className="packages-categories-item__name">
-                        <span>{language === "vi" ? nameVi : nameEn}</span>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
+                    return (
+                      <Link to={`${path.CATEGORIES}/${id}`} key={id} className="packages-categories-item">
+                        <img
+                          src={imageUrl}
+                          alt={language === "vi" ? nameVi : nameEn}
+                          className="packages-categories-item__image"
+                        />
+                        <div className="packages-categories-item__name">
+                          <span>{language === "vi" ? nameVi : nameEn}</span>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              ) : (
+                <Skeleton active />
+              )}
             </div>
 
             <div className="packages-outstanding">
@@ -267,29 +270,33 @@ const Packages = () => {
                 </button>
               </div>
 
-              <div className="packages-outstanding-list">
-                {handleArrayToRender("PackagesOutstanding").map((pk) => {
-                  const { id, imageUrl, nameEn, nameVi, price } = pk;
+              {!isLoadingPackage ? (
+                <div className="packages-outstanding-list">
+                  {handleArrayToRender("PackagesOutstanding").map((pk) => {
+                    const { id, imageUrl, nameEn, nameVi, price } = pk;
 
-                  return (
-                    <Link to={`${id}`} key={id} className="packages-outstanding-item">
-                      <img
-                        src={imageUrl}
-                        alt={language === "vi" ? nameVi : nameEn}
-                        className="packages-outstanding-item__image"
-                      />
-                      <div className="packages-outstanding-item__name">
-                        <span>{language === "vi" ? nameVi : nameEn}</span>
-                      </div>
+                    return (
+                      <Link to={`${id}`} key={id} className="packages-outstanding-item">
+                        <img
+                          src={imageUrl}
+                          alt={language === "vi" ? nameVi : nameEn}
+                          className="packages-outstanding-item__image"
+                        />
+                        <div className="packages-outstanding-item__name">
+                          <span>{language === "vi" ? nameVi : nameEn}</span>
+                        </div>
 
-                      <div className="packages-outstanding-price">
-                        <span>Giá</span>
-                        <b>{formatterPrice(language, price)}</b>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
+                        <div className="packages-outstanding-price">
+                          <span>Giá</span>
+                          <b>{formatterPrice(language, price)}</b>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              ) : (
+                <Skeleton active />
+              )}
             </div>
 
             <div className="packages-clinics">
@@ -305,31 +312,35 @@ const Packages = () => {
                 </Link>
               </div>
 
-              <div className="packages-clinics-list">
-                {packageState.clinicsHavePackages.length > 0 &&
-                  packageState.clinicsHavePackages.slice(0, 5).map((pk) => {
-                    const { id, logoUrl, nameEn, nameVi } = pk;
-                    return (
-                      <Link to={`${path.CLINIC}/${id}`} key={id} className="packages-clinics-item">
-                        <img
-                          src={logoUrl}
-                          alt={language === "vi" ? nameVi : nameEn}
-                          className="packages-clinics-item__image"
-                        />
-                        <div className="packages-clinics-item__name">
-                          <span>{language === "vi" ? nameVi : nameEn}</span>
-                        </div>
-                      </Link>
-                    );
-                  })}
-              </div>
+              {!isLoadingClinics ? (
+                <div className="packages-clinics-list">
+                  {packageState.clinicsHavePackages.length > 0 &&
+                    packageState.clinicsHavePackages.slice(0, 5).map((pk) => {
+                      const { id, logoUrl, nameEn, nameVi } = pk;
+                      return (
+                        <Link to={`${path.CLINIC}/${id}`} key={id} className="packages-clinics-item">
+                          <img
+                            src={logoUrl}
+                            alt={language === "vi" ? nameVi : nameEn}
+                            className="packages-clinics-item__image"
+                          />
+                          <div className="packages-clinics-item__name">
+                            <span>{language === "vi" ? nameVi : nameEn}</span>
+                          </div>
+                        </Link>
+                      );
+                    })}
+                </div>
+              ) : (
+                <Skeleton active />
+              )}
             </div>
           </>
         )}
 
         {packageState.hideSomeElement &&
-          packageFiltered.length > 0 &&
-          packageFiltered.map((pk) => {
+          packageToRender.length > 0 &&
+          packageToRender.map((pk) => {
             return (
               <Package
                 key={pk.id}

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Carousel } from "antd";
+import { Carousel, Skeleton } from "antd";
 import { IoPersonCircle } from "react-icons/io5";
 import { MdWork } from "react-icons/md";
 import { getAllDoctors } from "../../slices/doctorSlice";
@@ -10,53 +10,65 @@ import "../../styles/Carousel.scss";
 const CarouselDoctor = ({ onChange, settings }) => {
   const dispatch = useDispatch();
   const { language } = useSelector((store) => store.app);
-  const { doctors } = useSelector((store) => store.doctor);
+  const { doctors, isLoadingDoctors } = useSelector((store) => store.doctor);
 
   useEffect(() => {
-    dispatch(getAllDoctors("popular"));
+    if (doctors.length) return;
+
+    const dispatchedThunk = dispatch(getAllDoctors("popular"));
+
+    return () => {
+      dispatchedThunk.abort();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [doctors.length]);
 
   return (
-    <Carousel className="slides" afterChange={onChange} {...settings}>
-      {doctors?.length > 0 &&
-        doctors.map((doctor) => {
-          const { doctorId, moreData, specialtyData } = doctor;
-          const { positionData, roleData, firstName, lastName, imageUrl } = moreData;
-          const position = language === "vi" ? positionData.valueVi : positionData.valueEn;
-          const role = language === "vi" ? roleData.valueVi : roleData.valueEn;
-          const positionRole = positionData.keyMap !== "P0" ? `${position} - ${role}` : `${role}`;
-          const specialty = language === "vi" ? specialtyData.nameVi : specialtyData.nameEn;
-          const fullName = language === "vi" ? `${lastName} ${firstName}` : `${firstName} ${lastName}`;
+    <>
+      {!isLoadingDoctors ? (
+        <Carousel className="slides" afterChange={onChange} {...settings}>
+          {doctors?.length > 0 &&
+            doctors.map((doctor) => {
+              const { doctorId, moreData, specialtyData } = doctor;
+              const { positionData, roleData, firstName, lastName, imageUrl } = moreData;
+              const position = language === "vi" ? positionData.valueVi : positionData.valueEn;
+              const role = language === "vi" ? roleData.valueVi : roleData.valueEn;
+              const positionRole = positionData.keyMap !== "P0" ? `${position} - ${role}` : `${role}`;
+              const specialty = language === "vi" ? specialtyData.nameVi : specialtyData.nameEn;
+              const fullName = language === "vi" ? `${lastName} ${firstName}` : `${firstName} ${lastName}`;
 
-          return (
-            <Link to={`/doctor/${doctorId}`} key={doctorId} className="slide">
-              <div className="slide-content">
-                <div className="slide-content__img">
-                  <img src={imageUrl} alt={fullName} />
-                </div>
+              return (
+                <Link to={`/doctor/${doctorId}`} key={doctorId} className="slide">
+                  <div className="slide-content">
+                    <div className="slide-content__img">
+                      <img src={imageUrl} alt={fullName} />
+                    </div>
 
-                <div className="slide-info">
-                  <div className="slide-info__degree">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
-                      <path d="M622.34 153.2L343.4 67.5c-15.2-4.67-31.6-4.67-46.79 0L17.66 153.2c-23.54 7.23-23.54 38.36 0 45.59l48.63 14.94c-10.67 13.19-17.23 29.28-17.88 46.9C38.78 266.15 32 276.11 32 288c0 10.78 5.68 19.85 13.86 25.65L20.33 428.53C18.11 438.52 25.71 448 35.94 448h56.11c10.24 0 17.84-9.48 15.62-19.47L82.14 313.65C90.32 307.85 96 298.78 96 288c0-11.57-6.47-21.25-15.66-26.87.76-15.02 8.44-28.3 20.69-36.72L296.6 284.5c9.06 2.78 26.44 6.25 46.79 0l278.95-85.7c23.55-7.24 23.55-38.36 0-45.6zM352.79 315.09c-28.53 8.76-52.84 3.92-65.59 0l-145.02-44.55L128 384c0 35.35 85.96 64 192 64s192-28.65 192-64l-14.18-113.47-145.03 44.56z" />
-                    </svg>
-                    <span> {positionRole}</span>
+                    <div className="slide-info">
+                      <div className="slide-info__degree">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+                          <path d="M622.34 153.2L343.4 67.5c-15.2-4.67-31.6-4.67-46.79 0L17.66 153.2c-23.54 7.23-23.54 38.36 0 45.59l48.63 14.94c-10.67 13.19-17.23 29.28-17.88 46.9C38.78 266.15 32 276.11 32 288c0 10.78 5.68 19.85 13.86 25.65L20.33 428.53C18.11 438.52 25.71 448 35.94 448h56.11c10.24 0 17.84-9.48 15.62-19.47L82.14 313.65C90.32 307.85 96 298.78 96 288c0-11.57-6.47-21.25-15.66-26.87.76-15.02 8.44-28.3 20.69-36.72L296.6 284.5c9.06 2.78 26.44 6.25 46.79 0l278.95-85.7c23.55-7.24 23.55-38.36 0-45.6zM352.79 315.09c-28.53 8.76-52.84 3.92-65.59 0l-145.02-44.55L128 384c0 35.35 85.96 64 192 64s192-28.65 192-64l-14.18-113.47-145.03 44.56z" />
+                        </svg>
+                        <span> {positionRole}</span>
+                      </div>
+                      <div className="slide-info__doctor-name">
+                        <IoPersonCircle />
+                        <span> {fullName}</span>
+                      </div>
+                      <div className="slide-info__specialty">
+                        <MdWork />
+                        <span>{specialty}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="slide-info__doctor-name">
-                    <IoPersonCircle />
-                    <span> {fullName}</span>
-                  </div>
-                  <div className="slide-info__specialty">
-                    <MdWork />
-                    <span>{specialty}</span>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          );
-        })}
-    </Carousel>
+                </Link>
+              );
+            })}
+        </Carousel>
+      ) : (
+        <Skeleton active />
+      )}
+    </>
   );
 };
 

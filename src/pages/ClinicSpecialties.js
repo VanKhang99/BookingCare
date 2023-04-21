@@ -2,33 +2,20 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { InputSearch } from "../components";
-import { getAllSpecialtiesByClinicId } from "../slices/clinicSpecialtySlice";
+import { getAllSpecialtiesByClinicId, specialtiesClinicSearched } from "../slices/clinicSpecialtySlice";
 import { helperFilterSearch } from "../utils/helpers";
 import { MdLocationOn } from "react-icons/md";
 import { path } from "../utils/constants";
 import "../styles/ClinicSpecialties.scss";
 
 const ClinicSpecialties = () => {
-  const [specialties, setSpecialties] = useState([]);
-  const [filterSpecialties, setFilterSpecialties] = useState([]);
   const dispatch = useDispatch();
   const { clinicId } = useParams();
   const { language } = useSelector((store) => store.app);
-
-  const handleFetchSpecialties = async () => {
-    try {
-      const res = await dispatch(getAllSpecialtiesByClinicId(clinicId));
-      if (res?.payload?.data.length > 0) {
-        setSpecialties([...res.payload.data]);
-        setFilterSpecialties([...res.payload.data]);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const { specialtiesForClinic, filterSpecialtiesForClinic } = useSelector((store) => store.clinicSpecialty);
 
   const handleSearchSpecialties = (e) => {
-    let specialtiesCopy = [...specialties];
+    let specialtiesCopy = [...specialtiesForClinic];
     const newSpecialties = specialtiesCopy.filter((specialty) => {
       const { targetName, input } = helperFilterSearch(e.target.value, specialty.specialtyName.nameVi);
 
@@ -37,28 +24,29 @@ const ClinicSpecialties = () => {
       return specialty.nameData.valueEn.toLowerCase().includes(e.target.value.toLowerCase());
     });
 
-    return setFilterSpecialties(newSpecialties);
+    dispatch(specialtiesClinicSearched(newSpecialties));
   };
 
   useEffect(() => {
-    if (clinicId) {
-      handleFetchSpecialties();
-      // document.title = language === 'vi' `Các chuyên khoa `
-    }
+    if (specialtiesForClinic.length) return;
+
+    const dispatchedThunk = dispatch(getAllSpecialtiesByClinicId(clinicId));
+
+    return () => {
+      dispatchedThunk.abort();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [specialtiesForClinic.length]);
 
   useEffect(() => {
-    if (specialties.length > 0) {
+    if (specialtiesForClinic.length > 0) {
       document.title =
         language === "vi"
-          ? `Các chuyên khoa tại ${specialties[0].clinicInfo.nameVi}`
-          : `Specialties at ${specialties[0].clinicInfo.nameEn}`;
+          ? `Các chuyên khoa tại ${specialtiesForClinic[0].clinicInfo.nameVi}`
+          : `Specialties at ${specialtiesForClinic[0].clinicInfo.nameEn}`;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [language, specialties.length]);
-
-  // console.log();
+  }, [language, specialtiesForClinic.length]);
 
   return (
     <div className="clinic-specialties-container">
@@ -77,8 +65,8 @@ const ClinicSpecialties = () => {
         </div>
 
         <div className="clinic-specialties-list">
-          {filterSpecialties.length > 0 &&
-            filterSpecialties.map((specialty) => {
+          {filterSpecialtiesForClinic.length > 0 &&
+            filterSpecialtiesForClinic.map((specialty) => {
               const {
                 imageUrl,
                 specialtyName,

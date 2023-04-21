@@ -17,6 +17,37 @@
     background-color: $grey-2;
     border-radius: 1rem;
   }
+
+  h2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    span {
+      flex: 1;
+      margin-left: 2.4rem;
+    }
+  }
+
+  &__reload {
+    border: none;
+    background-color: $color-blue-dark-3;
+    padding: 0.8rem 2rem;
+    margin-right: 2.4rem;
+    border-radius: 0.6rem;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 2.4rem;
+      height: 2.4rem;
+      color: #fff;
+    }
+  }
+
   .appointment-history-list {
     display: flex;
     flex-direction: column;
@@ -32,6 +63,7 @@
     }
 
     .appointment-history-item {
+      position: relative;
       background-color: $color-purple-light;
       border-radius: 0.6rem;
       padding: 2rem;
@@ -42,6 +74,28 @@
         font-weight: 700;
         text-transform: uppercase;
         margin-bottom: 2rem;
+      }
+
+      &__delete {
+        position: absolute;
+        bottom: 1.2rem;
+        right: 0.8rem;
+        background-color: transparent;
+        opacity: 0.6;
+        transition: $transition-2;
+
+        &:hover {
+          opacity: 1;
+          svg {
+            color: $color-red;
+          }
+        }
+
+        svg {
+          width: 2rem;
+          height: 2rem;
+          transition: $transition-2;
+        }
       }
     }
 
@@ -57,6 +111,11 @@
         align-items: center;
         gap: 1.2rem;
         margin-left: 0.4rem;
+
+        strong {
+          font-weight: 700;
+          font-style: italic;
+        }
 
         &__label {
           flex-shrink: 0;

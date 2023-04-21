@@ -188,9 +188,18 @@ const FormUser = ({ dataUserEdit, handleGetAllUsers, roleToFilter, total, onRese
   };
 
   useEffect(() => {
-    dispatch(getAllCodes("GENDER"));
-    dispatch(getAllCodes("POSITION"));
-    dispatch(getAllCodes("ROLE"));
+    if (!genderArr.length) {
+      dispatch(getAllCodes("GENDER"));
+    }
+
+    if (!positionArr.length) {
+      dispatch(getAllCodes("POSITION"));
+    }
+
+    if (!roleArr.length) {
+      dispatch(getAllCodes("ROLE"));
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

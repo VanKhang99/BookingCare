@@ -34,14 +34,13 @@ const initialState = {
 
 const PackageClinic = () => {
   const [pkClinicState, setPkClinicState] = useState(initialState);
-  const [packageFiltered, setPackageFiltered] = useState([]);
+  const [packageToRender, setPackageToRender] = useState([]);
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
   const { clinicId } = useParams();
+  const { packageArr } = useSelector((store) => store.package);
   const clinicData = useFetchDataBaseId(+clinicId, "clinic", getClinic);
-
-  console.log(clinicId);
 
   const handleModal = async (hourClicked, doctorId = null, packageId = null) => {
     // console.log("test");
@@ -75,30 +74,13 @@ const PackageClinic = () => {
     }
   };
 
-  const fetchAllPackageByClinic = async () => {
-    try {
-      const res = await dispatch(getAllPackages({ clinicId: null, specialtyId: null, getAll: false }));
-      if (res.payload.data.length > 0) {
-        const packageBelongClinicId = res.payload.data.filter((pk) => pk.clinicId === +clinicId);
-        setPkClinicState({
-          ...pkClinicState,
-          packageArr: res.payload.data,
-          packageFilteredInit: packageBelongClinicId,
-        });
-        setPackageFiltered(packageBelongClinicId.slice(START_INDEX, END_INDEX));
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const handleShowFullIntro = () => {
     setPkClinicState({ ...pkClinicState, isOpenFullIntro: !pkClinicState.isOpenFullIntro });
   };
 
   const handleFilteredData = (arr, firstFilter = false) => {
     if (firstFilter) {
-      return setPackageFiltered(arr);
+      return setPackageToRender(arr);
     }
 
     setPkClinicState({
@@ -109,11 +91,12 @@ const PackageClinic = () => {
       endIndex: END_INDEX,
       isRenderFull: false,
     });
-    setPackageFiltered(arr.slice(START_INDEX, END_INDEX));
+    setPackageToRender(arr.slice(START_INDEX, END_INDEX));
   };
 
   const handleScroll = () => {
     if (pkClinicState.isRenderFull) return;
+    if (!pkClinicState.packageFilteredInit.length) return;
 
     if (
       window.innerHeight + document.documentElement.scrollTop <=
@@ -130,13 +113,28 @@ const PackageClinic = () => {
     const newPackageFiltered = pkClinicState.packageFilteredInit.slice(newStartIndex, newEndIndex);
 
     setPkClinicState({ ...pkClinicState, startIndex: newStartIndex, endIndex: newEndIndex });
-    setPackageFiltered([...packageFiltered, ...newPackageFiltered]);
+    setPackageToRender([...packageToRender, ...newPackageFiltered]);
   };
 
   useEffect(() => {
-    fetchAllPackageByClinic();
+    if (packageArr.length) {
+      const packageBelongClinicId = packageArr.filter((pk) => pk.clinicId === +clinicId);
+      setPkClinicState({
+        ...pkClinicState,
+        packageArr,
+        packageFilteredInit: packageBelongClinicId,
+      });
+      setPackageToRender(packageBelongClinicId.slice(START_INDEX, END_INDEX));
+      return;
+    }
+
+    const dispatchedThunk = dispatch(getAllPackages());
+
+    return () => {
+      dispatchedThunk.abort();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [packageArr.length]);
 
   useEffect(() => {
     if (!_.isEmpty(clinicData)) {
@@ -220,7 +218,7 @@ const PackageClinic = () => {
           <Filter
             clinicId={clinicId}
             packageArr={pkClinicState.packageArr}
-            dataFiltered={packageFiltered}
+            dataFiltered={packageToRender}
             onFilteredData={handleFilteredData}
             // onHideSomeElement={handleHideElement}
             haveFilterByClinicsAndCity={pkClinicState.haveFilterByClinicsAndCity}
@@ -229,8 +227,8 @@ const PackageClinic = () => {
 
         <Element name={language === "vi" ? "Đặt lịch khám" : "Booking"}>
           <div className="package-clinic-list">
-            {packageFiltered.length > 0 &&
-              packageFiltered.map((pk) => {
+            {packageToRender.length > 0 &&
+              packageToRender.map((pk) => {
                 return (
                   <Package
                     key={pk.id}

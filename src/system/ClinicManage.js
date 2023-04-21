@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Select from "react-select";
 import MarkdownIt from "markdown-it";
 import MdEditor from "react-markdown-editor-lite";
@@ -151,7 +151,7 @@ const ClinicManage = () => {
       const info = await dispatch(saveDataClinic(clinicInfo));
       if (info?.payload?.status === "success") {
         toast.success("Hospital (Clinic) data is saved successfully!");
-        await dispatch(getAllClinics("both"));
+        await dispatch(getAllClinics());
         setState({ ...initialState });
       }
     } catch (error) {
@@ -192,7 +192,7 @@ const ClinicManage = () => {
       const res = await dispatch(deleteClinic(state.selectedClinic.value));
       if (res.payload === "") {
         toast.success("Hospital (Clinic) is deleted successfully!");
-        await dispatch(getAllClinics("both"));
+        await dispatch(getAllClinics());
         return setState({ ...initialState });
       }
     } catch (error) {
@@ -202,9 +202,16 @@ const ClinicManage = () => {
 
   useEffect(() => {
     // dispatch(getAllCodes("CLINIC"));
-    dispatch(getAllClinics("all"));
+    if (!clinics.length) {
+      const dispatchedThunk = dispatch(getAllClinics());
+
+      return () => {
+        dispatchedThunk.abort();
+      };
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [clinics.length]);
 
   useEffect(() => {
     if (!state.previewImageUrl) return;

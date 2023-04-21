@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import _ from "lodash";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Filter, Package, ModalBooking, ScrollToTop } from "../components";
@@ -30,28 +31,13 @@ const initialState = {
 
 const DetailCategory = () => {
   const [categoryState, setCategoryState] = useState(initialState);
-  const [packageFiltered, setPackageFiltered] = useState([]);
+  const [packageToRender, setPackageToRender] = useState([]);
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
   const { categoryId } = useParams();
+  const { packageArr } = useSelector((store) => store.package);
   const { data: category } = useFetchDataBaseId(+categoryId, "category", getCategory);
-
-  const fetchAllPackagesByCategory = async () => {
-    try {
-      const res = await dispatch(getAllPackages({ clinicId: null, specialtyId: null, getAll: false }));
-      if (res.payload.data.length > 0) {
-        const packageBelongCategory = res.payload.data.filter((cate) => cate.categoryId.includes(categoryId));
-        setCategoryState({
-          ...categoryState,
-          packageArr: res.payload.data,
-          packageFilteredInit: packageBelongCategory,
-        });
-        setPackageFiltered(packageBelongCategory.slice(START_INDEX, END_INDEX));
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const handleModal = async (hourClicked, doctorId = null, packageId = null) => {
     // console.log("test");
@@ -85,9 +71,21 @@ const DetailCategory = () => {
     }
   };
 
+  const handlePackages = () => {
+    const packagesFilterById = packageArr.filter((pk) => pk.specialtyId === null);
+    const packageBelongCategory = packagesFilterById.filter((cate) => cate.categoryId.includes(categoryId));
+
+    setCategoryState({
+      ...categoryState,
+      packageArr: packagesFilterById,
+      packageFilteredInit: packageBelongCategory,
+    });
+    setPackageToRender(packageBelongCategory.slice(START_INDEX, END_INDEX));
+  };
+
   const handleFilteredData = (arr, firstFilter = false) => {
     if (firstFilter) {
-      return setPackageFiltered(arr);
+      return setPackageToRender(arr);
     }
 
     setCategoryState({
@@ -98,11 +96,12 @@ const DetailCategory = () => {
       endIndex: END_INDEX,
       isRenderFull: false,
     });
-    setPackageFiltered(arr.slice(START_INDEX, END_INDEX));
+    setPackageToRender(arr.slice(START_INDEX, END_INDEX));
   };
 
   const handleScroll = () => {
     if (categoryState.isRenderFull) return;
+    if (!categoryState.packageFilteredInit.length) return;
 
     if (
       window.innerHeight + document.documentElement.scrollTop <=
@@ -119,13 +118,23 @@ const DetailCategory = () => {
     const newPackageFiltered = categoryState.packageFilteredInit.slice(newStartIndex, newEndIndex);
 
     setCategoryState({ ...categoryState, startIndex: newStartIndex, endIndex: newEndIndex });
-    setPackageFiltered([...packageFiltered, ...newPackageFiltered]);
+    setPackageToRender([...packageToRender, ...newPackageFiltered]);
   };
 
   useEffect(() => {
-    fetchAllPackagesByCategory();
+    if (packageArr.length) {
+      handlePackages();
+      return;
+    }
+
+    const dispatchedThunk = dispatch(getAllPackages());
+
+    return () => {
+      dispatchedThunk.abort();
+    };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [categoryId, packageArr.length]);
 
   useEffect(() => {
     if (!_.isEmpty(category)) {
@@ -156,21 +165,9 @@ const DetailCategory = () => {
               <h2 className="category-content-right__title">
                 {language === "vi" ? category?.nameVi : category?.nameEn}
               </h2>
-              <p>
-                Khám sức khỏe tổng quát định kỳ là biện pháp hữu hiệu giúp tầm soát những bệnh nguy hiểm từ
-                giai đoạn sớm và tư vấn phòng chống những căn bệnh thường gặp, giúp bảo vệ sức khỏe và nâng
-                cao chất lượng sống đồng thời nhìn lại sức khỏe bản thân, tránh được các lo lắng về sức khỏe.
-              </p>
-              <p>
-                Theo khuyến cáo của Tổ chức Y tế thế giới, người từ 18 tuổi trở lên cần được khám sức khỏe
-                định kỳ 6 tháng/ lần hoặc 1 năm/ lần nhằm phát hiện và điều trị sớm các bệnh lý đang trong
-                giai đoạn tiềm ẩn, qua đó có thể chẩn đoán các nguy cơ tiềm ẩn của nhiều bệnh nguy hiểm về tim
-                mạch, rối loạn chức năng hô hấp, ung thư phổi, dạ dày, vòm họng hay các bệnh viêm gan siêu vi…
-              </p>
-              <p>
-                Khám sức khỏe định kỳ có ý nghĩa đặc biệt quan trọng trong việc phát hiện các bệnh ung thư -
-                căn bệnh hầu như không có triệu chứng ở giai đoạn khởi phát.
-              </p>
+              <p>{t("detail-category.paragraph-1")}</p>
+              <p>{t("detail-category.paragraph-2")}</p>
+              <p>{t("detail-category.paragraph-3")}</p>
             </div>
           </div>
         </div>
@@ -180,15 +177,15 @@ const DetailCategory = () => {
         <Filter
           categoryId={categoryId}
           packageArr={categoryState.packageArr}
-          dataFiltered={packageFiltered}
+          dataFiltered={packageToRender}
           onFilteredData={handleFilteredData}
           // onHideSomeElement={handleHideElement}
           haveFilterByClinicsAndCity={categoryState.haveFilterByClinicsAndCity}
         />
 
         <div className="category-packages u-wrapper">
-          {packageFiltered.length > 0 &&
-            packageFiltered.map((pk) => {
+          {packageToRender.length > 0 &&
+            packageToRender.map((pk) => {
               return (
                 <Package
                   key={pk.id}

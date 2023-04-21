@@ -1,6 +1,7 @@
 @import "./sass/variables";
 
 .detail-category {
+  flex: 1;
   .category-intro {
     position: relative;
     margin: $height-header 0 3rem;

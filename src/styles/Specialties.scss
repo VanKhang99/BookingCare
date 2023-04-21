@@ -29,6 +29,7 @@
     align-items: center;
     gap: 3rem;
     margin-bottom: 3rem;
+    height: 14rem;
 
     &__image {
       box-shadow: $shadow-3;
@@ -37,7 +38,7 @@
       img {
         object-fit: cover;
         width: 20rem;
-        height: auto;
+        height: 14rem;
       }
     }
 

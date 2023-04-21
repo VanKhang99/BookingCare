@@ -14,7 +14,7 @@ import { getAllCodes } from "../slices/allcodeSlice";
 import { getAllClinics } from "../slices/clinicSlice";
 import { getAllSpecialties } from "../slices/specialtySlice";
 import { getAllDoctors, postInfoDoctor, getDoctor, deleteDoctor } from "../slices/doctorSlice";
-import { checkData, formatterPrice } from "../utils/helpers";
+import { checkData } from "../utils/helpers";
 import "react-markdown-editor-lite/lib/index.css";
 
 const mdParser = new MarkdownIt(/* Markdown-it options */);
@@ -49,8 +49,8 @@ const AddInfoDoctor = () => {
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
   const { doctors } = useSelector((store) => store.doctor);
-  const { priceArr, paymentArr, provinceArr } = useSelector((store) => store.allcode);
-  const { clinics } = useSelector((store) => store.clinic);
+  const { paymentArr, provinceArr } = useSelector((store) => store.allcode);
+  const { clinics, clinicsLength } = useSelector((store) => store.clinic);
   const { specialties } = useSelector((store) => store.specialty);
 
   const handleInfos = (e, type) => {
@@ -196,11 +196,26 @@ const AddInfoDoctor = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllDoctors("all"));
-    dispatch(getAllCodes("PAYMENT"));
-    dispatch(getAllCodes("PROVINCE"));
-    dispatch(getAllSpecialties("all"));
-    dispatch(getAllClinics("all"));
+    if (!paymentArr.length) {
+      dispatch(getAllCodes("PAYMENT"));
+    }
+
+    if (!provinceArr.length) {
+      dispatch(getAllCodes("PROVINCE"));
+    }
+
+    if (!doctors.length) {
+      dispatch(getAllDoctors("all"));
+    }
+
+    if (!clinics.length) {
+      dispatch(getAllClinics());
+    }
+
+    if (!specialties.length) {
+      dispatch(getAllSpecialties("all"));
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

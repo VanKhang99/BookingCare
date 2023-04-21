@@ -199,7 +199,9 @@ const SpecialtyManage = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllSpecialties("all"));
+    if (!specialties.length) {
+      dispatch(getAllSpecialties("all"));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -217,8 +217,13 @@ const ClinicSpecialtyManage = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllSpecialties("all"));
-    dispatch(getAllClinics("all"));
+    if (!clinics.length) {
+      dispatch(getAllClinics());
+    }
+
+    if (!specialties.length) {
+      dispatch(getAllSpecialties("all"));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

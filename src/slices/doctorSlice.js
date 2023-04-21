@@ -6,16 +6,30 @@ const initialState = {
   isLoadingDoctors: false,
   doctors: [],
   doctorsById: [],
+
+  filterDoctors: [],
 };
 
-export const getAllDoctors = createAsyncThunk("doctor/getAllDoctors", async (type, thunkAPI) => {
-  try {
-    const res = await axios.get(`/api/doctors/${type}`);
-    return res;
-  } catch (error) {
-    return error.response.data;
+export const getAllDoctors = createAsyncThunk(
+  "doctor/getAllDoctors",
+  async (type, { signal, rejectWithValue }) => {
+    try {
+      const res = await axios.get(`/api/doctors/${type}`, {
+        signal,
+      });
+
+      return res;
+    } catch (error) {
+      if (error.name === "CanceledError") {
+        // Request was cancelled
+        return error.response.data;
+      } else {
+        // Request failed for some other reason
+        return rejectWithValue("Request failed");
+      }
+    }
   }
-});
+);
 
 export const getAllDoctorsById = createAsyncThunk("doctor/getAllDoctorsById", async (data, thunkAPI) => {
   try {
@@ -68,7 +82,11 @@ export const deleteDoctor = createAsyncThunk("doctor/deleteDoctor", async (docto
 export const doctorSlice = createSlice({
   name: "app",
   initialState,
-  reducers: {},
+  reducers: {
+    doctorSearched: (state, { payload }) => {
+      state.filterDoctors = payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       //GET ALL DOCTORS
@@ -78,6 +96,7 @@ export const doctorSlice = createSlice({
       .addCase(getAllDoctors.fulfilled, (state, { payload }) => {
         state.isLoadingDoctors = false;
         state.doctors = payload.data.doctors;
+        state.filterDoctors = payload.data.doctors;
       })
       .addCase(getAllDoctors.rejected, (state) => {
         state.isLoadingDoctors = false;
@@ -97,6 +116,6 @@ export const doctorSlice = createSlice({
   },
 });
 
-export const {} = doctorSlice.actions;
+export const { doctorSearched } = doctorSlice.actions;
 
 export default doctorSlice.reducer;

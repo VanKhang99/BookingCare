@@ -9,7 +9,6 @@ import { toast } from "react-toastify";
 import { getAllCodes, getOneAllCode, createAllCode, deleteAllCode } from "../slices/allcodeSlice";
 import { checkData } from "../utils/helpers";
 import { IoReload } from "react-icons/io5";
-// import "./styles/AllcodeManage.scss";
 
 const initialState = {
   selectedType: "",

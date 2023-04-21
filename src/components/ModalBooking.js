@@ -13,6 +13,7 @@ import { getAllCodes } from "../slices/allcodeSlice";
 import { createBooking } from "../slices/bookingSlice";
 import { IoClose } from "react-icons/io5";
 import { DatePicker, Space } from "antd";
+import { Loading } from "../components";
 import { isValidEmail, isValidPhone, formatDate, formatterPrice, checkData } from "../utils/helpers";
 import "../styles/ModalBooking.scss";
 
@@ -51,6 +52,7 @@ const ModalBooking = ({
   const { language } = useSelector((store) => store.app);
   const { genderArr } = useSelector((store) => store.allcode);
   const { userInfo } = useSelector((store) => store.user);
+  const { isCreateBooking } = useSelector((store) => store.booking);
   const dispatch = useDispatch();
 
   const handleHideModal = () => {
@@ -221,7 +223,13 @@ const ModalBooking = ({
   };
 
   useEffect(() => {
-    dispatch(getAllCodes("GENDER"));
+    if (genderArr.length) return;
+
+    const dispatchedThunk = dispatch(getAllCodes("GENDER"));
+
+    return () => {
+      dispatchedThunk.abort();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -408,6 +416,8 @@ const ModalBooking = ({
           </Button>
         </div>
       </Modal.Footer>
+
+      {isCreateBooking && <Loading />}
     </Modal>
   );
 };

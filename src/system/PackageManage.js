@@ -176,7 +176,7 @@ const PackageManage = () => {
 
       if (res?.payload?.status === "success") {
         toast.success("Package's info is saved successfully!");
-        await dispatch(getAllPackages({ clinicId: null, specialId: null, getAll: true }));
+        await dispatch(getAllPackages());
         setState({ ...initialState });
       }
     } catch (error) {
@@ -190,7 +190,6 @@ const PackageManage = () => {
       const res = await dispatch(getPackage(selectedOption?.value || state.oldSelectedClinic));
       if (_.isEmpty(res.payload.data)) return toast.error("Get data package failed!!!");
       const packageData = res.payload.data;
-      console.log(packageData);
       const packageSelected = findItemSelectedById("package", packageArr, +packageData.id);
       const specialtyInDB = findItemSelectedById("specialty", specialties, +packageData?.specialtyId);
       const clinicInDB = findItemSelectedById("clinic", clinics, packageData.clinicId);
@@ -235,7 +234,7 @@ const PackageManage = () => {
       const res = await dispatch(deletePackage(state.selectedPackage.value));
       if (res.payload === "") {
         toast.success("Package is deleted successfully!");
-        await dispatch(getAllPackages({ clinicId: null, specialId: null, getAll: true }));
+        await dispatch(getAllPackages());
         return setState({ ...initialState });
       }
     } catch (error) {
@@ -248,12 +247,29 @@ const PackageManage = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllCodes("PAYMENT"));
-    dispatch(getAllCodes("PROVINCE"));
-    dispatch(getAllSpecialties("all"));
-    dispatch(getAllClinics("all"));
-    dispatch(getAllCategories());
-    dispatch(getAllPackages({ clinicId: null, specialId: null, getAll: true }));
+    if (!paymentArr.length) {
+      dispatch(getAllCodes("PAYMENT"));
+    }
+
+    if (!provinceArr.length) {
+      dispatch(getAllCodes("PROVINCE"));
+    }
+
+    if (!specialties.length) {
+      dispatch(getAllSpecialties("all"));
+    }
+
+    if (!clinics.length) {
+      dispatch(getAllClinics());
+    }
+
+    if (!categories.length) {
+      dispatch(getAllCategories());
+    }
+
+    if (!packageArr.length) {
+      dispatch(getAllPackages());
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

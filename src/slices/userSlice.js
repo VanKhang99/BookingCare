@@ -2,10 +2,14 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../axios";
 
 import { handleChangePathSystem } from "./appSlice";
+import { resetMedicalAppointmentHistory } from "./bookingSlice";
 import { setAuthToken } from "../utils/helpers";
 
 const initialState = {
   isUpdating: false,
+  isUpdatingPassword: false,
+  isGetConfirmCode: false,
+  isGettingCodeForgotPassword: false,
   socialLogin: false,
   isLoggedIn: false,
   userInfo: {},
@@ -32,10 +36,11 @@ export const socialLogin = createAsyncThunk("user/socialLogin", async (data, thu
   }
 });
 
-export const logout = createAsyncThunk("user/logout", async (_, thunkAPI) => {
+export const logout = createAsyncThunk("user/logout", async (_, { dispatch, getState }) => {
   try {
     const res = await axios.get("/api/users/logout");
-    thunkAPI.dispatch(handleChangePathSystem("/"));
+    dispatch(handleChangePathSystem("/"));
+    dispatch(resetMedicalAppointmentHistory());
 
     return res;
   } catch (error) {
@@ -181,6 +186,7 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      //LOGIN
       .addCase(login.pending, (state) => {
         state.isLoggedIn = false;
       })
@@ -233,6 +239,36 @@ export const userSlice = createSlice({
       })
       .addCase(logout.rejected, (state) => {
         state.isLoggedIn = true;
+      })
+      //GET CONFIRM CODE
+      .addCase(getConfirmCode.pending, (state) => {
+        state.isGetConfirmCode = true;
+      })
+      .addCase(getConfirmCode.fulfilled, (state) => {
+        state.isGetConfirmCode = false;
+      })
+      .addCase(getConfirmCode.rejected, (state) => {
+        state.isGetConfirmCode = true;
+      })
+      // UPDATE PASSWORD
+      .addCase(updatePassword.pending, (state) => {
+        state.isUpdatingPassword = true;
+      })
+      .addCase(updatePassword.fulfilled, (state, { payload }) => {
+        state.isUpdatingPassword = false;
+      })
+      .addCase(updatePassword.rejected, (state) => {
+        state.isUpdatingPassword = false;
+      })
+      // FORGOT PASSWORD
+      .addCase(forgotPassword.pending, (state) => {
+        state.isGettingCodeForgotPassword = true;
+      })
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.isGettingCodeForgotPassword = false;
+      })
+      .addCase(forgotPassword.rejected, (state) => {
+        state.isGettingCodeForgotPassword = false;
       })
       // UPDATE USER
       .addCase(updateDataUser.pending, (state) => {

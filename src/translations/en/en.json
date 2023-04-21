@@ -114,7 +114,12 @@
     "day-exam": "Day exam",
     "reason": "Reasons",
     "status": "Status",
-    "booking-code": "Booking code"
+    "booking-code": "Booking code",
+
+    "delete-modal-title": "Delete medical appointment booking history",
+    "delete-status-s1": "This medical examination schedule has not been confirmed by email and has not completed the medical examination process at the hospital. Are you sure you want to delete this appointment?",
+    "delete-status-s2": "This medical appointment has confirmed information via email and has not completed the medical examination process at the hospital. Are you sure you want to delete this appointment?",
+    "delete-status-s3": "This medical appointment has completed the medical examination at the hospital. Do you really want to delete it?"
   },
 
   "slider": {
@@ -207,6 +212,12 @@
     "state-insurance": "State health insurance",
     "direct-insurance": "Direct guarantee insurance",
     "not-apply": "Do not apply"
+  },
+
+  "detail-category": {
+    "paragraph-1": "Periodic general health check-up is an effective measure to help screen dangerous diseases at an early stage and advise on the prevention of common diseases, helping to protect health and improve quality of life. health, avoid health concerns.",
+    "paragraph-2": "According to the recommendations of the World Health Organization, people aged 18 years and over should have regular health check-ups every 6 months or once a year in order to detect and treat early diseases in latent stages. Thereby, it is possible to diagnose the potential risks of many dangerous diseases of cardiovascular, respiratory dysfunction, lung, stomach, oropharyngeal cancer or viral hepatitis...",
+    "paragraph-3": "Routine physical examination is especially important in detecting cancers, which have almost no symptoms in the early stages."
   },
 
   "modal-booking": {

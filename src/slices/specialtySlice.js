@@ -5,16 +5,30 @@ import axios from "../axios";
 const initialState = {
   isLoadingSpecialties: false,
   specialties: [],
+  specialtiesPopular: [],
+  specialtiesRemote: [],
+
+  filterSpecialtiesPopular: [],
+  filterSpecialtiesRemote: [],
 };
 
-export const getAllSpecialties = createAsyncThunk("specialty/getAllSpecialties", async (type, thunkAPI) => {
-  try {
-    const res = await axios.get(`/api/specialties/type=${type}`);
-    return res.data;
-  } catch (error) {
-    return error.response.data;
+export const getAllSpecialties = createAsyncThunk(
+  "specialty/getAllSpecialties",
+  async (type, { signal, rejectWithValue }) => {
+    try {
+      const res = await axios.get(`/api/specialties/type=${type}`);
+      return res;
+    } catch (error) {
+      if (error.name === "CanceledError") {
+        // Request was cancelled
+        return error.response.data;
+      } else {
+        // Request failed for some other reason
+        return rejectWithValue("Request failed");
+      }
+    }
   }
-});
+);
 
 export const getInfoSpecialty = createAsyncThunk(
   "specialty/getInfoSpecialty",
@@ -66,7 +80,16 @@ export const deleteInfoSpecialty = createAsyncThunk(
 export const specialtySlice = createSlice({
   name: "specialty",
   initialState,
-  reducers: {},
+  reducers: {
+    specialtiesSearched: (state, { payload }) => {
+      console.log(payload);
+      if (payload.remote) {
+        state.filterSpecialtiesRemote = payload.newSpecialties;
+      } else {
+        state.filterSpecialtiesPopular = payload.newSpecialties;
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllSpecialties.pending, (state) => {
@@ -74,7 +97,15 @@ export const specialtySlice = createSlice({
       })
       .addCase(getAllSpecialties.fulfilled, (state, { payload }) => {
         state.isLoadingSpecialties = false;
-        state.specialties = payload.specialties;
+        if (payload.type === "popular") {
+          state.specialtiesPopular = payload.data.specialties;
+          state.filterSpecialtiesPopular = payload.data.specialties;
+        } else if (payload.type === "all") {
+          state.specialties = payload.data.specialties;
+        } else {
+          state.specialtiesRemote = payload.data.specialties;
+          state.filterSpecialtiesRemote = payload.data.specialties;
+        }
       })
       .addCase(getAllSpecialties.rejected, (state) => {
         state.isLoadingSpecialties = false;
@@ -83,6 +114,6 @@ export const specialtySlice = createSlice({
   },
 });
 
-// export const {} = specialtySlice.actions;
+export const { specialtiesSearched } = specialtySlice.actions;
 
 export default specialtySlice.reducer;

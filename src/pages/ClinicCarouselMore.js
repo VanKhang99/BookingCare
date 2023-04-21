@@ -23,6 +23,7 @@ const initialState = {
 
 const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
   const [state, setState] = useState({ ...initialState });
+  const [packageToRender, setPackageToRender] = useState([]);
   const [dataFiltered, setDataFiltered] = useState([]);
   const dispatch = useDispatch();
   const { clinicId, specialtyId } = useParams();
@@ -76,18 +77,33 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
 
   useEffect(() => {
     if (pageClinicDoctors) {
-      dispatch(
+      return dispatch(
         getAllDoctorsById({ nameColumnMap: "clinicId", id: +clinicId, typeRemote: "includeTrueAndFalse" })
       );
-    } else {
-      if (packageClinicSpecialty) {
-        dispatch(getAllPackages({ clinicId, specialtyId, getAll: false }));
-      } else {
-        dispatch(getAllPackages({ clinicId: +clinicId, specialtyId: null, getAll: false }));
-      }
     }
+
+    if (!packageArr.length) {
+      const dispatchedThunk = dispatch(getAllPackages());
+
+      return () => {
+        dispatchedThunk.abort();
+      };
+    }
+
+    if (packageClinicSpecialty) {
+      const packagesFilterById = packageArr.filter(
+        (pk) => +pk.specialtyId === +specialtyId && +pk.clinicId === +clinicId
+      );
+      setPackageToRender(packagesFilterById);
+    } else {
+      const packagesFilterById = packageArr.filter(
+        (pk) => pk.specialtyId === null && +pk.clinicId === +clinicId
+      );
+      setPackageToRender(packagesFilterById);
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [packageArr.length]);
 
   return (
     <div className="clinic-carousel-container">
@@ -107,7 +123,7 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
             packageClinicSpecialty={packageClinicSpecialty}
             clinicId={clinicId}
             doctorsById={doctorsById}
-            packageArr={packageArr}
+            packageArr={packageToRender}
             dataFiltered={dataFiltered?.length > 0 ? dataFiltered : []}
             onFilteredData={handleFilteredData}
             onHideCategoryIntro={handleHideCategoryIntro}

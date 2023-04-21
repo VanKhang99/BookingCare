@@ -314,6 +314,10 @@ const Filter = ({
   const helperFilterCategory = (arr) => {
     if (!arr?.length) return [];
 
+    if (packageClinicSpecialty) {
+      return arr;
+    }
+
     if (pageClinicDoctors) {
       const specialtiesName = state.categorySelected.map((specialty) => specialty.nameVi);
       return arr.filter((data) => {
@@ -790,7 +794,13 @@ const Filter = ({
   };
 
   useEffect(() => {
-    dispatch(getAllCategories());
+    if (categories.length) return;
+
+    const dispatchedThunk = dispatch(getAllCategories());
+
+    return () => {
+      dispatchedThunk.abort();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

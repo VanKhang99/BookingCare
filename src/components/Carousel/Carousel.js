@@ -130,7 +130,9 @@ const Slider = ({
 
         {popularSpecialty && <CarouselPopularSpecialty settings={settings} />}
 
-        {outstandingFacilities && <CarouselOutstandingFacilities settings={settings} />}
+        {outstandingFacilities && (
+          <CarouselOutstandingFacilities settings={{ ...settings, slidesToScroll: 3 }} />
+        )}
 
         {doctors && (
           <CarouselDoctor

@@ -114,7 +114,12 @@
     "day-exam": "Ngày khám",
     "reason": "Lý do đặt lịch khám",
     "status": "Tình trạng ",
-    "booking-code": "Mã đặt lịch"
+    "booking-code": "Mã đặt lịch",
+
+    "delete-modal-title": "Xóa lịch sử đặt lịch khám bệnh",
+    "delete-status-s1": "Lịch khám bệnh này chưa xác nhận thông tin qua email cũng như chưa hoàn tất quá trình khám bệnh tại bệnh viện. Bạn có chắc là muốn xóa lịch khám bệnh này chứ?",
+    "delete-status-s2": "Lịch khám bệnh này đã xác nhận thông tin qua email và chưa hoàn tất quá trình khám bệnh tại bệnh viện. Bạn có chắc là muốn xóa lịch khám bệnh này chứ?",
+    "delete-status-s3": "Lịch khám bệnh này đã hoàn tất quá trình khám bệnh tại bệnh viện. Bạn muốn xóa thật chứ?"
   },
 
   "slider": {
@@ -208,6 +213,12 @@
     "state-insurance": "Bảo hiểm y tế nhà nước",
     "direct-insurance": "Bảo hiểm bảo lãnh trực tiếp",
     "not-apply": "Không áp dụng"
+  },
+
+  "detail-category": {
+    "paragraph-1": "Khám sức khỏe tổng quát định kỳ là biện pháp hữu hiệu giúp tầm soát những bệnh nguy hiểm từ giai đoạn sớm và tư vấn phòng chống những căn bệnh thường gặp, giúp bảo vệ sức khỏe và nâng cao chất lượng sống đồng thời nhìn lại sức khỏe bản thân, tránh được các lo lắng về sức khỏe.",
+    "paragraph-2": "Theo khuyến cáo của Tổ chức Y tế thế giới, người từ 18 tuổi trở lên cần được khám sức khỏe định kỳ 6 tháng/ lần hoặc 1 năm/ lần nhằm phát hiện và điều trị sớm các bệnh lý đang trong giai đoạn tiềm ẩn, qua đó có thể chẩn đoán các nguy cơ tiềm ẩn của nhiều bệnh nguy hiểm về tim mạch, rối loạn chức năng hô hấp, ung thư phổi, dạ dày, vòm họng hay các bệnh viêm gan siêu vi…",
+    "paragraph-3": "Khám sức khỏe định kỳ có ý nghĩa đặc biệt quan trọng trong việc phát hiện các bệnh ung thư - căn bệnh hầu như không có triệu chứng ở giai đoạn khởi phát."
   },
 
   "modal-booking": {

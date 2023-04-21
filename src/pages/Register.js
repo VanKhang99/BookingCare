@@ -15,7 +15,7 @@ import { isValidEmail, isValidPhone, checkData } from "../utils/helpers";
 import { signUp, getConfirmCode, verifyCode, getProfile, autoLogin } from "../slices/userSlice";
 import {
   INTERVAL_COUNTDOWN,
-  EXPIRES__REGISTER_COUNTDOWN,
+  EXPIRES_REGISTER_COUNTDOWN,
   EXPIRES_REGISTER_CONFIRM_CODE,
   TIMEOUT_NAVIGATE,
 } from "../utils/constants";
@@ -39,13 +39,14 @@ const initialState = {
 
 const Login = () => {
   const [userData, setUserData] = useState({ ...initialState });
-  const [countDown, setCountDown] = useState(EXPIRES__REGISTER_COUNTDOWN);
+  const [countDown, setCountDown] = useState(EXPIRES_REGISTER_COUNTDOWN);
   const [disableButtonSignup, setDisableButtonSignup] = useState(true);
   const [disableButtonSendCode, setDisableButtonSendCode] = useState(true);
   const [backHomePage, setBackHomePage] = useState(false);
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { language } = useSelector((store) => store.app);
+  const { isGetConfirmCode } = useSelector((store) => store.user);
   const navigate = useNavigate();
 
   const checkInputUserData = (propsToCheck, objectValues) => {
@@ -70,7 +71,7 @@ const Login = () => {
     if (userData.countdownStart && userData.gotVerifyCode) {
       if (Object.keys(changedValues)[0] === "email") {
         setUserData({ ...userData, countdownStart: false, gotVerifyCode: false });
-        setCountDown(EXPIRES__REGISTER_COUNTDOWN);
+        setCountDown(EXPIRES_REGISTER_COUNTDOWN);
         setDisableButtonSendCode(isValidEmail(Object.values(changedValues)[0]) ? false : true);
         return;
       }
@@ -215,10 +216,28 @@ const Login = () => {
     }
   };
 
+  const handleDisplayButtonSendCode = () => {
+    if (userData.countdownStart) {
+      return <>{`${t("button.resend-code")} ${countDown}`}</>;
+    }
+
+    return (
+      <>
+        {!isGetConfirmCode ? (
+          t("button.send-code")
+        ) : (
+          <>
+            <Loading notAllScreen={true} smallLoading={true} />
+          </>
+        )}
+      </>
+    );
+  };
+
   useEffect(() => {
     let timerId;
     if (userData.countdownStart) {
-      if (countDown === EXPIRES__REGISTER_COUNTDOWN) {
+      if (countDown === EXPIRES_REGISTER_COUNTDOWN) {
         setDisableButtonSendCode(true);
       }
 
@@ -235,14 +254,13 @@ const Login = () => {
               return newState;
             });
             setDisableButtonSendCode(false);
-            return EXPIRES__REGISTER_COUNTDOWN;
+            return EXPIRES_REGISTER_COUNTDOWN;
           }
 
           setDisableButtonSendCode(true);
           return prevState - 1;
         });
       }, [INTERVAL_COUNTDOWN]);
-      // INTERVAL_COUNTDOWN
     }
     return () => clearInterval(timerId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -265,12 +283,7 @@ const Login = () => {
         <div className="form-content ">
           <div className="form-content__title">{t("login-register.signup")}</div>
 
-          <Form
-            className="form form--register"
-            onValuesChange={handleInputChange}
-            // onFinish={handleSignUp}
-            // onFinishFailed={handleSignUp}
-          >
+          <Form className="form form--register" onValuesChange={handleInputChange}>
             <Form.Item
               className="form__email"
               name="email"
@@ -521,11 +534,10 @@ const Login = () => {
                   className={`form-button form-button--send-code ${
                     disableButtonSendCode ? "form-button--send-code-disable" : "form-button--send-code"
                   }`}
+                  style={{ width: userData.countdownStart ? "22rem" : "14rem" }}
                   onClick={(e) => handleSendCode(e)}
                 >
-                  {userData.countdownStart
-                    ? `${t("button.resend-code")} ${countDown}`
-                    : t("button.send-code")}
+                  {handleDisplayButtonSendCode()}
                 </button>
               </Form.Item>
             </div>

@@ -57,6 +57,8 @@ const ResetPassword = ({ onShowResetPassword, email, confirmCode }) => {
         })
       );
 
+      console.log(result);
+
       if (result.payload?.status === "success") {
         const dataUser = result.payload.data.user;
         const dataSaveToLocal = {
@@ -67,6 +69,7 @@ const ResetPassword = ({ onShowResetPassword, email, confirmCode }) => {
         };
 
         localStorage.setItem("userInfo", JSON.stringify(dataSaveToLocal));
+        localStorage.setItem("token", result.payload.token);
 
         setBackHomePage(true);
         setTimeout(async () => {

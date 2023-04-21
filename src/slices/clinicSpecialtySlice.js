@@ -3,9 +3,31 @@ import axios from "../axios";
 import { toast } from "react-toastify";
 
 const initialState = {
+  isLoadingSpecialtiesClinic: false,
+  specialtiesForClinic: [],
+  filterSpecialtiesForClinic: [],
+
   isLoadingSpecialty: false,
   specialty: {},
 };
+
+export const getAllSpecialtiesByClinicId = createAsyncThunk(
+  "clinic-specialty/getAllSpecialtiesByClinicId",
+  async (clinicId, { signal, rejectWithValue }) => {
+    try {
+      const res = await axios.get(`/api/clinic/specialties/${clinicId}`, { signal });
+      return res.data;
+    } catch (error) {
+      if (error.name === "CanceledError") {
+        // Request was cancelled
+        return error.response.data;
+      } else {
+        // Request failed for some other reason
+        return rejectWithValue("Request failed");
+      }
+    }
+  }
+);
 
 export const getSpecialtyOfClinic = createAsyncThunk(
   "clinic-specialty/getSpecialtyOfClinic",
@@ -15,18 +37,6 @@ export const getSpecialtyOfClinic = createAsyncThunk(
       return res.data;
     } catch (error) {
       // toast.error("Update data specialty of clinic failed. Please check your data and try again!");
-      return error.response.data;
-    }
-  }
-);
-
-export const getAllSpecialtiesByClinicId = createAsyncThunk(
-  "clinic-specialty/getAllSpecialtiesByClinicId",
-  async (clinicId, thunkAPI) => {
-    try {
-      const res = await axios.get(`/api/clinic/specialties/${clinicId}`);
-      return res.data;
-    } catch (error) {
       return error.response.data;
     }
   }
@@ -60,9 +70,26 @@ export const deleteSpecialtyForClinic = createAsyncThunk(
 const clinicSpecialtySlice = createSlice({
   name: "clinicSpecialty",
   initialState,
-  reducers: {},
+  reducers: {
+    specialtiesClinicSearched: (state, { payload }) => {
+      state.filterSpecialtiesForClinic = payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
+      .addCase(getAllSpecialtiesByClinicId.pending, (state) => {
+        state.isLoadingSpecialtiesClinic = true;
+      })
+      .addCase(getAllSpecialtiesByClinicId.fulfilled, (state, { payload }) => {
+        state.isLoadingSpecialtiesClinic = false;
+        state.specialtiesForClinic = payload.data;
+        state.filterSpecialtiesForClinic = payload.data;
+      })
+      .addCase(getAllSpecialtiesByClinicId.rejected, (state) => {
+        state.isLoadingSpecialtiesClinic = false;
+        state.specialtiesForClinic = [];
+      })
+
       .addCase(getSpecialtyOfClinic.pending, (state) => {
         state.isLoadingSpecialty = true;
       })
@@ -77,6 +104,6 @@ const clinicSpecialtySlice = createSlice({
   },
 });
 
-// export const {} = clinicSpecialtySlice.actions;
+export const { specialtiesClinicSearched } = clinicSpecialtySlice.actions;
 
 export default clinicSpecialtySlice.reducer;

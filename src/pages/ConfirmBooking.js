@@ -18,8 +18,6 @@ const ConfirmBooking = () => {
   const { token, doctorId, packageId } = useParams();
   const { language } = useSelector((store) => store.app);
 
-  console.log(token, doctorId, packageId);
-
   const handleVerifyBooking = async () => {
     if (token) {
       const res = await dispatch(confirmBooking({ token, doctorId, packageId }));

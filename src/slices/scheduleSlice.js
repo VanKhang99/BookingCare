@@ -7,6 +7,15 @@ const initialState = {
   // schedules: [],
 };
 
+export const getSchedules = createAsyncThunk("schedule/getSchedules", async (data, thunkAPI) => {
+  try {
+    const res = await axios.get(`/api/schedules/${data.keyMap}=${+data.id}&${data.timeStamp}`);
+    return res.data;
+  } catch (error) {
+    return error.response;
+  }
+});
+
 export const createSchedules = createAsyncThunk("schedule/createSchedules", async (data, thunkAPI) => {
   try {
     const res = await axios.post("/api/schedules", data);
@@ -14,15 +23,6 @@ export const createSchedules = createAsyncThunk("schedule/createSchedules", asyn
   } catch (error) {
     toast.error("Create schedules doctor failed!");
     return error.response.data;
-  }
-});
-
-export const getSchedules = createAsyncThunk("schedule/getSchedules", async (data, thunkAPI) => {
-  try {
-    const res = await axios.get(`/api/schedules/${data.keyMap}=${+data.id}&${data.timeStamp}`);
-    return res.data;
-  } catch (error) {
-    return error.response;
   }
 });
 

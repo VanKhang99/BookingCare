@@ -6,30 +6,37 @@ const initialState = {
   isLoadingGender: false,
   isLoadingPosition: false,
   isLoadingRole: false,
-  isLoadingPrice: false,
   isLoadingPayment: false,
   isLoadingProvince: false,
-  isLoadingSpecialty: false,
-  isLoadingClinic: false,
+  isLoadingTime: false,
 
   genderArr: [],
   positionArr: [],
   roleArr: [],
-  priceArr: [],
   paymentArr: [],
   provinceArr: [],
-  specialtyArr: [],
-  clinicArr: [],
+  timeArr: [],
 };
 
-export const getAllCodes = createAsyncThunk("allcode/getAllCodes", async (type, thunkAPI) => {
-  try {
-    const res = await axios.get(`/api/allcodes/${type}`);
-    return res.data;
-  } catch (error) {
-    return error.response.data;
+export const getAllCodes = createAsyncThunk(
+  "allcode/getAllCodes",
+  async (type, { signal, rejectWithValue }) => {
+    try {
+      const res = await axios.get(`/api/allcodes/${type}`, {
+        signal,
+      });
+      return res.data;
+    } catch (error) {
+      if (error.name === "CanceledError") {
+        // Request was cancelled
+        return error.response.data;
+      } else {
+        // Request failed for some other reason
+        return rejectWithValue("Request failed");
+      }
+    }
   }
-});
+);
 
 export const getOneAllCode = createAsyncThunk("allcode/getOneAllCode", async (keyMap, thunkAPI) => {
   try {
@@ -69,11 +76,9 @@ export const allcodeSlice = createSlice({
         if (action.meta.arg === "GENDER") state.isLoadingGender = true;
         if (action.meta.arg === "POSITION") state.isLoadingPosition = true;
         if (action.meta.arg === "ROLE") state.isLoadingRole = true;
-        if (action.meta.arg === "PRICE") state.isLoadingPrice = true;
         if (action.meta.arg === "PAYMENT") state.isLoadingPayment = true;
         if (action.meta.arg === "PROVINCE") state.isLoadingProvince = true;
-        if (action.meta.arg === "SPECIALTY") state.isLoadingSpecialty = true;
-        if (action.meta.arg === "CLINIC") state.isLoadingClinic = true;
+        if (action.meta.arg === "TIME") state.isLoadingTime = true;
       })
       .addCase(getAllCodes.fulfilled, (state, { payload }) => {
         if (payload.allCode.length > 0) {
@@ -92,11 +97,6 @@ export const allcodeSlice = createSlice({
             state.roleArr = payload.allCode;
           }
 
-          if (payload.allCode[0].type === "PRICE") {
-            state.isLoadingPrice = false;
-            state.priceArr = payload.allCode;
-          }
-
           if (payload.allCode[0].type === "PAYMENT") {
             state.isLoadingPayment = false;
             state.paymentArr = payload.allCode;
@@ -107,14 +107,9 @@ export const allcodeSlice = createSlice({
             state.provinceArr = payload.allCode;
           }
 
-          if (payload.allCode[0].type === "SPECIALTY") {
-            state.isLoadingSpecialty = false;
-            state.specialtyArr = payload.allCode;
-          }
-
-          if (payload.allCode[0].type === "CLINIC") {
-            state.isLoadingClinic = false;
-            state.clinicArr = payload.allCode;
+          if (payload.allCode[0].type === "TIME") {
+            state.isLoadingTime = false;
+            state.timeArr = payload.allCode;
           }
         }
       })
@@ -122,11 +117,9 @@ export const allcodeSlice = createSlice({
         if (action.meta.arg === "GENDER") state.isLoadingGender = false;
         if (action.meta.arg === "POSITION") state.isLoadingPosition = false;
         if (action.meta.arg === "ROLE") state.isLoadingRole = false;
-        if (action.meta.arg === "PRICE") state.isLoadingPrice = false;
         if (action.meta.arg === "PAYMENT") state.isLoadingPayment = false;
         if (action.meta.arg === "PROVINCE") state.isLoadingProvince = false;
-        if (action.meta.arg === "SPECIALTY") state.isLoadingSpecialty = false;
-        if (action.meta.arg === "CLINIC") state.isLoadingClinic = false;
+        if (action.meta.arg === "TIME") state.isLoadingTime = false;
       });
   },
 });

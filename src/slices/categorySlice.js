@@ -7,14 +7,23 @@ const initialState = {
   categories: [],
 };
 
-export const getAllCategories = createAsyncThunk("category/getAllCategories", async (_, thunkAPI) => {
-  try {
-    const res = await axios.get("/api/categories");
-    return res;
-  } catch (error) {
-    return error.response.data;
+export const getAllCategories = createAsyncThunk(
+  "category/getAllCategories",
+  async (_, { signal, rejectWithValue }) => {
+    try {
+      const res = await axios.get("/api/categories", { signal });
+      return res;
+    } catch (error) {
+      if (error.name === "CanceledError") {
+        // Request was cancelled
+        return error.response.data;
+      } else {
+        // Request failed for some other reason
+        return rejectWithValue("Request failed");
+      }
+    }
   }
-});
+);
 
 export const getCategory = createAsyncThunk("category/getCategory", async (categoryId, thunkAPI) => {
   try {

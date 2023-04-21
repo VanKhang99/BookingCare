@@ -166,7 +166,9 @@ const CategoryManage = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllCategories());
+    if (!categories.length) {
+      dispatch(getAllCategories());
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categories.length]);
 

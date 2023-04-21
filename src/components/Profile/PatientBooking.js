@@ -34,7 +34,6 @@ const initialState = {
   token: "",
   timeFrame: "",
   patientId: null,
-  // remote: 0,
 };
 
 const PatientBooking = () => {
@@ -127,7 +126,6 @@ const PatientBooking = () => {
         token: state.token,
         timeFrame: state.timeFrame,
         patientId: state.patientId,
-        // remote: state.remote,
       };
 
       const result = await dispatch(confirmExaminationComplete(dataSendToServer));
@@ -150,7 +148,7 @@ const PatientBooking = () => {
       handleFetchPatients();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.dateBooked, state.patients.length]);
+  }, [state.dateBooked, state.patients?.length]);
 
   return (
     <>

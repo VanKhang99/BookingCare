@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -11,7 +10,7 @@ import { forgotPassword, verifyCode } from "../slices/userSlice";
 import { isValidEmail } from "../utils/helpers";
 import {
   INTERVAL_COUNTDOWN,
-  EXPIRES__FORGOT_PASSWORD_COUNTDOWN,
+  EXPIRES_FORGOT_PASSWORD_COUNTDOWN,
   EXPIRES_FORGOT_PASSWORD_CONFIRM_CODE,
   TIMEOUT_NAVIGATE,
 } from "../utils/constants";
@@ -30,12 +29,13 @@ const ForgotPassword = ({ onForgotPassword }) => {
   const [disableButtonConfirm, setDisableButtonConfirm] = useState(true);
   const [disableButtonSendCode, setDisableButtonSendCode] = useState(true);
   const [countdownStart, setCountdownStart] = useState(false);
-  const [countdown, setCountdown] = useState(EXPIRES__FORGOT_PASSWORD_COUNTDOWN);
+  const [countdown, setCountdown] = useState(EXPIRES_FORGOT_PASSWORD_COUNTDOWN);
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [toResetPassword, setToResetPassword] = useState(false);
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { language } = useSelector((store) => store.app);
+  const { isGettingCodeForgotPassword } = useSelector((store) => store.user);
 
   const handleEmailChange = (e) => {
     const disableButton = isValidEmail(e.target.value) ? false : true;
@@ -44,7 +44,7 @@ const ForgotPassword = ({ onForgotPassword }) => {
     if (countdownStart && stateFP.gotVerifyCode) {
       setStateFP({ ...stateFP, gotVerifyCode: false });
       setCountdownStart(false);
-      setCountdown(EXPIRES__FORGOT_PASSWORD_COUNTDOWN);
+      setCountdown(EXPIRES_FORGOT_PASSWORD_COUNTDOWN);
       setDisableButtonSendCode(disableButton);
       return;
     }
@@ -57,7 +57,6 @@ const ForgotPassword = ({ onForgotPassword }) => {
   const handleInputConfirmCode = (e) => {
     //CASE: countdownStart don't start and not got code => input field code can not change
     if (!countdownStart && !stateFP.gotVerifyCode) return;
-    console.log(stateFP);
 
     const value = e.target.value;
     let disableButton = true;
@@ -142,10 +141,28 @@ const ForgotPassword = ({ onForgotPassword }) => {
     }
   };
 
+  const handleDisplayButtonSendCode = () => {
+    if (countdownStart) {
+      return <>{`${t("button.resend-code")} ${countdown}`}</>;
+    }
+
+    return (
+      <>
+        {!isGettingCodeForgotPassword ? (
+          t("button.send-code")
+        ) : (
+          <>
+            <Loading notAllScreen={true} smallLoading={true} />
+          </>
+        )}
+      </>
+    );
+  };
+
   useEffect(() => {
     let timerId;
     if (countdownStart) {
-      if (countdown === EXPIRES__FORGOT_PASSWORD_COUNTDOWN) {
+      if (countdown === EXPIRES_FORGOT_PASSWORD_COUNTDOWN) {
         setDisableButtonSendCode(true);
       }
 
@@ -162,7 +179,7 @@ const ForgotPassword = ({ onForgotPassword }) => {
             });
             setCountdownStart(false);
             setDisableButtonSendCode(false);
-            return EXPIRES__FORGOT_PASSWORD_COUNTDOWN;
+            return EXPIRES_FORGOT_PASSWORD_COUNTDOWN;
           }
 
           setDisableButtonSendCode(true);
@@ -172,6 +189,7 @@ const ForgotPassword = ({ onForgotPassword }) => {
       // INTERVAL_COUNTDOWN
     }
     return () => clearInterval(timerId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countdownStart]);
 
   return (
@@ -240,10 +258,10 @@ const ForgotPassword = ({ onForgotPassword }) => {
                   className={`form-button form-button--send-code ${
                     disableButtonSendCode ? "form-button--send-code-disable" : "form-button--send-code"
                   }`}
-                  style={{ width: countdownStart ? "20.8rem" : "max-content" }}
+                  style={{ width: countdownStart ? "20.8rem" : "13rem" }}
                   onClick={(e) => handleSendCode(e)}
                 >
-                  {countdownStart ? `${t("button.resend-code")} ${countdown}` : t("button.send-code")}
+                  {handleDisplayButtonSendCode()}
                 </button>
               </Form.Item>
             </div>

@@ -32,22 +32,23 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount, profil
   const { t } = useTranslation();
   const { language } = useSelector((store) => store.app);
   const { userInfo } = useSelector((store) => store.user);
+  const { timeArr } = useSelector((store) => store.allcode);
 
   const disabledDate = useCallback((current) => {
     // Can not select days before today and today
     return current < dayjs().startOf("day");
   }, []);
 
-  const handleHoursList = async () => {
-    try {
-      const res = await dispatch(getAllCodes("TIME"));
-      if (res?.payload?.allCode?.length > 0) {
-        setState({ ...state, hoursList: res.payload.allCode, initHoursList: res.payload.allCode });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const handleHoursList = async () => {
+  //   try {
+  //     const res = await dispatch(getAllCodes("TIME"));
+  //     if (res?.payload?.allCode?.length > 0) {
+  //       setState({ ...state, hoursList: res.payload.allCode, initHoursList: res.payload.allCode });
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const handleChangeSelect = (selectedOption, type) => {
     const stateCopy = { ...state };
@@ -285,9 +286,18 @@ const ScheduleManage = ({ doctors, packages, scheduleOf, isDoctorAccount, profil
   };
 
   useEffect(() => {
-    handleHoursList();
+    if (timeArr.length) {
+      setState({ ...state, hoursList: timeArr, initHoursList: timeArr });
+      return;
+    }
+
+    const dispatchedThunk = dispatch(getAllCodes("TIME"));
+
+    return () => {
+      dispatchedThunk.abort();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [timeArr.length]);
 
   useEffect(() => {
     if (doctors) {

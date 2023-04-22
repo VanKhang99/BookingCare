@@ -5,6 +5,7 @@ const initialState = {
   isLoadingAppointmentHistory: false,
   medicalAppointmentHistory: [],
 
+  isLoadingConfirmExamComplete: false,
   isDeletingAppointmentHistory: false,
   isCreateBooking: false,
 };
@@ -120,6 +121,16 @@ export const bookingSlice = createSlice({
       })
       .addCase(createBooking.rejected, (state) => {
         state.isCreateBooking = false;
+      })
+      //CONFIRM EXAMINATION COMPLETED
+      .addCase(confirmExaminationComplete.pending, (state) => {
+        state.isLoadingConfirmExamComplete = true;
+      })
+      .addCase(confirmExaminationComplete.fulfilled, (state) => {
+        state.isLoadingConfirmExamComplete = false;
+      })
+      .addCase(confirmExaminationComplete.rejected, (state) => {
+        state.isLoadingConfirmExamComplete = false;
       })
       //GET ALL HISTORY MEDICAL APPOINTMENT
       .addCase(getAllHistoryBookedById.pending, (state) => {

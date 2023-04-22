@@ -77,9 +77,11 @@ const ClinicCarouselMore = ({ pageClinicDoctors, packageClinicSpecialty }) => {
 
   useEffect(() => {
     if (pageClinicDoctors) {
-      return dispatch(
+      dispatch(
         getAllDoctorsById({ nameColumnMap: "clinicId", id: +clinicId, typeRemote: "includeTrueAndFalse" })
       );
+
+      return;
     }
 
     if (!packageArr.length) {

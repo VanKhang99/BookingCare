@@ -24,10 +24,9 @@ import PackageClinic from "./PackageClinic";
 import RemoteExam from "./RemoteExam";
 import MedicalTest from "./MedicalTest";
 import MentalHealth from "./MentalHealth";
-import Dental from "./Dental";
 import PackageSurgery from "./PackageSurgery";
 import MedicalProduct from "./MedicalProduct";
-import BusinessHealth from "./BusinessHealth";
+import HealthTest from "./HealthTest";
 
 //PROTECT ROUTE, SHARED LAYOUT
 import ProtectedRoute from "./ProtectedRoute";
@@ -58,10 +57,9 @@ export {
   RemoteExam,
   MedicalTest,
   MentalHealth,
-  Dental,
   PackageSurgery,
   MedicalProduct,
-  BusinessHealth,
+  HealthTest,
   ProtectedRoute,
   SharedLayout,
 };

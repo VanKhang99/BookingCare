@@ -1,0 +1,17 @@
+@import "./sass/variables";
+
+.medical-test {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  span {
+    font-size: $base-size + 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: $color-blue-dark;
+    padding: 0 4rem;
+    text-align: center;
+  }
+}

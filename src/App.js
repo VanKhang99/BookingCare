@@ -19,6 +19,10 @@ import {
   PackageDetail,
   Packages,
   PackageClinic,
+  MedicalTest,
+  MentalHealth,
+  MedicalProduct,
+  HealthTest,
   ProtectedRoute,
   SharedLayout,
 } from "./pages";
@@ -120,6 +124,11 @@ function App() {
               path={`${path.CONFIRM_BOOKING}/token/:token/packageId/:packageId`}
               element={<ConfirmBooking />}
             />
+
+            <Route path={path.MEDICAL_TEST} element={<MedicalTest />} />
+            <Route path={path.MEDICAL_PRODUCT} element={<MedicalProduct />} />
+            <Route path={path.MENTAL_HEALTH} element={<MentalHealth />} />
+            <Route path={path.HEALTH_TEST} element={<HealthTest />} />
 
             <Route path={path.ERROR} element={<Navigate to="/" replace />} />
           </Route>

@@ -1,0 +1,17 @@
+@import "./sass/variables";
+
+.mental-health {
+  flex: 1;
+
+  &-top {
+    border-bottom: 1px solid $grey-2;
+    padding: 3rem 0 1.5rem;
+    margin-bottom: 3rem;
+    margin-top: $height-header;
+
+    h2 {
+      font-size: $base-size + 1rem;
+      font-weight: 700;
+    }
+  }
+}

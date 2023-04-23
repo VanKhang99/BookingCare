@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { InputSearch, Loading } from "../components";
+import { InputSearch, Loading, SpecialtiesItem } from "../components";
 import { getAllSpecialties, specialtiesSearched } from "../slices/specialtySlice";
-import { path } from "../utils/constants";
 import { helperFilterSearch } from "../utils/helpers";
 import "../styles/Specialties.scss";
 
@@ -83,34 +81,7 @@ const Specialties = ({ remote }) => {
           </div>
           <div className="specialties-list ">
             {handleSpecialtiesRender().map((specialty) => {
-              return (
-                <Link
-                  to={
-                    remote
-                      ? `/${path.SPECIALTIES}/${path.REMOTE}/${specialty.id}`
-                      : `/${path.SPECIALTIES}/${specialty.id}`
-                  }
-                  key={specialty.id}
-                  className="specialties-item"
-                >
-                  <div className="specialties-item__image">
-                    <img
-                      src={remote ? specialty.imageRemoteUrl : specialty.imageUrl}
-                      alt={language === "vi" ? specialty.nameVi : specialty.nameEn}
-                    />
-                  </div>
-
-                  <div className="specialties-item__name">
-                    {remote ? (
-                      <span>
-                        {language === "vi" ? `${specialty.nameVi} từ xa` : `Remote ${specialty.nameEn}`}
-                      </span>
-                    ) : (
-                      <span>{language === "vi" ? specialty.nameVi : specialty.nameEn}</span>
-                    )}
-                  </div>
-                </Link>
-              );
+              return <SpecialtiesItem key={specialty.id} remote={remote} specialty={specialty} />;
             })}
           </div>
         </>

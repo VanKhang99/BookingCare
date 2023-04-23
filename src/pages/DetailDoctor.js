@@ -6,9 +6,16 @@ import { useSelector } from "react-redux";
 import { useFetchDataBaseId } from "../utils/CustomHook";
 import { getDoctor } from "../slices/doctorSlice";
 import { dataModalBooking, helperDisplayNameDoctor } from "../utils/helpers";
-import { DateOptions, BookingHours, ClinicInfo, ModalBooking, Introduce, Loading } from "../components";
+import {
+  DateOptions,
+  BookingHours,
+  ClinicInfo,
+  ModalBooking,
+  Introduce,
+  Loading,
+  PluginsFacebook,
+} from "../components";
 import "../styles/DetailDoctor.scss";
-import scheduleSlice from "./../slices/scheduleSlice";
 
 const initialState = {
   isOpenModalBooking: false,
@@ -66,7 +73,9 @@ const DetailDoctor = ({ remote }) => {
               {doctor?.aboutHTML && HtmlReactParser(doctor?.aboutHTML)}
             </div>
           </div>
-          <div className="outstanding-doctor-feedback u-wrapper">Feedback</div>
+          <div className="outstanding-doctor-feedback u-wrapper">
+            <PluginsFacebook />
+          </div>
 
           <div className="modal-booking">
             <ModalBooking

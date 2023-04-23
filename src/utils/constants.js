@@ -20,12 +20,12 @@ export const path = {
   CONFIRM_BOOKING: "confirm-booking",
 
   // REMOTEEXAM: "remote-exam",
-  // MEDICALTEST: "medical-test",
-  // MENTALHEALTH: "mental-health",
+  MEDICAL_TEST: "medical-test",
+  MENTAL_HEALTH: "mental-health",
   // DENTAL: "dental",
   // PACKAGESURGERY: "package-surgery",
-  // MEDICALPRODUCT: "medical-product",
-  // BUSINESSHEALTH: "business-health",
+  MEDICAL_PRODUCT: "medical-product",
+  HEALTH_TEST: "health-test",
 };
 
 export const languages = {

@@ -6,7 +6,15 @@ import { useSelector } from "react-redux";
 import { useFetchDataBaseId } from "../utils/CustomHook";
 import { getPackage } from "../slices/packageSlice";
 import { dataModalBooking } from "../utils/helpers";
-import { DateOptions, BookingHours, ClinicInfo, ModalBooking, Introduce, Loading } from "../components";
+import {
+  DateOptions,
+  BookingHours,
+  ClinicInfo,
+  ModalBooking,
+  Introduce,
+  Loading,
+  PluginsFacebook,
+} from "../components";
 
 import "../styles/PackageDetail.scss";
 
@@ -85,7 +93,9 @@ const PackageDetail = ({ packageOfClinic }) => {
             )}
           </div>
 
-          <div className="package-feedback u-wrapper">Feedback</div>
+          <div className="package-feedback u-wrapper">
+            <PluginsFacebook />
+          </div>
 
           <div className="modal-booking">
             <ModalBooking

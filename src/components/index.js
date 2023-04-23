@@ -34,7 +34,8 @@ import ChangePassword from "./Profile/ChangePassword";
 import MedicalAppointmentHistory from "./Profile/MedicalAppointmentHistory";
 import PurchaseHistory from "./Profile/PurchaseHistory";
 import PatientBooking from "./Profile/PatientBooking";
-import LikeAndShare from "./SocialPlugin/LikeAndShare";
+import PluginsFacebook from "./SocialPlugin/PluginsFacebook";
+import SpecialtiesItem from "./SpecialtiesItem";
 
 export {
   Header,
@@ -73,5 +74,6 @@ export {
   MedicalAppointmentHistory,
   PurchaseHistory,
   PatientBooking,
-  LikeAndShare,
+  PluginsFacebook,
+  SpecialtiesItem,
 };

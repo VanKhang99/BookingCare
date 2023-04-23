@@ -7,6 +7,7 @@ const initialState = {
   specialties: [],
   specialtiesPopular: [],
   specialtiesRemote: [],
+  specialtiesMentalHealth: [],
 
   filterSpecialtiesPopular: [],
   filterSpecialtiesRemote: [],
@@ -17,6 +18,24 @@ export const getAllSpecialties = createAsyncThunk(
   async (type, { signal, rejectWithValue }) => {
     try {
       const res = await axios.get(`/api/specialties/type=${type}`);
+      return res;
+    } catch (error) {
+      if (error.name === "CanceledError") {
+        // Request was cancelled
+        return error.response.data;
+      } else {
+        // Request failed for some other reason
+        return rejectWithValue("Request failed");
+      }
+    }
+  }
+);
+
+export const getAllSpecialtiesMentalHealth = createAsyncThunk(
+  "specialty/getAllSpecialtiesMentalHealth",
+  async (_, { signal, rejectWithValue }) => {
+    try {
+      const res = await axios.get(`/api/specialties/mental-health`);
       return res;
     } catch (error) {
       if (error.name === "CanceledError") {
@@ -110,6 +129,18 @@ export const specialtySlice = createSlice({
       .addCase(getAllSpecialties.rejected, (state) => {
         state.isLoadingSpecialties = false;
         state.specialties = [];
+      })
+      // SPECIALTIES MENTAL HEALTH
+      .addCase(getAllSpecialtiesMentalHealth.pending, (state) => {
+        state.isLoadingSpecialties = true;
+      })
+      .addCase(getAllSpecialtiesMentalHealth.fulfilled, (state, { payload }) => {
+        state.isLoadingSpecialties = false;
+        state.specialtiesMentalHealth = payload.data.specialties;
+      })
+      .addCase(getAllSpecialtiesMentalHealth.rejected, (state) => {
+        state.isLoadingSpecialties = false;
+        state.specialtiesMentalHealth = [];
       });
   },
 });

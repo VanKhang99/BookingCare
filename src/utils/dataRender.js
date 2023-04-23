@@ -88,7 +88,7 @@ export const healthTestList = [
     imageItem:
       "https://bookingcare.vn/_next/image?url=https%3A%2F%2Fcdn.bookingcare.vn%2Ffo%2F2023%2F04%2F17%2F155549-1.png&w=1920&q=75",
     nameVi: "Bài Test đánh giá trầm cảm BECK",
-    nameEN: "BECK Depression Assessment Test",
+    nameEn: "BECK Depression Assessment Test",
     testType: "BECK",
   },
   {
@@ -96,7 +96,7 @@ export const healthTestList = [
     imageItem:
       "https://bookingcare.vn/_next/image?url=https%3A%2F%2Fcdn.bookingcare.vn%2Ffo%2F2023%2F04%2F17%2F155457-2.png&w=1920&q=75",
     nameVi: "Bài Test đánh giá rối loạn ZUNG",
-    nameEN: "ZUNG Anxiety Assessment Test",
+    nameEn: "ZUNG Anxiety Assessment Test",
     testType: "ZUNG",
   },
   {
@@ -104,7 +104,7 @@ export const healthTestList = [
     imageItem:
       "https://bookingcare.vn/_next/image?url=https%3A%2F%2Fcdn.bookingcare.vn%2Ffo%2F2023%2F04%2F17%2F155557-3.png&w=1920&q=75",
     nameVi: "Bài Test đánh giá mức độ trầm cảm sau sinh EPDS",
-    nameEN: "EPDS . Postpartum Depression Test",
+    nameEn: "EPDS . Postpartum Depression Test",
     testType: "EPDS",
   },
   {
@@ -112,7 +112,7 @@ export const healthTestList = [
     imageItem:
       "https://bookingcare.vn/_next/image?url=https%3A%2F%2Fcdn.bookingcare.vn%2Ffo%2F2023%2F04%2F17%2F155603-4.png&w=1920&q=75",
     nameVi: "Bài Test đánh giá Lo âu - Trầm cảm - Stress (DASS 21)",
-    nameEN: "Anxiety - Depression - Stress Assessment Test (DASS 21)",
+    nameEn: "Anxiety - Depression - Stress Assessment Test (DASS 21)",
     testType: "DASS",
   },
 ];

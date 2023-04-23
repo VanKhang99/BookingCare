@@ -126,7 +126,7 @@ const Slider = ({
           )}
         </div>
 
-        {/* {doctorRemote && <CarouselRemoteDoctor doctorRemote={doctorRemote} settings={settings} />}
+        {doctorRemote && <CarouselRemoteDoctor doctorRemote={doctorRemote} settings={settings} />}
 
         {popularSpecialty && <CarouselPopularSpecialty settings={settings} />}
 
@@ -139,7 +139,7 @@ const Slider = ({
             settings={clinicId ? { ...settings, infinite: false } : settings}
             clinicId={clinicId}
           />
-        )} */}
+        )}
 
         {handbook && (
           <CarouselHandbook

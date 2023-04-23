@@ -10,7 +10,7 @@ This is a React app for booking medical appontments, users can view information 
 2. Install PostgreSQL on your local machine.
 3. Clone the repository to your local machine.
 4. Clone the repository Backend to your local machine
-    - Link repo: https://github.com/VanKhang99/Back-End-BookingCare/tree/imageToAWS (Choose branch imageToAWS)
+    - Link repo: https://github.com/VanKhang99/Back-End-BookingCare/tree/production (Choose branch production)
 5. Run "npm install" to install all dependencies for both repos
 6. Run "npm start" for both repos
 
